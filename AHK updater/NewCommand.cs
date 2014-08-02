@@ -28,6 +28,11 @@ namespace AHK_updater
 			return cbType.SelectedIndex;
 		}
 
+		public string getSystem()
+		{
+			return txtSystem.Text;
+		}
+
 		void BtnCloseClick(object sender, EventArgs e)
 		{
 			this.Close();
@@ -45,29 +50,38 @@ namespace AHK_updater
 		{
 			if (cbType.SelectedIndex.ToString().Equals("-1"))
 				btnSave.Enabled = false;
+			else if (cbType.SelectedIndex.ToString().Equals("1"))
+			{
+				txtSystem.Enabled = false;
+				btnSave.Enabled = true;
+			}
 			else
 			{
-				txtName.Enabled = true;
+				txtSystem.Enabled = true;
 				btnSave.Enabled = true;
 			}
 		}
 
-		void NewCommandFormClosing(object sender, FormClosingEventArgs e)
+		void NewCommand_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			int i = cbType.SelectedIndex;
 			DialogResult answer;
 
 			if (this.DialogResult == DialogResult.OK)
 			{
-				if (i == -1)
+				if (i == 0 || i == 2)
 				{
-					if (!txtName.Text.Equals(""))
+					if (txtName.Text.Equals("") || txtSystem.Text.Equals(""))
 					{
-						answer = MessageBox.Show("Val av typ måste göras.","",MessageBoxButtons.OKCancel);
+						answer = MessageBox.Show("Textrutan är tom.","",MessageBoxButtons.OKCancel);
+						e.Cancel = true;
+					} else if (data.commandExists(txtName.Text)){
+						MessageBox.Show("Kommando finns redan.\r\nVälj nytt namn.");
+						this.ActiveControl = txtName;
 						e.Cancel = true;
 					}
 				}
-				else if (i == 0 || i == 1 || i == 2)
+				else
 				{
 					if (txtName.Text.Equals(""))
 					{

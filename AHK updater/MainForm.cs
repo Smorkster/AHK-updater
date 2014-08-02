@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -13,10 +14,9 @@ namespace AHK_updater
 		{
 			InitializeComponent();
 		}
-		bool test = false;
+		bool test = true;
 
 		BindingList<AHKCommand> ListofCommands = new BindingList<AHKCommand>(),
-								ListofVariables = new BindingList<AHKCommand>(),
 								DataSourceList = new BindingList<AHKCommand>();
 		string scriptfilenameTest = "AHK - Standardsvar Test.ahk",
 				xmlfilenameTest = "AHK - Standardsvar Test.xml",
@@ -27,6 +27,7 @@ namespace AHK_updater
 				originalxmlfilename = "AHK - Standardsvar (Original).xml",
 				changelogfile = "AHK - changelog.txt";
 		AllData data = new AllData();
+		AHKCommand currentItem;
 
 		void MainFormLoad(object sender, EventArgs e)
 		{
@@ -36,10 +37,6 @@ namespace AHK_updater
 				getXMLCommands((test?xmlfilenameTest:xmlfilename));
 			} else if (File.Exists((test?originalxmlfilenameTest:originalxmlfilename))){
 				getXMLCommands((test?originalxmlfilenameTest:originalxmlfilename));
-			}
-			if(!test)
-			{
-				testToolStripMenuItem.Visible = false;
 			}
 		}
 
@@ -55,15 +52,18 @@ namespace AHK_updater
 		    XmlNodeList name = doc.GetElementsByTagName("name"),
 		    	command = doc.GetElementsByTagName("command"),
 				text = doc.GetElementsByTagName("text"),
-		    	type = doc.GetElementsByTagName("type"),
 		    	system = doc.GetElementsByTagName("system"),
-		    	variables = doc.GetElementsByTagName("variable"),
 		    	functions = doc.GetElementsByTagName("functions"),
 		    	changelogVersion = doc.GetElementsByTagName("version"),
 		    	changelogEntry = doc.GetElementsByTagName("entry");
 	   		xRead.WhitespaceHandling = WhitespaceHandling.None;
 
-	   		//Ask for username
+	   		insertCommands(command, text, system);
+	   		insertFunctions(functions);
+	   		insertChangelog(changelogVersion, changelogEntry);
+	   		fillTree();
+
+	   		//Ask for username, if not present in XML-file
 	   		if (name.Count > 0)
 	   		{
 		   		if (name[0].InnerText.ToString().Equals(""))
@@ -72,31 +72,25 @@ namespace AHK_updater
 		   			un.ShowDialog(this);
 		   			if(!un.getName().Equals(""))
 		   			{
-		   				data.updateVariables("sign", "Med vänliga hälsningar{Enter}" + un.getName(), "Variable");
+		   				data.addCommand("sign", "Med vänliga hälsningar{Enter}" + un.getName(), "Variabler");
 			   			data.UserName = un.getName();
 		   			}
 		   		}
 	   		}
-	   		insertCommands(command, text, type, system);
-	   		insertFunctions(functions);
-	   		insertChangelog(changelogVersion, changelogEntry);
-	   		setDataSource();
+
 	   		xRead.Close();
 		}
 
 		/**
 		 * Add all hotstrings as separate row in ListofCommands and variables in ListofVariables
 		 * */
-		void insertCommands(XmlNodeList command, XmlNodeList text, XmlNodeList type, XmlNodeList system)
+		void insertCommands(XmlNodeList command, XmlNodeList text, XmlNodeList system)
 		{
 	   		if (command.Count > 0)
 	   		{
 		   		for (int i = 0; i < command.Count; i++)
 		   		{
-		   			if (type[i].InnerText.ToString().Equals("Hotstring"))
-		   				data.updateCommands(command[i].InnerText.ToString(), text[i].InnerText.ToString().Trim(), type[i].InnerText.ToString(), system[i].InnerText.ToString());
-		   			else
-		   				data.updateVariables(command[i].InnerText.ToString(), text[i].InnerText.ToString().Trim(), type[i].InnerText.ToString());
+	   				data.addCommand(command[i].InnerText.ToString(), text[i].InnerText.ToString().Trim(), system[i].InnerText.ToString());
 		   		}
 	   		}
 		}
@@ -130,44 +124,32 @@ namespace AHK_updater
 	   		txtChangelog.Text = data.initiateChangelog();
 		}
 
-		/**
-		 * Close application
-		 * */
-		void BtnCloseClick(object sender, EventArgs e)
-		{
-			if (data.Updated)
-			{
-				DialogResult answer = MessageBox.Show("Ändringar har gjorts, men har inte sparats.\r\nVill du spara?", "", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
-				if (answer == DialogResult.Yes)
-				{
-					saveToScriptFile();
-					saveToXMLFile();
-					shutdown();
-				} else {
-					shutdown();
-				}
-			}
-			else
-			{
-				shutdown();
-			}
-		}
-
 		void shutdown()
 		{
-			this.Close();
 			Application.Exit();
 		}
 
 		/**
 		 * Sets datasource för listbox and rebinds it for list to be updated
 		 * */
-		void setDataSource()
+		void fillTree()
 		{
-	   		lstBHotstrings.DataSource = data.joinedlist;
-
-	   		lstBHotstrings.DisplayMember = "Command";
-	   		lstBHotstrings.ValueMember = "Text";
+			foreach(AHKCommand item in data.commandslist)
+			{
+				if (!item.System.Equals(""))
+				{
+					if (!treeHotstrings.Nodes.ContainsKey(item.System))
+					{
+						TreeNode tn = new TreeNode(item.System);
+						tn.Name = item.System;
+						treeHotstrings.Nodes.Add(tn);
+					}
+					TreeNode newNode = new TreeNode(item.Command);
+					newNode.Tag = item.Text;
+					treeHotstrings.Nodes[item.System].Nodes.Add(newNode);
+				}
+			}
+			treeHotstrings.Sort();
 		}
 
 		/**
@@ -230,9 +212,9 @@ namespace AHK_updater
 				writer.Write(data.getChangelogText());
 				writer.Flush();
 				writer.Close();
-			} catch (Exception exc)
+			} catch (Exception e)
 			{
-				MessageBox.Show("Något gick fel när Changelog-filen skulle sparas\nFel:\n" + exc.Message.ToString(), "Skrivfel", MessageBoxButtons.OK);
+				MessageBox.Show("Något gick fel när Changelog-filen skulle sparas\nFel:\n" + e.Message.ToString(), "Skrivfel", MessageBoxButtons.OK);
 			}
 		}
 
@@ -242,7 +224,7 @@ namespace AHK_updater
 		string fetchCommandsForXML()
 		{
 			string i="";
-			foreach (AHKCommand item in data.joinedlist)
+			foreach (AHKCommand item in data.commandslist)
 			{
 				i = i + item.getXmlString() + "\r\n";
 			}
@@ -256,12 +238,9 @@ namespace AHK_updater
 		string fetchCommandsForScript()
 		{
 			string i="";
-			foreach (AHKCommand item in data.joinedlist)
+			foreach (AHKCommand item in data.commandslist)
 			{
-				if (item.Type.Equals("Hotstring"))
-					i = i + item.getScriptString()+"\r\n";
-				else
-					i = i + item.getScriptString();
+				i = i + item.getScriptString()+"\r\n";
 			}
 
 			return i + txtFunctions.Text.Trim() + "\r\n";
@@ -296,8 +275,9 @@ namespace AHK_updater
 
 			if (f.ShowDialog(this) == DialogResult.OK)
 			{
-				string commandName = f.getItem();
+				string commandName = f.getItem(), commandSystem = f.getSystem();
 				int commandType = f.getCommandType();
+				TreeNode newNode = null;
 
 				if (commandType == 2)
 				{
@@ -307,28 +287,39 @@ namespace AHK_updater
 				}
 				else
 				{
+					currentItem = new AHKCommand(commandName, "", commandSystem);
 					if (commandType == 0)
 					{
-						data.updateCommands(commandName, "", "Hotstring","");
+						data.addCommand(commandName, "","");
 						txtHSText.Text = "SendInput,\r\n(\r\n\r\n)\r\nReturn";
 					}
 					else
 					{
-						data.updateVariables(commandName, "", "Variable");
-						tabControl1.SelectedIndex = 0;
+						//data.updateVariables(commandName, "", "Variabler");
+						commandSystem = "Variabler";
+						txtHSText.Text = "= ";
 					}
-					setDataSource();
-					int i = lstBHotstrings.FindString(commandName);
-					if (i != -1)
-						lstBHotstrings.SetSelected(i,true);
+
+					if (!treeHotstrings.Nodes.ContainsKey(commandSystem))
+					{
+						TreeNode tn = new TreeNode(commandSystem);
+						tn.Name = commandSystem;
+						treeHotstrings.Nodes.Add(tn);
+					}
+					newNode = new TreeNode(commandName);
+					newNode.Tag = "";
+					treeHotstrings.Nodes[commandSystem].Nodes.Add(newNode);
 				}
+				tabControl1.SelectedIndex = 0;
+				treeHotstrings.SelectedNode = newNode;
 				data.Updated = true;
+				treeHotstrings.Sort();
 			}
 		}
 
 		void TxtHSText_TextChanged(object sender, EventArgs e)
 		{
-			if (txtHSText.Text != lstBHotstrings.SelectedValue.ToString())
+			if (txtHSText.Text != currentItem.Text)
 			{
 				btnSaveHotstringText.Enabled = true;
 				btnSaveHotstringText.Visible = true;
@@ -354,15 +345,25 @@ namespace AHK_updater
 		/**
 		 * When hotstring in lstHotstring is changed, load the corresponding hotstring text in txtboxText
 		 * */
-		void lstHotstrings_ValueChange(object sender, EventArgs e)
+		void treeHotstrings_IndexChange(object sender, TreeNodeMouseClickEventArgs e)
 		{
-			if(lstBHotstrings.SelectedIndex != -1)
+			if (e.Node.Level != 0)
 			{
-				txtHSText.TextChanged -= TxtHSText_TextChanged;
-				txtHSText.Text = lstBHotstrings.SelectedValue.ToString();
-				txtHSText.Focus();
-				txtHSText.SelectionStart = txtHSText.Text.Length + 1;
-				txtHSText.TextChanged += TxtHSText_TextChanged;
+				for (int i = 0; i < data.commandslist.Count; i++)
+				{
+					if (data.commandslist[i].Command.Equals(e.Node.Text))
+					{
+						currentItem = new AHKCommand(data.commandslist[i]);
+						txtHSText.Text = data.commandslist[i].Text;
+						break;
+					}
+				}
+				this.ActiveControl = txtHSText;
+				menuRemoveCommand.Visible = true;
+			}
+			else
+			{
+				menuRemoveCommand.Visible = false;
 			}
 		}
 
@@ -371,8 +372,8 @@ namespace AHK_updater
 		 * */
 		void BtnSaveHotstringText_Click(object sender, EventArgs e)
 		{
-			data.updateCommandItem(lstBHotstrings.GetItemText(lstBHotstrings.SelectedItem), txtHSText.Text);
-			ChangeLogText temp = new ChangeLogText(lstBHotstrings.GetItemText(lstBHotstrings.SelectedItem));
+			data.updateCommandItem(currentItem.Command, txtHSText.Text);
+			ChangeLogText temp = new ChangeLogText(currentItem.Command);
 			temp.ShowDialog(this);
 			data.updateCurrentChangelogItem(temp.getChangeInfo());
 			txtChangelog.Text = data.CurrentChangelogItem;
@@ -395,7 +396,7 @@ namespace AHK_updater
 			btnSaveFunctions.Visible = false;
 			this.ActiveControl = txtFunctions;
 		}
-		
+
 		void BtnSaveChangelogClick(object sender, EventArgs e)
 		{
 			data.updateCurrentChangelogItem(txtFunctions.Text);
@@ -405,11 +406,47 @@ namespace AHK_updater
 			btnSaveFunctions.Visible = false;
 			this.ActiveControl = txtChangelog;
 		}
-		
-		void TestToolStripMenuItemClick(object sender, EventArgs e)
+
+		void MainForm_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			Tree t = new Tree(data.joinedlist);
-			t.ShowDialog(this);
+			if (data.Updated)
+			{
+				DialogResult answer = MessageBox.Show("Ändringar har gjorts, men har inte sparats.\r\nVill du spara?", "", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
+
+				if (answer == DialogResult.Yes)
+				{
+					saveToScriptFile();
+					saveToXMLFile();
+					shutdown();
+				} else if (answer == DialogResult.No){
+					shutdown();
+				}
+				else
+				{
+					e.Cancel = true;
+				}
+			}
+			else
+			{
+				shutdown();
+			}
+		}
+		
+		void menuClose_Click(object sender, EventArgs e)
+		{
+			this.Close();
+		}
+		
+		void menuRemoveCommand_Click(object sender, EventArgs e)
+		{
+			DialogResult answer = MessageBox.Show("Ta bort kommando " + currentItem.Command + "?", "Borttag", MessageBoxButtons.YesNo);
+			if (answer == DialogResult.Yes)
+			{
+				treeHotstrings.Nodes.Remove(treeHotstrings.SelectedNode);//[currentItem.System].Nodes[currentItem.Command].Remove();
+				if (treeHotstrings.Nodes[currentItem.System].Nodes.Count == 0)
+					treeHotstrings.Nodes.RemoveByKey(currentItem.Command);
+				data.commandslist.Remove(new AHKCommand(currentItem.Command, currentItem.Text, currentItem.System));
+			}
 		}
 	}
 }

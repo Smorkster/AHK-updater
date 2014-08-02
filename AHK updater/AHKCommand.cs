@@ -4,20 +4,23 @@
 	{
 		string command;
 		string text;
-		string type;
 		string system;
 
-		public AHKCommand(string c, string te, string ty, string sys)
+		public AHKCommand(string c, string te, string sys)
 		{
 			this.command = c;
 			this.text = te;
-			this.type = ty;
 			this.system = sys;
+		}
+		public AHKCommand(AHKCommand c)
+		{
+			this.command = c.command;
+			this.text = c.text;
+			this.system = c.System;
 		}
 
 		public string Command {get{return command;}}
 		public string Text {get{return text;} set{text = value;}}
-		public string Type {get{return type;}}
 		public string System {get{return system;}}
 
 		/**
@@ -25,7 +28,7 @@
 		 * */
 		public string getXmlString()
 		{
-			return string.Format("<ahkcommand><command>{0}</command><text>{1}</text><type>{2}</type><system>{3}</system></ahkcommand>", command, text, type, system);
+			return string.Format("<ahkcommand><command>{0}</command><text>{1}</text><system>{2}</system></ahkcommand>", command, text, system);
 		}
 
 		/**
@@ -35,9 +38,9 @@
 		{
 			string v = "";
 
-			if (type.Equals("Variable"))
+			if (system.Equals("Variable"))
 				v = command + " = " + text;
-			else if (type.Equals("Hotstring"))
+			else
 				v = "::" + this.command + "::\r\n" + this.text.Trim();
 			return v + "\r\n";
 		}

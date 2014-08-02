@@ -7,16 +7,14 @@ namespace AHK_updater
 {
 	public class AllData
 	{
-		List<AHKCommand> commandslist, variablelist;
+		public List<AHKCommand> commandslist;
 		List<ChangelogEntry> changelog, currentChangelogEntry;
-		public BindingList<AHKCommand> joinedlist;
 		string functions, username;
 		bool updated = false;
 
 		public AllData()
 		{
 			commandslist = new List<AHKCommand>();
-			variablelist = new List<AHKCommand>();
 			changelog = new List<ChangelogEntry>();
 			currentChangelogEntry = new List<ChangelogEntry>();
 		}
@@ -40,27 +38,10 @@ namespace AHK_updater
 			return currentChangelogEntry[0].Entry;
 		}
 
-		void sortCommands()
-		{
-			commandslist = commandslist.OrderBy(x => x.Command).ToList();
-		}
-
-		void sortVariables()
-		{
-			variablelist = variablelist.OrderBy(x => x.Command).ToList();
-		}
-
-		public void joinLists()
-		{
-			sortVariables();
-			sortCommands();
-			joinedlist = new BindingList<AHKCommand>(variablelist.Concat(commandslist).ToList());
-		}
-
 		public bool commandExists(string commandName)
 		{
 			bool exists = false;
-			foreach(AHKCommand item in joinedlist)
+			foreach(AHKCommand item in commandslist)
 			{
 				if(item.Command.ToString().Equals(commandName))
 					exists = true;
@@ -82,24 +63,17 @@ namespace AHK_updater
 				currentChangelogEntry[0].Entry = currentChangelogEntry[0].Entry + "\r\n" + entry;
 		}
 
-		public void updateCommands(string command, string text, string type, string system)
+		public void addCommand(string command, string text, string system)
 		{
-			commandslist.Add(new AHKCommand(command, text, type, system));
-			joinLists();
-		}
-
-		public void updateVariables(string command, string text, string type)
-		{
-			variablelist.Add(new AHKCommand(command, text, type, ""));
-			joinLists();
+			commandslist.Add(new AHKCommand(command, text, system));
 		}
 
 		public void updateCommandItem(string command, string text)
 		{
-			for (int i = 0; i < joinedlist.Count; i++)
+			for (int i = 0; i < commandslist.Count; i++)
 			{
-				if(joinedlist[i].Command.Equals(command))
-					joinedlist[i].Text = text;
+				if(commandslist[i].Command.Equals(command))
+					commandslist[i].Text = text;
 			}
 			updated = true;
 		}

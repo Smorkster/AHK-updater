@@ -16,10 +16,10 @@
 		
 		private void InitializeComponent()
 		{
-			this.lstBHotstrings = new System.Windows.Forms.ListBox();
 			this.txtHSText = new System.Windows.Forms.TextBox();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
+			this.treeHotstrings = new System.Windows.Forms.TreeView();
 			this.btnSaveHotstringText = new System.Windows.Forms.Button();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
 			this.btnSaveFunctions = new System.Windows.Forms.Button();
@@ -28,10 +28,10 @@
 			this.btnSaveChangelog = new System.Windows.Forms.Button();
 			this.txtChangelog = new System.Windows.Forms.TextBox();
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-			this.nyHotstringToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.sparaTillFilToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.stängToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.testToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.menuNewHotstring = new System.Windows.Forms.ToolStripMenuItem();
+			this.menuSaveToFile = new System.Windows.Forms.ToolStripMenuItem();
+			this.menuRemoveCommand = new System.Windows.Forms.ToolStripMenuItem();
+			this.menuClose = new System.Windows.Forms.ToolStripMenuItem();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
@@ -39,25 +39,16 @@
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// lstBHotstrings
-			// 
-			this.lstBHotstrings.FormattingEnabled = true;
-			this.lstBHotstrings.Location = new System.Drawing.Point(6, 6);
-			this.lstBHotstrings.Name = "lstBHotstrings";
-			this.lstBHotstrings.Size = new System.Drawing.Size(156, 355);
-			this.lstBHotstrings.TabIndex = 0;
-			this.lstBHotstrings.SelectedValueChanged += new System.EventHandler(this.lstHotstrings_ValueChange);
-			// 
 			// txtHSText
 			// 
 			this.txtHSText.AcceptsTab = true;
 			this.txtHSText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
 									| System.Windows.Forms.AnchorStyles.Left) 
 									| System.Windows.Forms.AnchorStyles.Right)));
-			this.txtHSText.Location = new System.Drawing.Point(165, 6);
+			this.txtHSText.Location = new System.Drawing.Point(185, 6);
 			this.txtHSText.Multiline = true;
 			this.txtHSText.Name = "txtHSText";
-			this.txtHSText.Size = new System.Drawing.Size(508, 355);
+			this.txtHSText.Size = new System.Drawing.Size(488, 355);
 			this.txtHSText.TabIndex = 0;
 			this.txtHSText.TabStop = false;
 			this.txtHSText.TextChanged += new System.EventHandler(this.TxtHSText_TextChanged);
@@ -75,8 +66,8 @@
 			// 
 			// tabPage1
 			// 
+			this.tabPage1.Controls.Add(this.treeHotstrings);
 			this.tabPage1.Controls.Add(this.btnSaveHotstringText);
-			this.tabPage1.Controls.Add(this.lstBHotstrings);
 			this.tabPage1.Controls.Add(this.txtHSText);
 			this.tabPage1.Location = new System.Drawing.Point(4, 22);
 			this.tabPage1.Name = "tabPage1";
@@ -86,10 +77,20 @@
 			this.tabPage1.Text = "Hotstrings";
 			this.tabPage1.UseVisualStyleBackColor = true;
 			// 
+			// treeHotstrings
+			// 
+			this.treeHotstrings.FullRowSelect = true;
+			this.treeHotstrings.HideSelection = false;
+			this.treeHotstrings.Location = new System.Drawing.Point(6, 6);
+			this.treeHotstrings.Name = "treeHotstrings";
+			this.treeHotstrings.Size = new System.Drawing.Size(173, 355);
+			this.treeHotstrings.TabIndex = 2;
+			this.treeHotstrings.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeHotstrings_IndexChange);
+			// 
 			// btnSaveHotstringText
 			// 
 			this.btnSaveHotstringText.Enabled = false;
-			this.btnSaveHotstringText.Location = new System.Drawing.Point(632, 3);
+			this.btnSaveHotstringText.Location = new System.Drawing.Point(632, 6);
 			this.btnSaveHotstringText.Name = "btnSaveHotstringText";
 			this.btnSaveHotstringText.Size = new System.Drawing.Size(41, 23);
 			this.btnSaveHotstringText.TabIndex = 1;
@@ -174,43 +175,44 @@
 			// menuStrip1
 			// 
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-									this.nyHotstringToolStripMenuItem,
-									this.sparaTillFilToolStripMenuItem,
-									this.stängToolStripMenuItem,
-									this.testToolStripMenuItem});
+									this.menuNewHotstring,
+									this.menuSaveToFile,
+									this.menuRemoveCommand,
+									this.menuClose});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
 			this.menuStrip1.Size = new System.Drawing.Size(714, 24);
 			this.menuStrip1.TabIndex = 4;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
-			// nyHotstringToolStripMenuItem
+			// menuNewHotstring
 			// 
-			this.nyHotstringToolStripMenuItem.Name = "nyHotstringToolStripMenuItem";
-			this.nyHotstringToolStripMenuItem.Size = new System.Drawing.Size(85, 20);
-			this.nyHotstringToolStripMenuItem.Text = "Ny hotstring";
-			this.nyHotstringToolStripMenuItem.Click += new System.EventHandler(this.NewHotstring_Click);
+			this.menuNewHotstring.Name = "menuNewHotstring";
+			this.menuNewHotstring.Size = new System.Drawing.Size(85, 20);
+			this.menuNewHotstring.Text = "Ny hotstring";
+			this.menuNewHotstring.Click += new System.EventHandler(this.NewHotstring_Click);
 			// 
-			// sparaTillFilToolStripMenuItem
+			// menuSaveToFile
 			// 
-			this.sparaTillFilToolStripMenuItem.Name = "sparaTillFilToolStripMenuItem";
-			this.sparaTillFilToolStripMenuItem.Size = new System.Drawing.Size(77, 20);
-			this.sparaTillFilToolStripMenuItem.Text = "Spara till fil";
-			this.sparaTillFilToolStripMenuItem.Click += new System.EventHandler(this.SaveToFile_Click);
+			this.menuSaveToFile.Name = "menuSaveToFile";
+			this.menuSaveToFile.Size = new System.Drawing.Size(77, 20);
+			this.menuSaveToFile.Text = "Spara till fil";
+			this.menuSaveToFile.Click += new System.EventHandler(this.SaveToFile_Click);
 			// 
-			// stängToolStripMenuItem
+			// menuRemoveCommand
 			// 
-			this.stängToolStripMenuItem.Name = "stängToolStripMenuItem";
-			this.stängToolStripMenuItem.Size = new System.Drawing.Size(49, 20);
-			this.stängToolStripMenuItem.Text = "Stäng";
-			this.stängToolStripMenuItem.Click += new System.EventHandler(this.BtnCloseClick);
+			this.menuRemoveCommand.Name = "menuRemoveCommand";
+			this.menuRemoveCommand.Size = new System.Drawing.Size(122, 20);
+			this.menuRemoveCommand.Text = "Ta bort kommando";
+			this.menuRemoveCommand.Visible = false;
+			this.menuRemoveCommand.Click += new System.EventHandler(this.menuRemoveCommand_Click);
 			// 
-			// testToolStripMenuItem
+			// menuClose
 			// 
-			this.testToolStripMenuItem.Name = "testToolStripMenuItem";
-			this.testToolStripMenuItem.Size = new System.Drawing.Size(41, 20);
-			this.testToolStripMenuItem.Text = "Test";
-			this.testToolStripMenuItem.Click += new System.EventHandler(this.TestToolStripMenuItemClick);
+			this.menuClose.Name = "menuClose";
+			this.menuClose.Size = new System.Drawing.Size(49, 20);
+			this.menuClose.Text = "Stäng";
+			this.menuClose.Click += new System.EventHandler(this.menuClose_Click);
 			// 
 			// MainForm
 			// 
@@ -228,6 +230,7 @@
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "AHK updater";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
 			this.Load += new System.EventHandler(this.MainFormLoad);
 			this.tabControl1.ResumeLayout(false);
 			this.tabPage1.ResumeLayout(false);
@@ -241,21 +244,21 @@
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
-		private System.Windows.Forms.ToolStripMenuItem testToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem menuRemoveCommand;
+		private System.Windows.Forms.TreeView treeHotstrings;
 		private System.Windows.Forms.Button btnSaveChangelog;
 		private System.Windows.Forms.TextBox txtChangelog;
 		private System.Windows.Forms.Button btnSaveFunctions;
 		private System.Windows.Forms.Button btnSaveHotstringText;
 		private System.Windows.Forms.TabPage tabPage3;
-		private System.Windows.Forms.ToolStripMenuItem stängToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem sparaTillFilToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem nyHotstringToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem menuClose;
+		private System.Windows.Forms.ToolStripMenuItem menuSaveToFile;
+		private System.Windows.Forms.ToolStripMenuItem menuNewHotstring;
 		private System.Windows.Forms.MenuStrip menuStrip1;
 		private System.Windows.Forms.TextBox txtFunctions;
 		private System.Windows.Forms.TabPage tabPage2;
 		private System.Windows.Forms.TabPage tabPage1;
 		private System.Windows.Forms.TabControl tabControl1;
 		private System.Windows.Forms.TextBox txtHSText;
-		public System.Windows.Forms.ListBox lstBHotstrings;
 	}
 }
