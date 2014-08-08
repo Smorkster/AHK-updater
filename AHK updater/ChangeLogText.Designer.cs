@@ -1,24 +1,10 @@
-﻿/*
- * Created by SharpDevelop.
- * User: 6g1w
- * Date: 2014-07-17
- * Time: 10:30
- * 
- * To change this template use Tools | Options | Coding | Edit Standard Headers.
- */
-namespace AHK_updater
+﻿namespace AHK_updater
 {
 	partial class ChangeLogText
 	{
-		/// <summary>
-		/// Designer variable used to keep track of non-visual components.
-		/// </summary>
 		private System.ComponentModel.IContainer components = null;
-		
-		/// <summary>
-		/// Disposes resources used by the form.
-		/// </summary>
-		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+
+		// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
 		protected override void Dispose(bool disposing)
 		{
 			if (disposing) {
@@ -28,39 +14,34 @@ namespace AHK_updater
 			}
 			base.Dispose(disposing);
 		}
-		
-		/// <summary>
-		/// This method is required for Windows Forms designer support.
-		/// Do not change the method contents inside the source code editor. The Forms designer might
-		/// not be able to load this method if it was changed manually.
-		/// </summary>
+
 		private void InitializeComponent()
 		{
-			this.chlSave = new System.Windows.Forms.Button();
-			this.chlCancel = new System.Windows.Forms.Button();
+			this.btnSave = new System.Windows.Forms.Button();
+			this.btnCancel = new System.Windows.Forms.Button();
 			this.txtChange = new System.Windows.Forms.TextBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
-			// chlSave
+			// btnSave
 			// 
-			this.chlSave.Location = new System.Drawing.Point(360, 12);
-			this.chlSave.Name = "chlSave";
-			this.chlSave.Size = new System.Drawing.Size(75, 23);
-			this.chlSave.TabIndex = 0;
-			this.chlSave.Text = "Save";
-			this.chlSave.UseVisualStyleBackColor = true;
-			this.chlSave.Click += new System.EventHandler(this.ChlSaveClick);
+			this.btnSave.Location = new System.Drawing.Point(360, 12);
+			this.btnSave.Name = "btnSave";
+			this.btnSave.Size = new System.Drawing.Size(75, 23);
+			this.btnSave.TabIndex = 0;
+			this.btnSave.Text = "Save";
+			this.btnSave.UseVisualStyleBackColor = true;
+			this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
 			// 
-			// chlCancel
+			// btnCancel
 			// 
-			this.chlCancel.Location = new System.Drawing.Point(441, 12);
-			this.chlCancel.Name = "chlCancel";
-			this.chlCancel.Size = new System.Drawing.Size(75, 23);
-			this.chlCancel.TabIndex = 1;
-			this.chlCancel.Text = "Cancel";
-			this.chlCancel.UseVisualStyleBackColor = true;
-			this.chlCancel.Click += new System.EventHandler(this.ChlCancelClick);
+			this.btnCancel.Location = new System.Drawing.Point(441, 12);
+			this.btnCancel.Name = "btnCancel";
+			this.btnCancel.Size = new System.Drawing.Size(75, 23);
+			this.btnCancel.TabIndex = 1;
+			this.btnCancel.Text = "Cancel";
+			this.btnCancel.UseVisualStyleBackColor = true;
+			this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
 			// 
 			// txtChange
 			// 
@@ -86,8 +67,8 @@ namespace AHK_updater
 			this.ClientSize = new System.Drawing.Size(528, 76);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.txtChange);
-			this.Controls.Add(this.chlCancel);
-			this.Controls.Add(this.chlSave);
+			this.Controls.Add(this.btnCancel);
+			this.Controls.Add(this.btnSave);
 			this.Name = "ChangeLogText";
 			this.Text = "Ändring till changelog";
 			this.ResumeLayout(false);
@@ -95,7 +76,7 @@ namespace AHK_updater
 		}
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.TextBox txtChange;
-		private System.Windows.Forms.Button chlCancel;
-		private System.Windows.Forms.Button chlSave;
+		private System.Windows.Forms.Button btnCancel;
+		private System.Windows.Forms.Button btnSave;
 	}
 }

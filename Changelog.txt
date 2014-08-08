@@ -1,0 +1,25 @@
+Version 1
+*********
+Initial release
+
+Version 2
+*********
+Replaced ListView for commands with TreeView
+	Now easier to view commands by listing them by system
+Implemented a changelog for changes in commands
+
+Version 2.1
+*********
+Added ability to remove command
+	If there is no other command with same system, the system is also removed.
+Added else-clause if variable sign exists
+	Now updates sign text
+Removed unnecessary StreamWriter flush
+Now adds variables to top of script- and XML-file
+Now changes to other TreeView-item and loads marked command if a command is removed
+Checks if XML-file is empty
+Changed the way a command have been selected in TreeView
+	Changed algorithm for selecting the item
+Added ability to change system of command
+Added comments for all functions
+Corrected removal of empty parent node function

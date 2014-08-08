@@ -11,10 +11,13 @@ namespace AHK_updater
 		public UserName()
 		{
 			InitializeComponent();
-			lblUserNameInfo.Text = "Ingen lokal settings-fil funnen. Behöver därför skapas. Ange önskat namn för signatur i standardsvar:";
+			lblUserNameInfo.Text = "No local file was found, will therefore have to be created. Choose a name to used in hotstrings:";
 			this.ActiveControl = txtUserName;
 		}
 
+		/**
+		 * Close form
+		 * */
 		void Button1Click(object sender, EventArgs e)
 		{
 			this.Close();

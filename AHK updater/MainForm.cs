@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -16,16 +15,14 @@ namespace AHK_updater
 		}
 		bool test = true;
 
-		BindingList<AHKCommand> ListofCommands = new BindingList<AHKCommand>(),
-								DataSourceList = new BindingList<AHKCommand>();
-		string scriptfilenameTest = "AHK - Standardsvar Test.ahk",
-				xmlfilenameTest = "AHK - Standardsvar Test.xml",
-				originalxmlfilenameTest = "AHK - Standardsvar Test (Original).xml",
-				changelogfileTest = "AHK Changelog.txt";
-		string scriptfilename = "AHK - Standardsvar.ahk",
-				xmlfilename = "AHK - Standardsvar.xml",
-				originalxmlfilename = "AHK - Standardsvar (Original).xml",
-				changelogfile = "AHK - changelog.txt";
+		string scriptfilenameTest = "AHK - Test.ahk",
+				xmlfilenameTest = "AHK - Test.xml",
+				originalxmlfilenameTest = "AHK - Test (Original).xml",
+				changelogfileTest = "AHK - Test Changelog.txt";
+		string scriptfilename = "AHK.ahk",
+				xmlfilename = "AHK.xml",
+				originalxmlfilename = "AHK (Original).xml",
+				changelogfile = "AHK Changelog.txt";
 		AllData data = new AllData();
 		AHKCommand currentItem;
 
@@ -35,54 +32,100 @@ namespace AHK_updater
 			if (File.Exists((test?xmlfilenameTest:xmlfilename)))
 			{
 				getXMLCommands((test?xmlfilenameTest:xmlfilename));
-			} else if (File.Exists((test?originalxmlfilenameTest:originalxmlfilename))){
+			}
+			else if (File.Exists((test?originalxmlfilenameTest:originalxmlfilename)))
+			{
 				getXMLCommands((test?originalxmlfilenameTest:originalxmlfilename));
+			}
+			else
+			{
+				data.UserName = getUserName();
+				fillTree();
+				txtChangelog.Text = data.initiateChangelog();
 			}
 		}
 
+		/**
+		 * Reads the XML-file and sends the NodeLists for parsing
+		 * If a username can not be found in the file, application asks user
+		 *  
+		 * filename: Name of the XML-file to read data
+		 * */
 		void getXMLCommands(string filename)
 		{
-			XmlTextReader xRead;
+			XmlTextReader xRead = new XmlTextReader(filename);
 			XmlDocument doc;
 
-			xRead = new XmlTextReader(filename);
 			doc = new XmlDocument();
-		    doc.Load(xRead);
+			if (new FileInfo(filename).Length != 0)
+			{
+				try
+				{
+			    	doc.Load(xRead);
 
-		    XmlNodeList name = doc.GetElementsByTagName("name"),
-		    	command = doc.GetElementsByTagName("command"),
-				text = doc.GetElementsByTagName("text"),
-		    	system = doc.GetElementsByTagName("system"),
-		    	functions = doc.GetElementsByTagName("functions"),
-		    	changelogVersion = doc.GetElementsByTagName("version"),
-		    	changelogEntry = doc.GetElementsByTagName("entry");
-	   		xRead.WhitespaceHandling = WhitespaceHandling.None;
+				    XmlNodeList name = doc.GetElementsByTagName("name"),
+				    	command = doc.GetElementsByTagName("command"),
+						text = doc.GetElementsByTagName("text"),
+				    	system = doc.GetElementsByTagName("system"),
+				    	functions = doc.GetElementsByTagName("functions"),
+				    	changelogVersion = doc.GetElementsByTagName("version"),
+				    	changelogEntry = doc.GetElementsByTagName("entry");
+			   		xRead.WhitespaceHandling = WhitespaceHandling.None;
 
-	   		insertCommands(command, text, system);
-	   		insertFunctions(functions);
-	   		insertChangelog(changelogVersion, changelogEntry);
-	   		fillTree();
+			   		if (command.Count > 0)
+			   			insertCommands(command, text, system);
+			   		if (functions.Count > 0)
+			   			insertFunctions(functions[0].InnerText.ToString());
+			   		else
+			   			data.Functions = "";
+			   		if (functions.Count > 0)
+			   			insertChangelog(changelogVersion, changelogEntry);
+			   		else
+			   			txtChangelog.Text = data.initiateChangelog();
 
-	   		//Ask for username, if not present in XML-file
-	   		if (name.Count > 0)
-	   		{
-		   		if (name[0].InnerText.ToString().Equals(""))
-		   		{
-		   			UserName un = new UserName();
-		   			un.ShowDialog(this);
-		   			if(!un.getName().Equals(""))
-		   			{
-		   				data.addCommand("sign", "Med vänliga hälsningar{Enter}" + un.getName(), "Variabler");
-			   			data.UserName = un.getName();
-		   			}
-		   		}
-	   		}
+			   		//Ask for username, if not present in XML-file
+			   		if (name.Count > 0)
+			   		{
+				   		if (name[0].InnerText.ToString().Equals(""))
+				   		{
+				   			data.UserName = getUserName();
+				   		}
+				   		else
+				   		{
+				   			data.UserName = name[0].InnerText.ToString();
+				   		}
+			   		}
+			   		fillTree();
 
-	   		xRead.Close();
+			   		xRead.Close();
+				} catch (Exception e)
+				{
+					MessageBox.Show("XML-file is coded wrong.\r\n" + e.ToString());
+				}
+			}
+		}
+
+		string getUserName()
+		{
+   			UserName un = new UserName();
+   			un.ShowDialog(this);
+   			if(!un.getName().Equals(""))
+   			{
+   				if (!data.commandExists("sign"))
+	   				data.addCommand("sign", "With kind regards{Enter}" + un.getName(), "Variables");
+   				else
+   					data.updateCommandItem("sign", "With kind regards{Enter}" + un.getName(), "Variables");
+	   			data.Updated = true;
+   			}
+   			this.Text = this.Text + " - " + un.getName();
+
+		   	return un.getName();
 		}
 
 		/**
-		 * Add all hotstrings as separate row in ListofCommands and variables in ListofVariables
+		 * Add all hotstrings to the data
+		 * 
+		 * command, text, system: NodeLists containing data from XML-file
 		 * */
 		void insertCommands(XmlNodeList command, XmlNodeList text, XmlNodeList system)
 		{
@@ -97,20 +140,24 @@ namespace AHK_updater
 
 		/**
 		 * Write all functions to txtFunctions
+		 * 
+		 * functions: string with text for functions
 		 * */
-		void insertFunctions(XmlNodeList functions)
+		void insertFunctions(string functions)
 		{
-	   		if (functions.Count > 0)
+	   		if (functions.Length > 0)
 	   		{
-	   			txtFunctions.TextChanged -= TxtFunctions_TextChanged;
-	   			txtFunctions.Text = functions[0].InnerText.ToString();
-	   			txtFunctions.TextChanged += TxtFunctions_TextChanged;
-	   			data.Functions = functions[0].InnerText.ToString();
+	   			txtFunctions.TextChanged -= txtFunctions_TextChanged;
+	   			txtFunctions.Text = functions;
+	   			txtFunctions.TextChanged += txtFunctions_TextChanged;
+	   			data.Functions = functions;
 	   		}
 		}
 
 		/**
 		 * Get previous changelogentries
+		 * 
+		 * changlogVersion, changelogEntry: NodeLists with versionnumber and changelogentries
 		 * */
 		void insertChangelog(XmlNodeList changelogVersion, XmlNodeList changelogEntry)
 		{
@@ -124,13 +171,18 @@ namespace AHK_updater
 	   		txtChangelog.Text = data.initiateChangelog();
 		}
 
+		/**
+		 * Closes the application
+		 * */
 		void shutdown()
 		{
+			data.Updated = false;
 			Application.Exit();
 		}
 
 		/**
-		 * Sets datasource för listbox and rebinds it for list to be updated
+		 * Sets reads all commands in data.commandslist and inserts in tree
+		 * If a system is not present, create a node under root
 		 * */
 		void fillTree()
 		{
@@ -153,7 +205,7 @@ namespace AHK_updater
 		}
 
 		/**
-		 * Collect the hotstrings and write to AutoHotKey script-file
+		 * Collect the hotstrings and write to AutoHotKey scriptfile
 		 * */
 		void saveToScriptFile()
 		{
@@ -164,14 +216,13 @@ namespace AHK_updater
             	writer.Write(fetchCommandsForScript());
             	writer.Flush();
             	writer.WriteLine("GuiClose:\r\nExitApp");
-            	writer.Flush();
             	writer.Close();
 
-            	MessageBox.Show("Skriptfil sparad");
+            	MessageBox.Show("Scriptfile saved");
 				data.Updated = false;
             } catch(Exception exc)
             {
-            	MessageBox.Show("Något gick fel när skriptfilen skulle sparas\nFel:\n" + exc.Message.ToString(), "Skrivfel", MessageBoxButtons.OK);
+            	MessageBox.Show("Something went wrong while saving scriptfile\r\nError:\r\n" + exc.Message.ToString(), "Error while writing", MessageBoxButtons.OK);
             }
 		}
 
@@ -189,24 +240,25 @@ namespace AHK_updater
             	writer.Write(fetchCommandsForXML());
             	writer.Flush();
             	writer.WriteLine(fetchFunctions());
-            	writer.Flush();
             	writer.Write(fetchChangelogXML());
-            	writer.Flush();
             	writer.WriteLine("</ahk>");
-            	writer.Flush();
             	writer.Close();
 
-            	MessageBox.Show("XML-fil sparad");
+            	MessageBox.Show("XML-file saved");
 				data.Updated = false;
             } catch(Exception exc)
             {
-            	MessageBox.Show("Något gick fel när XML-filen skulle sparas\nFel:\n" + exc.Message.ToString(), "Skrivfel", MessageBoxButtons.OK);
+            	MessageBox.Show("Something went wrong while writing XML-file\r\nError:\r\n" + exc.Message.ToString(), "Error while writing", MessageBoxButtons.OK);
             }
 		}
 
+		/**
+		 * Write changelog
+		 * */
 		void saveToChangelog()
 		{
 			StreamWriter writer = new StreamWriter((test?changelogfileTest:changelogfile), false, System.Text.UnicodeEncoding.Unicode);
+
 			try
 			{
 				writer.Write(data.getChangelogText());
@@ -214,51 +266,87 @@ namespace AHK_updater
 				writer.Close();
 			} catch (Exception e)
 			{
-				MessageBox.Show("Något gick fel när Changelog-filen skulle sparas\nFel:\n" + e.Message.ToString(), "Skrivfel", MessageBoxButtons.OK);
+				MessageBox.Show("Something went wrong while changelog was written\r\nError:\r\n" + e.Message.ToString(), "Error while writing", MessageBoxButtons.OK);
 			}
 		}
 
 		/**
-		 * Collect all hotstrings and return as string
+		 * Collect all hotstrings
+		 * 
+		 * Return as string
 		 * */
 		string fetchCommandsForXML()
 		{
-			string i="";
+			string xmlFile = "";
+
 			foreach (AHKCommand item in data.commandslist)
 			{
-				i = i + item.getXmlString() + "\r\n";
+				if (item.System.Equals("Variables"))
+				{
+					xmlFile = item.getXmlString() + "\r\n" + xmlFile;
+				}
+				else
+				{
+					xmlFile = xmlFile + item.getXmlString() + "\r\n";
+				}
 			}
 
-			return i;
+			return xmlFile;
 		}
 
 		/**
-		 * Collect all hotstrings and return as XML-formated string
+		 * Collect all hotstrings
+		 * 
+		 * Return as XML-formated string
 		 * */
 		string fetchCommandsForScript()
 		{
-			string i="";
+			string scriptFile = "";
 			foreach (AHKCommand item in data.commandslist)
 			{
-				i = i + item.getScriptString()+"\r\n";
+				if(item.System.Equals("Variables"))
+				{
+					scriptFile = item.getScriptString() + "\r\n" + scriptFile;
+				}
+				else
+				{
+					scriptFile = scriptFile + item.getScriptString() + "\r\n";
+				}
 			}
 
-			return i + txtFunctions.Text.Trim() + "\r\n";
+			return scriptFile + txtFunctions.Text.Trim() + "\r\n";
 		}
 
 		/**
-		 * Return all functions as XML-formated string
+		 * Insert functiontext as XML-code
+		 * 
+		 * Return as string
 		 * */
 		string fetchFunctions()
 		{
-			return "<ahkcommand><functions>" + txtFunctions.Text + "</functions></ahkcommand>";
+			if (txtFunctions.Text != "")
+				return "<ahkcommand><functions>" + txtFunctions.Text + "</functions></ahkcommand>";
+			else
+				return "";
 		}
 
+		/**
+		 * Get all changelogentries as XML
+		 * 
+		 * Return as string
+		 * */
 		string fetchChangelogXML()
 		{
-			return data.getChangelogXML();
+			if (!data.getChangelogXML().Equals(""))
+				return data.getChangelogXML();
+			else
+				return "";
 		}
 
+		/**
+		 * Called when menuiten SaveToFile is clicked
+		 * Calls functions for saving to XML- and scriptfile
+		 * */
 		void SaveToFile_Click(object sender, EventArgs e)
 		{
 			saveToXMLFile();
@@ -267,13 +355,14 @@ namespace AHK_updater
 
 		/**
 		 * Open form for defining name of hotstring
-		 * Change tabControl selected tab if new function is to be created
+		 * Change selected tab in tabControl if new function is to be created
 		 * */
 		void NewHotstring_Click(object sender, EventArgs e)
 		{
 			NewCommand f = new NewCommand(ref data);
+			DialogResult a = f.ShowDialog(this);
 
-			if (f.ShowDialog(this) == DialogResult.OK)
+			if (a == DialogResult.OK)
 			{
 				string commandName = f.getItem(), commandSystem = f.getSystem();
 				int commandType = f.getCommandType();
@@ -281,7 +370,7 @@ namespace AHK_updater
 
 				if (commandType == 2)
 				{
-					tabControl1.SelectedIndex = 1;
+					tabControl.SelectedIndex = 1;
 					txtFunctions.Focus();
 					txtFunctions.Text = txtFunctions.Text + "\r\n" + commandName + "\r\n{\r\n\r\n}";
 				}
@@ -290,14 +379,13 @@ namespace AHK_updater
 					currentItem = new AHKCommand(commandName, "", commandSystem);
 					if (commandType == 0)
 					{
-						data.addCommand(commandName, "","");
+						data.addCommand(commandName, "", commandSystem);
 						txtHSText.Text = "SendInput,\r\n(\r\n\r\n)\r\nReturn";
 					}
 					else
 					{
-						//data.updateVariables(commandName, "", "Variabler");
-						commandSystem = "Variabler";
-						txtHSText.Text = "= ";
+						commandSystem = "Variables";
+						txtHSText.Text = "";
 					}
 
 					if (!treeHotstrings.Nodes.ContainsKey(commandSystem))
@@ -310,28 +398,39 @@ namespace AHK_updater
 					newNode.Tag = "";
 					treeHotstrings.Nodes[commandSystem].Nodes.Add(newNode);
 				}
-				tabControl1.SelectedIndex = 0;
+				tabControl.SelectedIndex = 0;
 				treeHotstrings.SelectedNode = newNode;
 				data.Updated = true;
 				treeHotstrings.Sort();
 			}
 		}
 
-		void TxtHSText_TextChanged(object sender, EventArgs e)
+		/**
+		 * Called when text for hotstring is edited
+		 * If currentItem is null an item have been removed and textbox is empty
+		 * Otherwise checks against text in currentItem
+		 * */
+		void txtHSText_TextChanged(object sender, EventArgs e)
 		{
-			if (txtHSText.Text != currentItem.Text)
+			if (currentItem != null)
 			{
-				btnSaveHotstringText.Enabled = true;
-				btnSaveHotstringText.Visible = true;
-			} else {
-				btnSaveHotstringText.Enabled = false;
-				btnSaveHotstringText.Visible = false;
+				if (txtHSText.Text != currentItem.Text)
+				{
+					btnSaveHotstring.Enabled = true;
+					btnSaveHotstring.Visible = true;
+				} else {
+					btnSaveHotstring.Enabled = false;
+					btnSaveHotstring.Visible = false;
+				}
 			}
 		}
 
-		void TxtFunctions_TextChanged(object sender, EventArgs e)
+		/**
+		 * Called when textbox for funtions is edited
+		 * Checks if data.Funtions is same as textbox
+		 * */
+		void txtFunctions_TextChanged(object sender, EventArgs e)
 		{
-			
 			if (!data.Functions.Equals(txtFunctions.Text.ToString()))
 			{
 				btnSaveFunctions.Enabled = true;
@@ -343,46 +442,51 @@ namespace AHK_updater
 		}
 
 		/**
-		 * When hotstring in lstHotstring is changed, load the corresponding hotstring text in txtboxText
+		 * Text in textbox for system have been changed,
+		 * enable button for saving
 		 * */
-		void treeHotstrings_IndexChange(object sender, TreeNodeMouseClickEventArgs e)
+		void txtSystem_TextChanged(object sender, EventArgs e)
 		{
-			if (e.Node.Level != 0)
+			if (!currentItem.System.Equals(txtSystem.Text.ToString()))
 			{
-				for (int i = 0; i < data.commandslist.Count; i++)
-				{
-					if (data.commandslist[i].Command.Equals(e.Node.Text))
-					{
-						currentItem = new AHKCommand(data.commandslist[i]);
-						txtHSText.Text = data.commandslist[i].Text;
-						break;
-					}
-				}
-				this.ActiveControl = txtHSText;
-				menuRemoveCommand.Visible = true;
+				btnSaveHotstring.Enabled = true;
+				btnSaveHotstring.Visible = true;
 			}
 			else
 			{
-				menuRemoveCommand.Visible = false;
+				btnSaveHotstring.Enabled = false;
+				btnSaveHotstring.Visible = false;
 			}
 		}
 
 		/**
-		 * Update listitem
+		 * Update item with the new text in textbox
+		 * If the system of the command have changed, refill the tree
 		 * */
-		void BtnSaveHotstringText_Click(object sender, EventArgs e)
+		void btnSaveHotstring_Click(object sender, EventArgs e)
 		{
-			data.updateCommandItem(currentItem.Command, txtHSText.Text);
 			ChangeLogText temp = new ChangeLogText(currentItem.Command);
 			temp.ShowDialog(this);
+			bool refillTree = !currentItem.System.Equals(txtSystem.Text);
+
+			data.updateCommandItem(currentItem.Command, txtHSText.Text, txtSystem.Text);
 			data.updateCurrentChangelogItem(temp.getChangeInfo());
 			txtChangelog.Text = data.CurrentChangelogItem;
-			
-			btnSaveHotstringText.Enabled = false;
-			btnSaveHotstringText.Visible = false;
+			data.Updated = true;
+
+			if (refillTree)
+			{
+				treeHotstrings.Nodes.Clear();
+				fillTree();
+			}
+			btnSaveHotstring.Enabled = false;
+			btnSaveHotstring.Visible = false;
 			this.ActiveControl = txtHSText;
 		}
 
+		/**
+		 * Update string for functions
+		 * */
 		void BtnSaveFunctions_Click(object sender, EventArgs e)
 		{
 			data.Functions = txtFunctions.Text;
@@ -397,7 +501,10 @@ namespace AHK_updater
 			this.ActiveControl = txtFunctions;
 		}
 
-		void BtnSaveChangelogClick(object sender, EventArgs e)
+		/**
+		 * Update current entry of changelog
+		 * */
+		void BtnSaveChangelog_Click(object sender, EventArgs e)
 		{
 			data.updateCurrentChangelogItem(txtFunctions.Text);
 
@@ -407,18 +514,25 @@ namespace AHK_updater
 			this.ActiveControl = txtChangelog;
 		}
 
+		/**
+		 * Called when form is closing
+		 * If anything have been updated, ask user if changes are to be saved
+		 * Otherwise, close application
+		 * */
 		void MainForm_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			if (data.Updated)
 			{
-				DialogResult answer = MessageBox.Show("Ändringar har gjorts, men har inte sparats.\r\nVill du spara?", "", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
+				DialogResult answer = MessageBox.Show("There are unsaved changes. Do you want to save them?", "", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
 
 				if (answer == DialogResult.Yes)
 				{
 					saveToScriptFile();
 					saveToXMLFile();
 					shutdown();
-				} else if (answer == DialogResult.No){
+				}
+				else if (answer == DialogResult.No)
+				{
 					shutdown();
 				}
 				else
@@ -431,21 +545,55 @@ namespace AHK_updater
 				shutdown();
 			}
 		}
-		
+
+		/**
+		 * Close form
+		 * */
 		void menuClose_Click(object sender, EventArgs e)
 		{
 			this.Close();
 		}
-		
+
+		/**
+		 * Called when user clicks menuitem to remove command
+		 * Ask user to remove item
+		 * Remove item from tree and commandslist, if there are no other items with same system, remove system from root
+		 * */
 		void menuRemoveCommand_Click(object sender, EventArgs e)
 		{
-			DialogResult answer = MessageBox.Show("Ta bort kommando " + currentItem.Command + "?", "Borttag", MessageBoxButtons.YesNo);
+			DialogResult answer = MessageBox.Show("Do you want to remove " + currentItem.Command + "?", "Remove", MessageBoxButtons.YesNo);
+
 			if (answer == DialogResult.Yes)
 			{
-				treeHotstrings.Nodes.Remove(treeHotstrings.SelectedNode);//[currentItem.System].Nodes[currentItem.Command].Remove();
+				data.deleteItem(currentItem.Command);
+				treeHotstrings.Nodes.Remove(treeHotstrings.SelectedNode);
 				if (treeHotstrings.Nodes[currentItem.System].Nodes.Count == 0)
-					treeHotstrings.Nodes.RemoveByKey(currentItem.Command);
-				data.commandslist.Remove(new AHKCommand(currentItem.Command, currentItem.Text, currentItem.System));
+				{
+					treeHotstrings.Nodes.RemoveByKey(currentItem.System);
+				}
+
+				data.Updated = true;
+			}
+		}
+
+		/**
+		 * A node in treeHotstrings have been selected
+		 * Load the corresponting hotstring
+		 * */
+		void treeHotstrings_AfterSelect(object sender, TreeViewEventArgs e)
+		{
+			if (e.Node.Level != 0)
+			{
+				currentItem = data.commandslist.Find(x => x.Command.Equals(e.Node.Text));
+				txtHSText.Text = currentItem.Text;
+				txtSystem.Text = currentItem.System;
+
+				this.ActiveControl = txtHSText;
+				menuRemoveCommand.Visible = true;
+			}
+			else
+			{
+				menuRemoveCommand.Visible = false;
 			}
 		}
 	}

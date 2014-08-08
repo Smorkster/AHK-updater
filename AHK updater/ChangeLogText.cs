@@ -1,33 +1,56 @@
-﻿using System;
+﻿/**
+ * With this form the user can specify the changes that have been made
+ * If it is a new hotstring, a hotstring that have been modified or any changes to the functions
+ * */
+using System;
 using System.Windows.Forms;
 
 namespace AHK_updater
 {
 	public partial class ChangeLogText : Form
 	{
+		/**
+		 * Set textbox to name of new or changed command 
+		 * */
 		public ChangeLogText(string command)
 		{
 			InitializeComponent();
-			chlSave.DialogResult = DialogResult.OK;
 			txtChange.Text = command;
 			this.ActiveControl = txtChange;
 		}
+
+		/**
+		 * Initiate with empty textbox
+		 * Called when textbox for functions is to be saved
+		 * */
 		public ChangeLogText()
 		{
 			InitializeComponent();
-			chlSave.DialogResult = DialogResult.OK;
+			btnSave.DialogResult = DialogResult.OK;
+			this.ActiveControl = txtChange;
 		}
 
-		void ChlCancelClick(object sender, EventArgs e)
+		/**
+		 * Set DialogResult and close form
+		 * */
+		void btnCancel_Click(object sender, EventArgs e)
 		{
+			btnSave.DialogResult = DialogResult.OK;
 			this.Close();
 		}
 
-		void ChlSaveClick(object sender, EventArgs e)
+		/**
+		 * Set DialogResult and close form
+		 * */
+		void btnSave_Click(object sender, EventArgs e)
 		{
+			btnSave.DialogResult = DialogResult.OK;
 			this.Close();
 		}
 
+		/**
+		 * Return specified changelog entry as string
+		 * */
 		public string getChangeInfo()
 		{
 			return txtChange.Text;

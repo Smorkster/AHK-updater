@@ -9,12 +9,13 @@ namespace AHK_updater
 		public NewCommand(ref AllData l)
 		{
 			InitializeComponent();
-			btnSave.DialogResult = DialogResult.OK;
-			btnClose.DialogResult = DialogResult.Cancel;
 			this.ActiveControl = txtName;
 			data = l;
 		}
 
+		/**
+		 * Return name of command specified by user
+		 * */
 		public string getItem()
 		{
 			return txtName.Text; 
@@ -28,25 +29,28 @@ namespace AHK_updater
 			return cbType.SelectedIndex;
 		}
 
+		/**
+		 * Return system specified by user
+		 * */
 		public string getSystem()
 		{
 			return txtSystem.Text;
 		}
 
-		void BtnCloseClick(object sender, EventArgs e)
+		/**
+		 * Set DialogResult and close form
+		 * */
+		void BtnSave_Click(object sender, EventArgs e)
 		{
-			this.Close();
-		}
-
-		void BtnSaveClick(object sender, EventArgs e)
-		{
+			this.DialogResult = DialogResult.OK;
 			this.Close();
 		}
 
 		/**
-		 * If Function is selected, disable textbox for naming it
+		 * Disable savebutton if no index is selected
+		 * Disable textbox for system if type function is selected
 		 * */
-		void cbTypeSelectedIndexChanged(object sender, EventArgs e)
+		void cbType_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (cbType.SelectedIndex.ToString().Equals("-1"))
 				btnSave.Enabled = false;
@@ -62,6 +66,11 @@ namespace AHK_updater
 			}
 		}
 
+		/**
+		 * Called when form is closing
+		 * If button for saving is pressed, check if textbox for name or system is empty, notify user and focus textbox
+		 * Checks if command exists, notify user
+		 * */
 		void NewCommand_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			int i = cbType.SelectedIndex;
@@ -73,10 +82,10 @@ namespace AHK_updater
 				{
 					if (txtName.Text.Equals("") || txtSystem.Text.Equals(""))
 					{
-						answer = MessageBox.Show("Textrutan är tom.","",MessageBoxButtons.OKCancel);
+						answer = MessageBox.Show("Textbox for name is empty.", "", MessageBoxButtons.OKCancel);
 						e.Cancel = true;
 					} else if (data.commandExists(txtName.Text)){
-						MessageBox.Show("Kommando finns redan.\r\nVälj nytt namn.");
+						MessageBox.Show("Command already exists.\r\nChoose a new name.");
 						this.ActiveControl = txtName;
 						e.Cancel = true;
 					}
@@ -85,15 +94,24 @@ namespace AHK_updater
 				{
 					if (txtName.Text.Equals(""))
 					{
-						answer = MessageBox.Show("Textrutan är tom.","",MessageBoxButtons.OKCancel);
+						answer = MessageBox.Show("Textbox for name is empty.", "", MessageBoxButtons.OKCancel);
 						e.Cancel = true;
 					} else if (data.commandExists(txtName.Text)){
-						MessageBox.Show("Kommando finns redan.\r\nVälj nytt namn.");
+						MessageBox.Show("Command already exists.\r\nChoose a new name.");
 						this.ActiveControl = txtName;
 						e.Cancel = true;
 					}
 				}
 			}
+		}
+		
+		/**
+		 * Set DialogResult and close form
+		 * */
+		void BtnCancel_Click(object sender, EventArgs e)
+		{
+			this.DialogResult = DialogResult.Cancel;
+			this.Close();
 		}
 	}
 }

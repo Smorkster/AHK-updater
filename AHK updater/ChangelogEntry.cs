@@ -1,4 +1,8 @@
-﻿namespace AHK_updater
+﻿/**
+ * Contains one entry of the changelog
+ * */
+
+namespace AHK_updater
 {
 	public class ChangelogEntry
 	{
@@ -13,7 +17,10 @@
 
 		public string Version {get{return version;}}
 		public string Entry {get{return entry;} set{entry = value;}}
-		
+
+		/**
+		 * Return the entry as an XML-coded string
+		 * */
 		public string getXMLEntry()
 		{
 			return "<ahkcommand><version>" + version + "</version><entry>" + entry + "</entry></ahkcommand>\r\n";

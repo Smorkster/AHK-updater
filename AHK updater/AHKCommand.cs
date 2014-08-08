@@ -1,4 +1,9 @@
-﻿namespace AHK_updater
+﻿/**
+ * Contains one AutoHotKey-command with name, text and system
+ * Also contains functions for returning command formated for script- and XML-file
+ * */
+
+namespace AHK_updater
 {
 	public class AHKCommand
 	{
@@ -21,7 +26,7 @@
 
 		public string Command {get{return command;}}
 		public string Text {get{return text;} set{text = value;}}
-		public string System {get{return system;}}
+		public string System {get{return system;} set{system = value;}}
 
 		/**
 		 * Return property as XML-node
@@ -38,7 +43,7 @@
 		{
 			string v = "";
 
-			if (system.Equals("Variable"))
+			if (system.Equals("Variables"))
 				v = command + " = " + text;
 			else
 				v = "::" + this.command + "::\r\n" + this.text.Trim();

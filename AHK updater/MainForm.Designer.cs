@@ -17,10 +17,11 @@
 		private void InitializeComponent()
 		{
 			this.txtHSText = new System.Windows.Forms.TextBox();
-			this.tabControl1 = new System.Windows.Forms.TabControl();
+			this.tabControl = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
+			this.txtSystem = new System.Windows.Forms.TextBox();
 			this.treeHotstrings = new System.Windows.Forms.TreeView();
-			this.btnSaveHotstringText = new System.Windows.Forms.Button();
+			this.btnSaveHotstring = new System.Windows.Forms.Button();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
 			this.btnSaveFunctions = new System.Windows.Forms.Button();
 			this.txtFunctions = new System.Windows.Forms.TextBox();
@@ -32,7 +33,7 @@
 			this.menuSaveToFile = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuRemoveCommand = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuClose = new System.Windows.Forms.ToolStripMenuItem();
-			this.tabControl1.SuspendLayout();
+			this.tabControl.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
 			this.tabPage3.SuspendLayout();
@@ -45,29 +46,30 @@
 			this.txtHSText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
 									| System.Windows.Forms.AnchorStyles.Left) 
 									| System.Windows.Forms.AnchorStyles.Right)));
-			this.txtHSText.Location = new System.Drawing.Point(185, 6);
+			this.txtHSText.Location = new System.Drawing.Point(185, 32);
 			this.txtHSText.Multiline = true;
 			this.txtHSText.Name = "txtHSText";
-			this.txtHSText.Size = new System.Drawing.Size(488, 355);
+			this.txtHSText.Size = new System.Drawing.Size(488, 329);
 			this.txtHSText.TabIndex = 0;
 			this.txtHSText.TabStop = false;
-			this.txtHSText.TextChanged += new System.EventHandler(this.TxtHSText_TextChanged);
+			this.txtHSText.TextChanged += new System.EventHandler(this.txtHSText_TextChanged);
 			// 
-			// tabControl1
+			// tabControl
 			// 
-			this.tabControl1.Controls.Add(this.tabPage1);
-			this.tabControl1.Controls.Add(this.tabPage2);
-			this.tabControl1.Controls.Add(this.tabPage3);
-			this.tabControl1.Location = new System.Drawing.Point(12, 27);
-			this.tabControl1.Name = "tabControl1";
-			this.tabControl1.SelectedIndex = 0;
-			this.tabControl1.Size = new System.Drawing.Size(690, 393);
-			this.tabControl1.TabIndex = 3;
+			this.tabControl.Controls.Add(this.tabPage1);
+			this.tabControl.Controls.Add(this.tabPage2);
+			this.tabControl.Controls.Add(this.tabPage3);
+			this.tabControl.Location = new System.Drawing.Point(12, 27);
+			this.tabControl.Name = "tabControl";
+			this.tabControl.SelectedIndex = 0;
+			this.tabControl.Size = new System.Drawing.Size(690, 393);
+			this.tabControl.TabIndex = 3;
 			// 
 			// tabPage1
 			// 
+			this.tabPage1.Controls.Add(this.txtSystem);
 			this.tabPage1.Controls.Add(this.treeHotstrings);
-			this.tabPage1.Controls.Add(this.btnSaveHotstringText);
+			this.tabPage1.Controls.Add(this.btnSaveHotstring);
 			this.tabPage1.Controls.Add(this.txtHSText);
 			this.tabPage1.Location = new System.Drawing.Point(4, 22);
 			this.tabPage1.Name = "tabPage1";
@@ -77,6 +79,14 @@
 			this.tabPage1.Text = "Hotstrings";
 			this.tabPage1.UseVisualStyleBackColor = true;
 			// 
+			// txtSystem
+			// 
+			this.txtSystem.Location = new System.Drawing.Point(185, 6);
+			this.txtSystem.Name = "txtSystem";
+			this.txtSystem.Size = new System.Drawing.Size(218, 20);
+			this.txtSystem.TabIndex = 3;
+			this.txtSystem.TextChanged += new System.EventHandler(this.txtSystem_TextChanged);
+			// 
 			// treeHotstrings
 			// 
 			this.treeHotstrings.FullRowSelect = true;
@@ -85,19 +95,19 @@
 			this.treeHotstrings.Name = "treeHotstrings";
 			this.treeHotstrings.Size = new System.Drawing.Size(173, 355);
 			this.treeHotstrings.TabIndex = 2;
-			this.treeHotstrings.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeHotstrings_IndexChange);
+			this.treeHotstrings.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeHotstrings_AfterSelect);
 			// 
-			// btnSaveHotstringText
+			// btnSaveHotstring
 			// 
-			this.btnSaveHotstringText.Enabled = false;
-			this.btnSaveHotstringText.Location = new System.Drawing.Point(632, 6);
-			this.btnSaveHotstringText.Name = "btnSaveHotstringText";
-			this.btnSaveHotstringText.Size = new System.Drawing.Size(41, 23);
-			this.btnSaveHotstringText.TabIndex = 1;
-			this.btnSaveHotstringText.Text = "Save";
-			this.btnSaveHotstringText.UseVisualStyleBackColor = true;
-			this.btnSaveHotstringText.Visible = false;
-			this.btnSaveHotstringText.Click += new System.EventHandler(this.BtnSaveHotstringText_Click);
+			this.btnSaveHotstring.Enabled = false;
+			this.btnSaveHotstring.Location = new System.Drawing.Point(632, 4);
+			this.btnSaveHotstring.Name = "btnSaveHotstring";
+			this.btnSaveHotstring.Size = new System.Drawing.Size(41, 23);
+			this.btnSaveHotstring.TabIndex = 1;
+			this.btnSaveHotstring.Text = "Save";
+			this.btnSaveHotstring.UseVisualStyleBackColor = true;
+			this.btnSaveHotstring.Visible = false;
+			this.btnSaveHotstring.Click += new System.EventHandler(this.btnSaveHotstring_Click);
 			// 
 			// tabPage2
 			// 
@@ -134,7 +144,7 @@
 			this.txtFunctions.Name = "txtFunctions";
 			this.txtFunctions.Size = new System.Drawing.Size(670, 355);
 			this.txtFunctions.TabIndex = 0;
-			this.txtFunctions.TextChanged += new System.EventHandler(this.TxtFunctions_TextChanged);
+			this.txtFunctions.TextChanged += new System.EventHandler(this.txtFunctions_TextChanged);
 			// 
 			// tabPage3
 			// 
@@ -158,7 +168,7 @@
 			this.btnSaveChangelog.Text = "Save";
 			this.btnSaveChangelog.UseVisualStyleBackColor = true;
 			this.btnSaveChangelog.Visible = false;
-			this.btnSaveChangelog.Click += new System.EventHandler(this.BtnSaveChangelogClick);
+			this.btnSaveChangelog.Click += new System.EventHandler(this.BtnSaveChangelog_Click);
 			// 
 			// txtChangelog
 			// 
@@ -220,7 +230,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(714, 451);
 			this.ControlBox = false;
-			this.Controls.Add(this.tabControl1);
+			this.Controls.Add(this.tabControl);
 			this.Controls.Add(this.menuStrip1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.MainMenuStrip = this.menuStrip1;
@@ -232,7 +242,7 @@
 			this.Text = "AHK updater";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
 			this.Load += new System.EventHandler(this.MainFormLoad);
-			this.tabControl1.ResumeLayout(false);
+			this.tabControl.ResumeLayout(false);
 			this.tabPage1.ResumeLayout(false);
 			this.tabPage1.PerformLayout();
 			this.tabPage2.ResumeLayout(false);
@@ -244,12 +254,13 @@
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.TextBox txtSystem;
 		private System.Windows.Forms.ToolStripMenuItem menuRemoveCommand;
 		private System.Windows.Forms.TreeView treeHotstrings;
 		private System.Windows.Forms.Button btnSaveChangelog;
 		private System.Windows.Forms.TextBox txtChangelog;
 		private System.Windows.Forms.Button btnSaveFunctions;
-		private System.Windows.Forms.Button btnSaveHotstringText;
+		private System.Windows.Forms.Button btnSaveHotstring;
 		private System.Windows.Forms.TabPage tabPage3;
 		private System.Windows.Forms.ToolStripMenuItem menuClose;
 		private System.Windows.Forms.ToolStripMenuItem menuSaveToFile;
@@ -258,7 +269,7 @@
 		private System.Windows.Forms.TextBox txtFunctions;
 		private System.Windows.Forms.TabPage tabPage2;
 		private System.Windows.Forms.TabPage tabPage1;
-		private System.Windows.Forms.TabControl tabControl1;
+		private System.Windows.Forms.TabControl tabControl;
 		private System.Windows.Forms.TextBox txtHSText;
 	}
 }
