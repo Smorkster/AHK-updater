@@ -82,6 +82,10 @@
     <Compile Include="NewCommand.Designer.cs">
       <DependentUpon>NewCommand.cs</DependentUpon>
     </Compile>
+    <Compile Include="NewName.cs" />
+    <Compile Include="NewName.Designer.cs">
+      <DependentUpon>NewName.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserName.cs" />
@@ -98,6 +102,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="NewCommand.resx">
       <DependentUpon>NewCommand.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewName.resx">
+      <DependentUpon>NewName.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserName.resx">
       <DependentUpon>UserName.cs</DependentUpon>

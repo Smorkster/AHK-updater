@@ -32,33 +32,6 @@ namespace AHK_updater
 		public string CurrentChangelogItem {get{return currentChangelogEntry[0].Entry;}}
 
 		/**
-		 * Create a changelog entry for changes made this time
-		 * Entries are named for the current date
-		 * 
-		 * Return entry as string
-		 * */
-		public string initiateChangelog()
-		{
-			DateTime changelogToday = DateTime.Today;
-
-			if (changelog.Count > 0)
-			{
-				if (changelog[0].Version.Equals(changelogToday.ToString("yyyy-MM-dd")))
-				{
-					currentChangelogEntry.Add(new ChangelogEntry(changelog[0].Version, changelog[0].Entry));
-				}
-				else
-				{
-					currentChangelogEntry.Add(new ChangelogEntry(changelogToday.ToString("yyyy-MM-dd"),""));
-				}
-			}
-			else
-				currentChangelogEntry.Add(new ChangelogEntry(changelogToday.ToString("yyyy-MM-dd"),""));
-
-			return currentChangelogEntry[0].Entry;
-		}
-
-		/**
 		 * Checks if a new command already exists
 		 * 
 		 * commandName: Name of command to be checked if present
@@ -72,32 +45,6 @@ namespace AHK_updater
 					exists = true;
 			}
 			return exists;
-		}
-
-		/**
-		 * Adds old changelogentries to changelog
-		 * 
-		 * version: Versionnumber of entry
-		 * entry: Text for changelogentry
-		 * */
-		public void updateChangelog(string version, string entry)
-		{
-			changelog.Add(new ChangelogEntry(version, entry));
-		}
-
-		/**
-		 * Save latest changelogentry to changelog
-		 * Checks if entry is empty, otherwise add as new row/-s
-		 * 
-		 * entry: Text for changelogentry
-		 * */
-		public void updateCurrentChangelogItem(string entry)
-		{
-			string t =currentChangelogEntry[0].Entry; 
-			if (t.Equals(""))
-				currentChangelogEntry[0].Entry = entry;
-			else
-				currentChangelogEntry[0].Entry = currentChangelogEntry[0].Entry + "\r\n" + entry;
 		}
 
 		/**
@@ -120,14 +67,34 @@ namespace AHK_updater
 		 * */
 		public void updateCommandItem(string command, string text, string system)
 		{
-			for (int i = 0; i < commandslist.Count; i++)
-			{
-				if(commandslist[i].Command.Equals(command))
-				{
-					commandslist[i].Text = text;
-					commandslist[i].System = system;
-				}
-			}
+			int commandIndex = commandslist.FindIndex(x => x.Command.Equals(command));
+
+			commandslist[commandIndex].Text = text;
+			commandslist[commandIndex].System = system;
+		}
+
+		/**
+		 * Deletes command from commandslist
+		 * 
+		 * command: Name of command to be deleted
+		 * */
+		public void deleteItem(string command)
+		{
+			AHKCommand item = commandslist.Single(r => r.Command.Equals(command));
+			commandslist.Remove(item);
+		}
+
+		/**
+		 * Sets new name for command
+		 * 
+		 * oldName: Name of command to change
+		 * newName: New of command
+		 * */
+		public void setNewName(string oldName, string newName)
+		{
+			int itemIndex = commandslist.FindIndex(x => x.Command.Equals(oldName));
+			
+			commandslist[itemIndex].Command = newName;
 		}
 
 		/**
@@ -171,14 +138,52 @@ namespace AHK_updater
 		}
 
 		/**
-		 * Deletes command from commandslist
+		 * Adds old changelogentries to changelog
 		 * 
-		 * command: Name of command to be deleted
+		 * version: Versionnumber of entry
+		 * entry: Text for changelogentry
 		 * */
-		public void deleteItem(string command)
+		public void updateChangelog(string version, string entry)
 		{
-			AHKCommand item = commandslist.Single(r => r.Command.Equals(command));
-			commandslist.Remove(item);
+			changelog.Add(new ChangelogEntry(version, entry));
+		}
+
+		/**
+		 * Save latest changelogentry to changelog
+		 * Checks if entry is empty, otherwise add as new row/-s
+		 * 
+		 * entry: Text for changelogentry
+		 * */
+		public void updateCurrentChangelogItem(string entry, bool save)
+		{
+			if (currentChangelogEntry[0].Entry.Equals(""))
+				currentChangelogEntry[0].Entry = entry;
+			else
+				if (save)
+					currentChangelogEntry[0].Entry = entry;
+				else
+					currentChangelogEntry[0].Entry = currentChangelogEntry[0].Entry + "\r\n" + entry;
+		}
+
+		/**
+		 * Create a changelog entry for changes made this time
+		 * Entries are named for the current date
+		 * 
+		 * Return entry as string
+		 * */
+		public string initiateChangelog()
+		{
+			DateTime changelogToday = DateTime.Today;
+
+			if (changelog[0].Version.Equals(changelogToday.ToString("yyyy-MM-dd")))
+			{
+				currentChangelogEntry.Add(new ChangelogEntry(changelog[0].Version, changelog[0].Entry));
+			}
+			else
+			{
+				currentChangelogEntry.Add(new ChangelogEntry(changelogToday.ToString("yyyy-MM-dd"),""));
+			}
+			return currentChangelogEntry[0].Entry;
 		}
 	}
 }

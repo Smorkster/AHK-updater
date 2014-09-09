@@ -9,17 +9,28 @@ Replaced ListView for commands with TreeView
 Implemented a changelog for changes in commands
 
 Version 2.1
-*********
+***********
 Added ability to remove command
 	If there is no other command with same system, the system is also removed.
 Added else-clause if variable sign exists
 	Now updates sign text
 Removed unnecessary StreamWriter flush
 Now adds variables to top of script- and XML-file
-Now changes to other TreeView-item and loads marked command if a command is removed
+Now changes to other TreeView-item and loads command if a command is removed
 Checks if XML-file is empty
 Changed the way a command have been selected in TreeView
 	Changed algorithm for selecting the item
 Added ability to change system of command
 Added comments for all functions
 Corrected removal of empty parent node function
+
+Version 2.2
+***********
+Now correctly shows button to save changelog
+No longer adds all changelog to current changelog entry when saving
+Change font of all textboxes and treeview to Lucinda Concole
+Added scrollbars för textboxes with multiline
+Added ability to change name of command
+Changed function to update command
+Now correctly shows the selected node in treeview after command is saved
+Now correctly cancels saving command when "Cancel" is pressed in ChangeLogText-form

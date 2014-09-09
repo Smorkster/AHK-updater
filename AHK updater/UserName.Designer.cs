@@ -29,7 +29,7 @@
 			// 
 			// button1
 			// 
-			this.button1.Location = new System.Drawing.Point(328, 28);
+			this.button1.Location = new System.Drawing.Point(326, 37);
 			this.button1.Name = "button1";
 			this.button1.Size = new System.Drawing.Size(75, 23);
 			this.button1.TabIndex = 0;
@@ -37,25 +37,25 @@
 			this.button1.UseVisualStyleBackColor = true;
 			this.button1.Click += new System.EventHandler(this.Button1Click);
 			// 
-			// textBox1
+			// txtUserName
 			// 
-			this.txtUserName.Location = new System.Drawing.Point(12, 31);
-			this.txtUserName.Name = "textBox1";
+			this.txtUserName.Location = new System.Drawing.Point(10, 40);
+			this.txtUserName.Name = "txtUserName";
 			this.txtUserName.Size = new System.Drawing.Size(310, 20);
 			this.txtUserName.TabIndex = 1;
 			// 
-			// label1
+			// lblUserNameInfo
 			// 
 			this.lblUserNameInfo.Location = new System.Drawing.Point(12, 5);
-			this.lblUserNameInfo.Name = "label1";
-			this.lblUserNameInfo.Size = new System.Drawing.Size(389, 23);
+			this.lblUserNameInfo.Name = "lblUserNameInfo";
+			this.lblUserNameInfo.Size = new System.Drawing.Size(389, 32);
 			this.lblUserNameInfo.TabIndex = 2;
 			// 
 			// UserName
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(413, 63);
+			this.ClientSize = new System.Drawing.Size(413, 72);
 			this.Controls.Add(this.lblUserNameInfo);
 			this.Controls.Add(this.txtUserName);
 			this.Controls.Add(this.button1);

@@ -24,7 +24,7 @@ namespace AHK_updater
 			this.system = c.System;
 		}
 
-		public string Command {get{return command;}}
+		public string Command {get{return command;} set{command = value;}}
 		public string Text {get{return text;} set{text = value;}}
 		public string System {get{return system;} set{system = value;}}
 

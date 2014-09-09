@@ -11,7 +11,7 @@ namespace AHK_updater
 		public UserName()
 		{
 			InitializeComponent();
-			lblUserNameInfo.Text = "No local file was found, will therefore have to be created. Choose a name to used in hotstrings:";
+			lblUserNameInfo.Text = "No local file was found, will therefore have to be created. Choose a name to be used in hotstrings:";
 			this.ActiveControl = txtUserName;
 		}
 

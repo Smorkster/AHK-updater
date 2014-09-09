@@ -51,6 +51,7 @@
 			this.txtChange.Name = "txtChange";
 			this.txtChange.Size = new System.Drawing.Size(504, 20);
 			this.txtChange.TabIndex = 2;
+			this.txtChange.Enter += new System.EventHandler(this.txtChange_Enter);
 			// 
 			// label1
 			// 
@@ -58,7 +59,7 @@
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(228, 23);
 			this.label1.TabIndex = 3;
-			this.label1.Text = "Vilken typ av ändring har du gjort?";
+			this.label1.Text = "What kind of change have you done?";
 			// 
 			// ChangeLogText
 			// 
@@ -70,7 +71,7 @@
 			this.Controls.Add(this.btnCancel);
 			this.Controls.Add(this.btnSave);
 			this.Name = "ChangeLogText";
-			this.Text = "Ändring till changelog";
+			this.Text = "Change to changelog";
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}

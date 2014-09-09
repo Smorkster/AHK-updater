@@ -17,6 +17,7 @@ namespace AHK_updater
 			InitializeComponent();
 			txtChange.Text = command;
 			this.ActiveControl = txtChange;
+			this.DialogResult = DialogResult.Cancel;
 		}
 
 		/**
@@ -35,7 +36,7 @@ namespace AHK_updater
 		 * */
 		void btnCancel_Click(object sender, EventArgs e)
 		{
-			btnSave.DialogResult = DialogResult.OK;
+			this.DialogResult = DialogResult.OK;
 			this.Close();
 		}
 
@@ -44,7 +45,7 @@ namespace AHK_updater
 		 * */
 		void btnSave_Click(object sender, EventArgs e)
 		{
-			btnSave.DialogResult = DialogResult.OK;
+			this.DialogResult = DialogResult.OK;
 			this.Close();
 		}
 
@@ -54,6 +55,11 @@ namespace AHK_updater
 		public string getChangeInfo()
 		{
 			return txtChange.Text;
+		}
+		
+		void txtChange_Enter(object sender, EventArgs e)
+		{
+			txtChange.Select(txtChange.Text.Length, 0);
 		}
 	}
 }
