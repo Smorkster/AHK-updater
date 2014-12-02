@@ -59,7 +59,7 @@
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(228, 23);
 			this.label1.TabIndex = 3;
-			this.label1.Text = "What kind of change have you done?";
+			this.label1.Text = "What type of change have you made?";
 			// 
 			// ChangeLogText
 			// 

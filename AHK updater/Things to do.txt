@@ -1,0 +1,2 @@
+﻿Working with localization
+http://msdn.microsoft.com/en-us/library/y99d1cd3(v=vs.110).aspx

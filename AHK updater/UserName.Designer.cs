@@ -5,7 +5,6 @@
 		// Designer variable used to keep track of non-visual components.
 		private System.ComponentModel.IContainer components = null;
 
-		// Disposes resources used by the form.
 		// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
 		protected override void Dispose(bool disposing)
 		{
@@ -17,9 +16,6 @@
 			base.Dispose(disposing);
 		}
 
-		// This method is required for Windows Forms designer support.
-		// Do not change the method contents inside the source code editor. The Forms designer might
-		// not be able to load this method if it was changed manually.
 		private void InitializeComponent()
 		{
 			this.button1 = new System.Windows.Forms.Button();
@@ -60,7 +56,7 @@
 			this.Controls.Add(this.txtUserName);
 			this.Controls.Add(this.button1);
 			this.Name = "UserName";
-			this.Text = "Ange namn för signatur";
+			this.Text = "Give a name as user";
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}

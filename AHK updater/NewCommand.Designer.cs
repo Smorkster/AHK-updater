@@ -60,15 +60,15 @@
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(106, 20);
 			this.label1.TabIndex = 4;
-			this.label1.Text = "Namn på kommando";
+			this.label1.Text = "Name of command";
 			// 
 			// cbType
 			// 
 			this.cbType.FormattingEnabled = true;
 			this.cbType.Items.AddRange(new object[] {
 									"Hotstring",
-									"Variabel",
-									"Funktion"});
+									"Variable",
+									"Function"});
 			this.cbType.Location = new System.Drawing.Point(182, 35);
 			this.cbType.Name = "cbType";
 			this.cbType.Size = new System.Drawing.Size(136, 21);
@@ -81,7 +81,7 @@
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(100, 21);
 			this.label2.TabIndex = 6;
-			this.label2.Text = "Typ av kommando";
+			this.label2.Text = "Type of command";
 			// 
 			// txtSystem
 			// 

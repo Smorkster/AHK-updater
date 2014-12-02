@@ -82,10 +82,10 @@ namespace AHK_updater
 				{
 					if (txtName.Text.Equals("") || txtSystem.Text.Equals(""))
 					{
-						answer = MessageBox.Show("Textrutan för namn är tom.", "", MessageBoxButtons.OKCancel);
+						answer = MessageBox.Show("Textbox for name is empty.", "", MessageBoxButtons.OKCancel);
 						e.Cancel = true;
 					} else if (data.commandExists(txtName.Text)){
-						MessageBox.Show("Kommando finns redan.\r\nVälj nytt namn.");
+						MessageBox.Show("Commando already exists.\r\nChoose a new name.");
 						this.ActiveControl = txtName;
 						e.Cancel = true;
 					}
@@ -94,10 +94,10 @@ namespace AHK_updater
 				{
 					if (txtName.Text.Equals(""))
 					{
-						answer = MessageBox.Show("Textrutan för namn är tom.", "", MessageBoxButtons.OKCancel);
+						answer = MessageBox.Show("Textbox for name is empty.", "", MessageBoxButtons.OKCancel);
 						e.Cancel = true;
 					} else if (data.commandExists(txtName.Text)){
-						MessageBox.Show("Kommando finns redan.\r\nVälj nytt namn.");
+						MessageBox.Show("Command alreayd exists.\r\nChoose a new name.");
 						this.ActiveControl = txtName;
 						e.Cancel = true;
 					}

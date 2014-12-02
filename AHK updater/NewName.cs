@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace AHK_updater
@@ -33,7 +34,7 @@ namespace AHK_updater
 		{
 			if (txtNewName.Text.Length < 3 && txtNewName.Text.Length > 0)
 			{
-				DialogResult answer = MessageBox.Show("Längden på namnet är kort, vilket inte uppmanas.\nÄr du säker att det ska vara så kort?", "Kort namn på kommando", MessageBoxButtons.YesNo);
+				DialogResult answer = MessageBox.Show("Length of the name is short, which is not encouraged.\nAre you sure you want it to be this short?", "Short name of command", MessageBoxButtons.YesNo);
 
 				if (answer == DialogResult.No)
 				{
