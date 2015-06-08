@@ -6,7 +6,7 @@ namespace AHK_updater
 {
 	public class ChangelogEntry
 	{
-		string version;
+		readonly string version;
 		string entry;
 
 		public ChangelogEntry(string v, string e)
@@ -15,8 +15,8 @@ namespace AHK_updater
 			this.entry = e;
 		}
 
-		public string Version {get{return version;}}
-		public string Entry {get{return entry;} set{entry = value;}}
+		public string Version { get { return version; } }
+		public string Entry { get { return entry; } set { entry = value; } }
 
 		/**
 		 * Return the entry as an XML-coded string

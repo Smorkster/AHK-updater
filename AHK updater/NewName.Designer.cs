@@ -3,7 +3,7 @@ namespace AHK_updater
 {
 	partial class NewName
 	{
-		private System.ComponentModel.IContainer components = null;
+		System.ComponentModel.IContainer components = null;
 		
 		// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
 		protected override void Dispose(bool disposing)
@@ -16,7 +16,7 @@ namespace AHK_updater
 			base.Dispose(disposing);
 		}
 		
-		private void InitializeComponent()
+		void InitializeComponent()
 		{
 			this.btnSave = new System.Windows.Forms.Button();
 			this.btnCancel = new System.Windows.Forms.Button();
@@ -32,7 +32,7 @@ namespace AHK_updater
 			this.btnSave.TabIndex = 0;
 			this.btnSave.Text = "Save";
 			this.btnSave.UseVisualStyleBackColor = true;
-			this.btnSave.Click += new System.EventHandler(this.BtnSaveClick);
+			this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
 			// 
 			// btnCancel
 			// 
@@ -42,7 +42,7 @@ namespace AHK_updater
 			this.btnCancel.TabIndex = 1;
 			this.btnCancel.Text = "Cancel";
 			this.btnCancel.UseVisualStyleBackColor = true;
-			this.btnCancel.Click += new System.EventHandler(this.BtnCancelClick);
+			this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
 			// 
 			// label1
 			// 
@@ -74,10 +74,11 @@ namespace AHK_updater
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.NewName_FormClosing);
 			this.ResumeLayout(false);
 			this.PerformLayout();
+
 		}
-		private System.Windows.Forms.TextBox txtNewName;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Button btnCancel;
-		private System.Windows.Forms.Button btnSave;
+		System.Windows.Forms.TextBox txtNewName;
+		System.Windows.Forms.Label label1;
+		System.Windows.Forms.Button btnCancel;
+		System.Windows.Forms.Button btnSave;
 	}
 }

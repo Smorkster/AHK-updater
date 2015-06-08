@@ -1,4 +1,4 @@
-Version 1
+﻿Version 1
 *********
 Initial release
 
@@ -49,4 +49,4 @@ Added menuitem to open the script- and XML-files
 Moved function of SaveToFile to a button
 Cleaned up the code a bit
 Added label to show last update
-Added script code to automaticaly reload script when file has changed
+Added versionnumber to formtitle

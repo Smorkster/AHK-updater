@@ -11,21 +11,24 @@ namespace AHK_updater
 		public UserName()
 		{
 			InitializeComponent();
-			lblUserNameInfo.Text = "No local file for settings is found. Will be created.\r\nChoose a new to be used in commands:";
+			lblUserNameInfo.Text = "No local file for settings is found. Will be created.\r\nChoose a name to be used in commands:";
 			this.ActiveControl = txtUserName;
 		}
 
 		/**
 		 * Close form
 		 * */
-		void Button1Click(object sender, EventArgs e)
+		void btnSave_Click(object sender, EventArgs e)
 		{
-			this.Close();
+			Close();
 		}
 
 		/**
 		 * Return the name chosen by user
 		 * */
-		public string getName() {return txtUserName.Text;}
+		public string getName()
+		{
+			return txtUserName.Text;
+		}
 	}
 }

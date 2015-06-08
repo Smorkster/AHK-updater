@@ -3,7 +3,7 @@
 	partial class UserName
 	{
 		// Designer variable used to keep track of non-visual components.
-		private System.ComponentModel.IContainer components = null;
+		System.ComponentModel.IContainer components = null;
 
 		// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
 		protected override void Dispose(bool disposing)
@@ -16,22 +16,22 @@
 			base.Dispose(disposing);
 		}
 
-		private void InitializeComponent()
+		void InitializeComponent()
 		{
-			this.button1 = new System.Windows.Forms.Button();
+			this.btnSave = new System.Windows.Forms.Button();
 			this.txtUserName = new System.Windows.Forms.TextBox();
 			this.lblUserNameInfo = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
-			// button1
+			// btnSave
 			// 
-			this.button1.Location = new System.Drawing.Point(326, 37);
-			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(75, 23);
-			this.button1.TabIndex = 0;
-			this.button1.Text = "Save";
-			this.button1.UseVisualStyleBackColor = true;
-			this.button1.Click += new System.EventHandler(this.Button1Click);
+			this.btnSave.Location = new System.Drawing.Point(326, 37);
+			this.btnSave.Name = "btnSave";
+			this.btnSave.Size = new System.Drawing.Size(75, 23);
+			this.btnSave.TabIndex = 0;
+			this.btnSave.Text = "Save";
+			this.btnSave.UseVisualStyleBackColor = true;
+			this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
 			// 
 			// txtUserName
 			// 
@@ -54,14 +54,15 @@
 			this.ClientSize = new System.Drawing.Size(413, 72);
 			this.Controls.Add(this.lblUserNameInfo);
 			this.Controls.Add(this.txtUserName);
-			this.Controls.Add(this.button1);
+			this.Controls.Add(this.btnSave);
 			this.Name = "UserName";
 			this.Text = "Give a name as user";
 			this.ResumeLayout(false);
 			this.PerformLayout();
+
 		}
-		private System.Windows.Forms.Label lblUserNameInfo;
-		private System.Windows.Forms.TextBox txtUserName;
-		private System.Windows.Forms.Button button1;
+		System.Windows.Forms.Label lblUserNameInfo;
+		System.Windows.Forms.TextBox txtUserName;
+		System.Windows.Forms.Button btnSave;
 	}
 }

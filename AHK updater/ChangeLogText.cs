@@ -36,8 +36,8 @@ namespace AHK_updater
 		 * */
 		void btnCancel_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.OK;
-			this.Close();
+			DialogResult = DialogResult.Abort;
+			Close();
 		}
 
 		/**
@@ -45,8 +45,8 @@ namespace AHK_updater
 		 * */
 		void btnSave_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.OK;
-			this.Close();
+			DialogResult = DialogResult.OK;
+			Close();
 		}
 
 		/**
@@ -60,6 +60,12 @@ namespace AHK_updater
 		void txtChange_Enter(object sender, EventArgs e)
 		{
 			txtChange.Select(txtChange.Text.Length, 0);
+		}
+
+		void btnCancelChangeText_Click(object sender, EventArgs e)
+		{
+			DialogResult = DialogResult.Cancel;
+			Close();
 		}
 	}
 }

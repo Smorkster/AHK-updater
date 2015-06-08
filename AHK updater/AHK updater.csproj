@@ -33,7 +33,7 @@
     <OutputPath>bin\Debug\</OutputPath>
     <DebugSymbols>True</DebugSymbols>
     <DebugType>Full</DebugType>
-    <Optimize>True</Optimize>
+    <Optimize>False</Optimize>
     <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
@@ -101,9 +101,6 @@
       <DependentUpon>MainForm.cs</DependentUpon>
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Include="MainForm.sv-SE.resx">
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="NewCommand.resx">
       <DependentUpon>NewCommand.cs</DependentUpon>
     </EmbeddedResource>
@@ -115,10 +112,8 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Changelog.txt" />
     <None Include="Things to do.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="AHK updater.cd" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

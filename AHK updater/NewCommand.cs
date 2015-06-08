@@ -40,10 +40,10 @@ namespace AHK_updater
 		/**
 		 * Set DialogResult and close form
 		 * */
-		void BtnSave_Click(object sender, EventArgs e)
+		void btnSave_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.OK;
-			this.Close();
+			DialogResult = DialogResult.OK;
+			Close();
 		}
 
 		/**
@@ -54,13 +54,10 @@ namespace AHK_updater
 		{
 			if (cbType.SelectedIndex.ToString().Equals("-1"))
 				btnSave.Enabled = false;
-			else if (cbType.SelectedIndex.ToString().Equals("1"))
-			{
+			else if (cbType.SelectedIndex.ToString().Equals("1")) {
 				txtSystem.Enabled = false;
 				btnSave.Enabled = true;
-			}
-			else
-			{
+			} else {
 				txtSystem.Enabled = true;
 				btnSave.Enabled = true;
 			}
@@ -76,29 +73,23 @@ namespace AHK_updater
 			int i = cbType.SelectedIndex;
 			DialogResult answer;
 
-			if (this.DialogResult == DialogResult.OK)
-			{
-				if (i == 0 || i == 2)
-				{
-					if (txtName.Text.Equals("") || txtSystem.Text.Equals(""))
-					{
+			if (DialogResult == DialogResult.OK) {
+				if (i == 0 || i == 2) {
+					if (txtName.Text.Equals("") || txtSystem.Text.Equals("")) {
 						answer = MessageBox.Show("Textbox for name is empty.", "", MessageBoxButtons.OKCancel);
 						e.Cancel = true;
-					} else if (data.commandExists(txtName.Text)){
-						MessageBox.Show("Commando already exists.\r\nChoose a new name.");
-						this.ActiveControl = txtName;
+					} else if (data.commandExists(txtName.Text)) {
+						MessageBox.Show("Command already exists.\r\nChoose a new name.");
+						ActiveControl = txtName;
 						e.Cancel = true;
 					}
-				}
-				else
-				{
-					if (txtName.Text.Equals(""))
-					{
+				} else {
+					if (txtName.Text.Equals("")) {
 						answer = MessageBox.Show("Textbox for name is empty.", "", MessageBoxButtons.OKCancel);
 						e.Cancel = true;
-					} else if (data.commandExists(txtName.Text)){
+					} else if (data.commandExists(txtName.Text)) {
 						MessageBox.Show("Command alreayd exists.\r\nChoose a new name.");
-						this.ActiveControl = txtName;
+						ActiveControl = txtName;
 						e.Cancel = true;
 					}
 				}
@@ -108,10 +99,10 @@ namespace AHK_updater
 		/**
 		 * Set DialogResult and close form
 		 * */
-		void BtnCancel_Click(object sender, EventArgs e)
+		void btnCancel_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.Cancel;
-			this.Close();
+			DialogResult = DialogResult.Cancel;
+			Close();
 		}
 	}
 }

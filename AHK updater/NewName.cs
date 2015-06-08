@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 using System.Windows.Forms;
 
 namespace AHK_updater
@@ -15,31 +14,28 @@ namespace AHK_updater
 
 		public string getNewName()
 		{
-			return txtNewName.Text.ToString();
+			return txtNewName.Text;
 		}
 
-		void BtnCancelClick(object sender, EventArgs e)
+		void btnCancel_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.Cancel;
-			this.Close();
+			DialogResult = DialogResult.Cancel;
+			Close();
 		}
 
-		void BtnSaveClick(object sender, EventArgs e)
+		void btnSave_Click(object sender, EventArgs e)
 		{
-			this.DialogResult = DialogResult.OK;
-			this.Close();
+			DialogResult = DialogResult.OK;
+			Close();
 		}
 		
 		void NewName_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			if (txtNewName.Text.Length < 3 && txtNewName.Text.Length > 0)
-			{
-				DialogResult answer = MessageBox.Show("Length of the name is short, which is not encouraged.\nAre you sure you want it to be this short?", "Short name of command", MessageBoxButtons.YesNo);
+			if (txtNewName.Text.Length < 3 && txtNewName.Text.Length > 0) {
+				var answer = MessageBox.Show("Length of the name is short, which is not encouraged.\nAre you sure you want it to be this short?", "Short name of command", MessageBoxButtons.YesNo);
 
 				if (answer == DialogResult.No)
-				{
 					e.Cancel = true;
-				}
 			}
 		}
 	}

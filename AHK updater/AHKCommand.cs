@@ -24,9 +24,9 @@ namespace AHK_updater
 			this.system = c.System;
 		}
 
-		public string Command {get{return command;} set{command = value;}}
-		public string Text {get{return text;} set{text = value;}}
-		public string System {get{return system;} set{system = value;}}
+		public string Command { get { return command; } set { command = value; } }
+		public string Text { get { return text; } set { text = value; } }
+		public string System { get { return system; } set { system = value; } }
 
 		/**
 		 * Return property as XML-node
@@ -46,7 +46,7 @@ namespace AHK_updater
 			if (system.Equals("Variables"))
 				v = command + " = " + text;
 			else
-				v = "::" + this.command + "::\r\n" + this.text.Trim();
+				v = "::" + command + "::\r\n" + text.Trim();
 			return v + "\r\n";
 		}
 	}

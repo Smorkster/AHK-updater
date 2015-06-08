@@ -2,7 +2,7 @@
 {
 	partial class NewCommand
 	{
-		private System.ComponentModel.IContainer components = null;
+		System.ComponentModel.IContainer components = null;
 		
 		protected override void Dispose(bool disposing)
 		{
@@ -14,7 +14,7 @@
 			base.Dispose(disposing);
 		}
 		
-		private void InitializeComponent()
+		void InitializeComponent()
 		{
 			this.btnSave = new System.Windows.Forms.Button();
 			this.btnCancel = new System.Windows.Forms.Button();
@@ -33,9 +33,9 @@
 			this.btnSave.Name = "btnSave";
 			this.btnSave.Size = new System.Drawing.Size(75, 23);
 			this.btnSave.TabIndex = 0;
-			this.btnSave.Text = "OK";
+			this.btnSave.Text = "Save";
 			this.btnSave.UseVisualStyleBackColor = true;
-			this.btnSave.Click += new System.EventHandler(this.BtnSave_Click);
+			this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
 			// 
 			// btnCancel
 			// 
@@ -45,7 +45,7 @@
 			this.btnCancel.TabIndex = 1;
 			this.btnCancel.Text = "Cancel";
 			this.btnCancel.UseVisualStyleBackColor = true;
-			this.btnCancel.Click += new System.EventHandler(this.BtnCancel_Click);
+			this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
 			// 
 			// txtName
 			// 
@@ -66,9 +66,9 @@
 			// 
 			this.cbType.FormattingEnabled = true;
 			this.cbType.Items.AddRange(new object[] {
-									"Hotstring",
-									"Variable",
-									"Function"});
+			"Hotstring",
+			"Variable",
+			"Function"});
 			this.cbType.Location = new System.Drawing.Point(182, 35);
 			this.cbType.Name = "cbType";
 			this.cbType.Size = new System.Drawing.Size(136, 21);
@@ -122,14 +122,15 @@
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.NewCommand_FormClosing);
 			this.ResumeLayout(false);
 			this.PerformLayout();
+
 		}
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.TextBox txtSystem;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.ComboBox cbType;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.TextBox txtName;
-		private System.Windows.Forms.Button btnCancel;
-		private System.Windows.Forms.Button btnSave;
+		System.Windows.Forms.Label label3;
+		System.Windows.Forms.TextBox txtSystem;
+		System.Windows.Forms.Label label2;
+		System.Windows.Forms.ComboBox cbType;
+		System.Windows.Forms.Label label1;
+		System.Windows.Forms.TextBox txtName;
+		System.Windows.Forms.Button btnCancel;
+		System.Windows.Forms.Button btnSave;
 	}
 }
