@@ -4,7 +4,7 @@ using System.Windows.Forms;
 namespace AHK_updater
 {
 	/**
-	 * No lokal XML-file found, ask user for name to be used in script
+	 * No local XML-file found, ask user for name to be used in script
 	 * */
 	public partial class UserName : Form
 	{
@@ -29,6 +29,15 @@ namespace AHK_updater
 		public string getName()
 		{
 			return txtUserName.Text;
+		}
+
+		/**
+		 * Catches keypress 
+		 * */
+		void txtUserName_KeyPress(object sender, KeyPressEventArgs e)
+		{
+			if(e.KeyChar == (char) 13)
+				btnSave_Click(null, null);
 		}
 	}
 }

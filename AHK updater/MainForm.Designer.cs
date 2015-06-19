@@ -61,6 +61,8 @@
 			this.txtHotstringText.TabIndex = 0;
 			this.txtHotstringText.TabStop = false;
 			this.txtHotstringText.TextChanged += new System.EventHandler(this.txtHotstringText_TextChanged);
+			this.txtHotstringText.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtHotstringText_KeyUp);
+			this.txtHotstringText.Leave += new System.EventHandler(this.txtHotstringText_Leave);
 			// 
 			// tabControl
 			// 
@@ -188,6 +190,7 @@
 			// 
 			// txtFunctions
 			// 
+			this.txtFunctions.AcceptsTab = true;
 			this.txtFunctions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
 			| System.Windows.Forms.AnchorStyles.Left) 
 			| System.Windows.Forms.AnchorStyles.Right)));
@@ -198,7 +201,9 @@
 			this.txtFunctions.ScrollBars = System.Windows.Forms.ScrollBars.Both;
 			this.txtFunctions.Size = new System.Drawing.Size(670, 355);
 			this.txtFunctions.TabIndex = 0;
+			this.txtFunctions.TabStop = false;
 			this.txtFunctions.TextChanged += new System.EventHandler(this.txtFunctions_TextChanged);
+			this.txtFunctions.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtFunctions_KeyUp);
 			// 
 			// tabPage3
 			// 
@@ -239,6 +244,7 @@
 			this.txtChangelog.Size = new System.Drawing.Size(670, 355);
 			this.txtChangelog.TabIndex = 0;
 			this.txtChangelog.TextChanged += new System.EventHandler(this.txtChangelog_TextChanged);
+			this.txtChangelog.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtChangelog_KeyUp);
 			// 
 			// menuStrip1
 			// 
@@ -319,6 +325,7 @@
 			this.Controls.Add(this.btnSaveToFile);
 			this.Controls.Add(this.tabControl);
 			this.Controls.Add(this.menuStrip1);
+			this.KeyPreview = true;
 			this.MainMenuStrip = this.menuStrip1;
 			this.MinimumSize = new System.Drawing.Size(720, 457);
 			this.Name = "MainForm";
@@ -328,7 +335,7 @@
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "AHK Updater";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
-			this.Load += new System.EventHandler(this.MainFormLoad);
+			this.Load += new System.EventHandler(this.MainForm_Load);
 			this.tabControl.ResumeLayout(false);
 			this.tabPage1.ResumeLayout(false);
 			this.tabPage1.PerformLayout();

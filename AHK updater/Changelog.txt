@@ -1,12 +1,40 @@
-﻿Version 1
-*********
-Initial release
+﻿Version 2.5
+***********
+Now accepts tab in textbox for functions
+Now checks if no file exists, then opens empty form 
+Added support to catch KeyUp to save text in textboxes
+Now checks if a commandname is present when changing name
+Now accepts Enter in NewName form
+No longer shows btnSaveHotstring if a treenode at level 0 is selected
+Now asks to save txtHotstringText if focus leaves the textbox
 
-Version 2
-*********
-Replaced ListView for commands with TreeView
-	Now easier to view commands by listing them by system
-Implemented a changelog for changes in commands
+Version 2.4
+***********
+Added menuitem to open the script- and XML-files
+Moved function of SaveToFile to a button
+Cleaned up the code a bit
+Added label to show last update
+Added versionnumber to formtitle
+Added possibility to not add text for a change to changelog
+
+Version 2.3
+***********
+Menuitem "Save to file" now only visible if data have changed
+Changed encoding of script-file to ANSI, XML-file UTF-8
+Now empties txths when parent node in treeview is selected
+Handles updated data in separate function
+Now correctly adds a command as variable
+
+Version 2.2
+***********
+Now correctly shows button to save changelog
+No longer adds all changelog to current changelog entry when saving
+Change font of all textboxes and treeview to Lucinda Concole
+Added scrollbars för textboxes with multiline
+Added ability to change name of command
+Changed function to update command
+Now correctly shows the selected node in treeview after command is saved
+Now correctly cancels saving command when "Cancel" is pressed in ChangeLogText-form
 
 Version 2.1
 ***********
@@ -24,29 +52,12 @@ Added ability to change system of command
 Added comments for all functions
 Corrected removal of empty parent node function
 
-Version 2.2
-***********
-Now correctly shows button to save changelog
-No longer adds all changelog to current changelog entry when saving
-Change font of all textboxes and treeview to Lucinda Concole
-Added scrollbars för textboxes with multiline
-Added ability to change name of command
-Changed function to update command
-Now correctly shows the selected node in treeview after command is saved
-Now correctly cancels saving command when "Cancel" is pressed in ChangeLogText-form
+Version 2
+*********
+Replaced ListView for commands with TreeView
+	Now easier to view commands by listing them by system
+Implemented a changelog for changes in commands
 
-Version 2.3
-***********
-Menuitem "Save to file" now only visible if data have changed
-Changed encoding of script-file to ANSI, XML-file UTF-8
-Now empties txths when parent node in treeview is selected
-Handles updated data in separate function
-Now correctly adds a command as variable
-
-Version 2.4
-***********
-Added menuitem to open the script- and XML-files
-Moved function of SaveToFile to a button
-Cleaned up the code a bit
-Added label to show last update
-Added versionnumber to formtitle
+Version 1
+*********
+Initial release

@@ -58,6 +58,7 @@ namespace AHK_updater
 			this.txtNewName.Name = "txtNewName";
 			this.txtNewName.Size = new System.Drawing.Size(251, 20);
 			this.txtNewName.TabIndex = 3;
+			this.txtNewName.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtNewName_KeyUp);
 			// 
 			// NewName
 			// 

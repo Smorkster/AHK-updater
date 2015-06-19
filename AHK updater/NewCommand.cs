@@ -6,11 +6,11 @@ namespace AHK_updater
 	public partial class NewCommand : Form
 	{
 		AllData data;
-		public NewCommand(ref AllData l)
+		public NewCommand(ref AllData temp)
 		{
 			InitializeComponent();
 			this.ActiveControl = txtName;
-			data = l;
+			data = temp;
 		}
 
 		/**
@@ -52,14 +52,18 @@ namespace AHK_updater
 		 * */
 		void cbType_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (cbType.SelectedIndex.ToString().Equals("-1"))
-				btnSave.Enabled = false;
-			else if (cbType.SelectedIndex.ToString().Equals("1")) {
-				txtSystem.Enabled = false;
-				btnSave.Enabled = true;
-			} else {
-				txtSystem.Enabled = true;
-				btnSave.Enabled = true;
+			switch (cbType.SelectedIndex) {
+				case -1:
+					btnSave.Enabled = false;
+					break;
+				case 1:
+					txtSystem.Enabled = false;
+					btnSave.Enabled = true;
+					break;
+				default:
+					txtSystem.Enabled = true;
+					btnSave.Enabled = true;
+					break;
 			}
 		}
 
@@ -70,28 +74,31 @@ namespace AHK_updater
 		 * */
 		void NewCommand_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			int i = cbType.SelectedIndex;
 			DialogResult answer;
 
 			if (DialogResult == DialogResult.OK) {
-				if (i == 0 || i == 2) {
-					if (txtName.Text.Equals("") || txtSystem.Text.Equals("")) {
-						answer = MessageBox.Show("Textbox for name is empty.", "", MessageBoxButtons.OKCancel);
-						e.Cancel = true;
-					} else if (data.commandExists(txtName.Text)) {
-						MessageBox.Show("Command already exists.\r\nChoose a new name.");
-						ActiveControl = txtName;
-						e.Cancel = true;
-					}
-				} else {
-					if (txtName.Text.Equals("")) {
-						answer = MessageBox.Show("Textbox for name is empty.", "", MessageBoxButtons.OKCancel);
-						e.Cancel = true;
-					} else if (data.commandExists(txtName.Text)) {
-						MessageBox.Show("Command alreayd exists.\r\nChoose a new name.");
-						ActiveControl = txtName;
-						e.Cancel = true;
-					}
+				switch (cbType.SelectedIndex) {
+					case 0:
+					case 2:
+						if (txtName.Text.Equals("") || txtSystem.Text.Equals("")) {
+							answer = MessageBox.Show("Textbox for name is empty.", "", MessageBoxButtons.OKCancel);
+							e.Cancel = true;
+						} else if (data.commandExists(txtName.Text)) {
+							MessageBox.Show("Command already exists.\r\nChoose a new name.");
+							ActiveControl = txtName;
+							e.Cancel = true;
+						}
+						break;
+					default:
+						if (txtName.Text.Equals("")) {
+							answer = MessageBox.Show("Textbox for name is empty.", "", MessageBoxButtons.OKCancel);
+							e.Cancel = true;
+						} else if (data.commandExists(txtName.Text)) {
+							MessageBox.Show("Command already exists.\r\nChoose a new name.");
+							ActiveControl = txtName;
+							e.Cancel = true;
+						}
+						break;
 				}
 			}
 		}

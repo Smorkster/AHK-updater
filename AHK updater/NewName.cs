@@ -5,11 +5,14 @@ namespace AHK_updater
 {
 	public partial class NewName : Form
 	{
-		public NewName(string commandname)
+		AllData data;
+		public NewName(string commandname, ref AllData temp)
 		{
 			InitializeComponent();
 			this.DialogResult = DialogResult.Cancel;
-			txtNewName.Text = commandname;
+			txtNewName.Text += commandname;
+			data = temp;
+			this.ActiveControl = txtNewName;
 		}
 
 		public string getNewName()
@@ -28,15 +31,24 @@ namespace AHK_updater
 			DialogResult = DialogResult.OK;
 			Close();
 		}
-		
+
 		void NewName_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			if (txtNewName.Text.Length < 3 && txtNewName.Text.Length > 0) {
-				var answer = MessageBox.Show("Length of the name is short, which is not encouraged.\nAre you sure you want it to be this short?", "Short name of command", MessageBoxButtons.YesNo);
-
-				if (answer == DialogResult.No)
+			if (DialogResult == DialogResult.OK) {
+				if (data.commandExists(txtNewName.Text)) {
+					MessageBox.Show("A command with that name already exists.\nChoose another name.", "", MessageBoxButtons.OK);
 					e.Cancel = true;
+				} else if (txtNewName.Text.Length < 3 && txtNewName.Text.Length > 0) {
+					var answer = MessageBox.Show("Length of the name is short, which is not encouraged.\nAre you sure you want it to be this short?", "Short name of command", MessageBoxButtons.YesNo);
+					if (answer == DialogResult.No)
+						e.Cancel = true;
+				}
 			}
+		}
+		void txtNewName_KeyUp(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Enter)
+				DialogResult = DialogResult.OK;
 		}
 	}
 }
