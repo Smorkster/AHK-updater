@@ -4,19 +4,7 @@ H:\AHK updater\AHK updater\obj\Debug\AHK updater.csprojResolveAssemblyReference.
 H:\AHK updater\AHK updater\obj\Debug\AHK_updater.ChangeLogText.resources
 H:\AHK updater\AHK updater\obj\Debug\AHK_updater.MainForm.resources
 H:\AHK updater\AHK updater\obj\Debug\AHK_updater.NewCommand.resources
-H:\AHK updater\AHK updater\obj\Debug\AHK_updater.NewName.resources
 H:\AHK updater\AHK updater\obj\Debug\AHK_updater.UserName.resources
 H:\AHK updater\AHK updater\obj\Debug\AHK updater.csproj.GenerateResource.Cache
 H:\AHK updater\AHK updater\obj\Debug\AHK updater.exe
 H:\AHK updater\AHK updater\obj\Debug\AHK updater.pdb
-D:\Programmering\CSharp\AHK updater\AHK updater\bin\Debug\AHK updater.exe
-D:\Programmering\CSharp\AHK updater\AHK updater\bin\Debug\AHK updater.pdb
-D:\Programmering\CSharp\AHK updater\AHK updater\obj\Debug\AHK updater.csprojResolveAssemblyReference.cache
-D:\Programmering\CSharp\AHK updater\AHK updater\obj\Debug\AHK_updater.ChangeLogText.resources
-D:\Programmering\CSharp\AHK updater\AHK updater\obj\Debug\AHK_updater.MainForm.resources
-D:\Programmering\CSharp\AHK updater\AHK updater\obj\Debug\AHK_updater.NewCommand.resources
-D:\Programmering\CSharp\AHK updater\AHK updater\obj\Debug\AHK_updater.NewName.resources
-D:\Programmering\CSharp\AHK updater\AHK updater\obj\Debug\AHK_updater.UserName.resources
-D:\Programmering\CSharp\AHK updater\AHK updater\obj\Debug\AHK updater.csproj.GenerateResource.Cache
-D:\Programmering\CSharp\AHK updater\AHK updater\obj\Debug\AHK updater.exe
-D:\Programmering\CSharp\AHK updater\AHK updater\obj\Debug\AHK updater.pdb

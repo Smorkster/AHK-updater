@@ -1,4 +1,22 @@
-﻿Version 2.5
+﻿Version 2.6
+***********
+Now shows a messagebox where the scriptfile is saved
+Changed the way a command is updated
+Removed form for new name of command
+Now correctly writes all changelogentries. Previously skipped one entry
+Now shows the menustrip background color in red to indicated if it is in testing mode
+Now handles new function correctly
+Set focus to corresponding textbox when tab is changed
+Now shows the current date (also current version) in changelog textbox
+Now also checks if user wants to save changes in Functions-textbox and Changelog-textbox if focus is changed
+Now scrolls to where new text is to be written when new command or function is created
+Corrected text for empty textboxes in NewCommand
+Extracted control for empty textbox of system in NewCommand
+Added text to indicate type of command in NewCommand if name already exists
+Added support for catching keypress events in NewCommand
+Now shows tooltip for txtHotstringName if a command have the same name
+
+Version 2.5
 ***********
 Now accepts tab in textbox for functions
 Now checks if no file exists, then opens empty form 

@@ -16,15 +16,17 @@
 		
 		void InitializeComponent()
 		{
-			this.txtHotstringText = new System.Windows.Forms.TextBox();
+			this.components = new System.ComponentModel.Container();
 			this.tabControl = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
-			this.btnChangeName = new System.Windows.Forms.Button();
+			this.lblname = new System.Windows.Forms.Label();
+			this.txtHotstringName = new System.Windows.Forms.TextBox();
+			this.btnUpdateHotstring = new System.Windows.Forms.Button();
 			this.btnRemoveCommand = new System.Windows.Forms.Button();
 			this.label1 = new System.Windows.Forms.Label();
-			this.txtSystem = new System.Windows.Forms.TextBox();
+			this.txtHotstringSystem = new System.Windows.Forms.TextBox();
 			this.treeHotstrings = new System.Windows.Forms.TreeView();
-			this.btnSaveHotstring = new System.Windows.Forms.Button();
+			this.txtHotstringText = new System.Windows.Forms.TextBox();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
 			this.btnSaveFunctions = new System.Windows.Forms.Button();
 			this.txtFunctions = new System.Windows.Forms.TextBox();
@@ -39,30 +41,13 @@
 			this.menuClose = new System.Windows.Forms.ToolStripMenuItem();
 			this.btnSaveToFile = new System.Windows.Forms.Button();
 			this.lblStatus = new System.Windows.Forms.Label();
+			this.ttCommandExists = new System.Windows.Forms.ToolTip(this.components);
 			this.tabControl.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
 			this.tabPage3.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
-			// 
-			// txtHotstringText
-			// 
-			this.txtHotstringText.AcceptsTab = true;
-			this.txtHotstringText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-			| System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
-			this.txtHotstringText.Font = new System.Drawing.Font("Lucida Console", 8.25F);
-			this.txtHotstringText.Location = new System.Drawing.Point(185, 32);
-			this.txtHotstringText.Multiline = true;
-			this.txtHotstringText.Name = "txtHotstringText";
-			this.txtHotstringText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.txtHotstringText.Size = new System.Drawing.Size(488, 329);
-			this.txtHotstringText.TabIndex = 0;
-			this.txtHotstringText.TabStop = false;
-			this.txtHotstringText.TextChanged += new System.EventHandler(this.txtHotstringText_TextChanged);
-			this.txtHotstringText.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtHotstringText_KeyUp);
-			this.txtHotstringText.Leave += new System.EventHandler(this.txtHotstringText_Leave);
 			// 
 			// tabControl
 			// 
@@ -77,15 +62,17 @@
 			this.tabControl.SelectedIndex = 0;
 			this.tabControl.Size = new System.Drawing.Size(690, 393);
 			this.tabControl.TabIndex = 3;
+			this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
 			// 
 			// tabPage1
 			// 
-			this.tabPage1.Controls.Add(this.btnChangeName);
+			this.tabPage1.Controls.Add(this.lblname);
+			this.tabPage1.Controls.Add(this.txtHotstringName);
+			this.tabPage1.Controls.Add(this.btnUpdateHotstring);
 			this.tabPage1.Controls.Add(this.btnRemoveCommand);
 			this.tabPage1.Controls.Add(this.label1);
-			this.tabPage1.Controls.Add(this.txtSystem);
+			this.tabPage1.Controls.Add(this.txtHotstringSystem);
 			this.tabPage1.Controls.Add(this.treeHotstrings);
-			this.tabPage1.Controls.Add(this.btnSaveHotstring);
 			this.tabPage1.Controls.Add(this.txtHotstringText);
 			this.tabPage1.Location = new System.Drawing.Point(4, 22);
 			this.tabPage1.Name = "tabPage1";
@@ -95,45 +82,62 @@
 			this.tabPage1.Text = "Hotstrings";
 			this.tabPage1.UseVisualStyleBackColor = true;
 			// 
-			// btnChangeName
+			// lblname
 			// 
-			this.btnChangeName.AutoSize = true;
-			this.btnChangeName.Location = new System.Drawing.Point(462, 3);
-			this.btnChangeName.Name = "btnChangeName";
-			this.btnChangeName.Size = new System.Drawing.Size(83, 23);
-			this.btnChangeName.TabIndex = 6;
-			this.btnChangeName.Text = "Change name";
-			this.btnChangeName.UseVisualStyleBackColor = true;
-			this.btnChangeName.Visible = false;
-			this.btnChangeName.Click += new System.EventHandler(this.btnChangeName_Click);
+			this.lblname.Location = new System.Drawing.Point(185, 321);
+			this.lblname.Name = "lblname";
+			this.lblname.Size = new System.Drawing.Size(47, 18);
+			this.lblname.TabIndex = 8;
+			this.lblname.Text = "Name";
+			// 
+			// txtHotstringName
+			// 
+			this.txtHotstringName.Font = new System.Drawing.Font("Lucida Console", 8.25F);
+			this.txtHotstringName.Location = new System.Drawing.Point(238, 320);
+			this.txtHotstringName.Name = "txtHotstringName";
+			this.txtHotstringName.Size = new System.Drawing.Size(331, 18);
+			this.txtHotstringName.TabIndex = 7;
+			this.txtHotstringName.TextChanged += new System.EventHandler(this.txtHotstringName_TextChanged);
+			// 
+			// btnUpdateHotstring
+			// 
+			this.btnUpdateHotstring.AutoSize = true;
+			this.btnUpdateHotstring.Enabled = false;
+			this.btnUpdateHotstring.Location = new System.Drawing.Point(575, 315);
+			this.btnUpdateHotstring.Name = "btnUpdateHotstring";
+			this.btnUpdateHotstring.Size = new System.Drawing.Size(101, 23);
+			this.btnUpdateHotstring.TabIndex = 6;
+			this.btnUpdateHotstring.Text = "Update command";
+			this.btnUpdateHotstring.UseVisualStyleBackColor = true;
+			this.btnUpdateHotstring.Click += new System.EventHandler(this.btnUpdateHotstring_Click);
 			// 
 			// btnRemoveCommand
 			// 
-			this.btnRemoveCommand.Location = new System.Drawing.Point(551, 3);
+			this.btnRemoveCommand.Enabled = false;
+			this.btnRemoveCommand.Location = new System.Drawing.Point(575, 338);
 			this.btnRemoveCommand.Name = "btnRemoveCommand";
-			this.btnRemoveCommand.Size = new System.Drawing.Size(57, 23);
+			this.btnRemoveCommand.Size = new System.Drawing.Size(101, 23);
 			this.btnRemoveCommand.TabIndex = 5;
 			this.btnRemoveCommand.Text = "Remove";
 			this.btnRemoveCommand.UseVisualStyleBackColor = true;
-			this.btnRemoveCommand.Visible = false;
 			this.btnRemoveCommand.Click += new System.EventHandler(this.btnRemoveCommand_Click);
 			// 
 			// label1
 			// 
-			this.label1.Location = new System.Drawing.Point(185, 9);
+			this.label1.Location = new System.Drawing.Point(185, 343);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(47, 18);
 			this.label1.TabIndex = 4;
 			this.label1.Text = "System";
 			// 
-			// txtSystem
+			// txtHotstringSystem
 			// 
-			this.txtSystem.Font = new System.Drawing.Font("Lucida Console", 8.25F);
-			this.txtSystem.Location = new System.Drawing.Point(238, 6);
-			this.txtSystem.Name = "txtSystem";
-			this.txtSystem.Size = new System.Drawing.Size(218, 18);
-			this.txtSystem.TabIndex = 3;
-			this.txtSystem.TextChanged += new System.EventHandler(this.txtSystem_TextChanged);
+			this.txtHotstringSystem.Font = new System.Drawing.Font("Lucida Console", 8.25F);
+			this.txtHotstringSystem.Location = new System.Drawing.Point(238, 342);
+			this.txtHotstringSystem.Name = "txtHotstringSystem";
+			this.txtHotstringSystem.Size = new System.Drawing.Size(331, 18);
+			this.txtHotstringSystem.TabIndex = 3;
+			this.txtHotstringSystem.TextChanged += new System.EventHandler(this.txtSystem_TextChanged);
 			// 
 			// treeHotstrings
 			// 
@@ -148,19 +152,23 @@
 			this.treeHotstrings.TabIndex = 2;
 			this.treeHotstrings.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeHotstrings_AfterSelect);
 			// 
-			// btnSaveHotstring
+			// txtHotstringText
 			// 
-			this.btnSaveHotstring.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnSaveHotstring.AutoSize = true;
-			this.btnSaveHotstring.Enabled = false;
-			this.btnSaveHotstring.Location = new System.Drawing.Point(631, 32);
-			this.btnSaveHotstring.Name = "btnSaveHotstring";
-			this.btnSaveHotstring.Size = new System.Drawing.Size(42, 23);
-			this.btnSaveHotstring.TabIndex = 1;
-			this.btnSaveHotstring.Text = "Save";
-			this.btnSaveHotstring.UseVisualStyleBackColor = true;
-			this.btnSaveHotstring.Visible = false;
-			this.btnSaveHotstring.Click += new System.EventHandler(this.btnSaveHotstring_Click);
+			this.txtHotstringText.AcceptsTab = true;
+			this.txtHotstringText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			| System.Windows.Forms.AnchorStyles.Left) 
+			| System.Windows.Forms.AnchorStyles.Right)));
+			this.txtHotstringText.Font = new System.Drawing.Font("Lucida Console", 8.25F);
+			this.txtHotstringText.Location = new System.Drawing.Point(185, 6);
+			this.txtHotstringText.Multiline = true;
+			this.txtHotstringText.Name = "txtHotstringText";
+			this.txtHotstringText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+			this.txtHotstringText.Size = new System.Drawing.Size(491, 308);
+			this.txtHotstringText.TabIndex = 0;
+			this.txtHotstringText.TabStop = false;
+			this.txtHotstringText.TextChanged += new System.EventHandler(this.txtHotstringText_TextChanged);
+			this.txtHotstringText.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtHotstringText_KeyUp);
+			this.txtHotstringText.Leave += new System.EventHandler(this.txtHotstringText_Leave);
 			// 
 			// tabPage2
 			// 
@@ -204,6 +212,7 @@
 			this.txtFunctions.TabStop = false;
 			this.txtFunctions.TextChanged += new System.EventHandler(this.txtFunctions_TextChanged);
 			this.txtFunctions.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtFunctions_KeyUp);
+			this.txtFunctions.Leave += new System.EventHandler(this.txtFunctionsText_Leave);
 			// 
 			// tabPage3
 			// 
@@ -245,6 +254,7 @@
 			this.txtChangelog.TabIndex = 0;
 			this.txtChangelog.TextChanged += new System.EventHandler(this.txtChangelog_TextChanged);
 			this.txtChangelog.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtChangelog_KeyUp);
+			this.txtChangelog.Leave += new System.EventHandler(this.txtChangelogText_Leave);
 			// 
 			// menuStrip1
 			// 
@@ -298,9 +308,9 @@
 			// btnSaveToFile
 			// 
 			this.btnSaveToFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnSaveToFile.Location = new System.Drawing.Point(622, 423);
+			this.btnSaveToFile.Location = new System.Drawing.Point(591, 422);
 			this.btnSaveToFile.Name = "btnSaveToFile";
-			this.btnSaveToFile.Size = new System.Drawing.Size(75, 23);
+			this.btnSaveToFile.Size = new System.Drawing.Size(101, 23);
 			this.btnSaveToFile.TabIndex = 5;
 			this.btnSaveToFile.Text = "Save to file";
 			this.btnSaveToFile.UseVisualStyleBackColor = true;
@@ -313,7 +323,7 @@
 			| System.Windows.Forms.AnchorStyles.Right)));
 			this.lblStatus.Location = new System.Drawing.Point(12, 423);
 			this.lblStatus.Name = "lblStatus";
-			this.lblStatus.Size = new System.Drawing.Size(609, 23);
+			this.lblStatus.Size = new System.Drawing.Size(573, 23);
 			this.lblStatus.TabIndex = 6;
 			// 
 			// MainForm
@@ -350,14 +360,13 @@
 
 		}
 		System.Windows.Forms.Button btnRemoveCommand;
-		System.Windows.Forms.Button btnChangeName;
+		System.Windows.Forms.Button btnUpdateHotstring;
 		System.Windows.Forms.Label label1;
-		System.Windows.Forms.TextBox txtSystem;
+		System.Windows.Forms.TextBox txtHotstringSystem;
 		System.Windows.Forms.TreeView treeHotstrings;
 		System.Windows.Forms.Button btnSaveChangelog;
 		System.Windows.Forms.TextBox txtChangelog;
 		System.Windows.Forms.Button btnSaveFunctions;
-		System.Windows.Forms.Button btnSaveHotstring;
 		System.Windows.Forms.TabPage tabPage3;
 		System.Windows.Forms.ToolStripMenuItem menuClose;
 		System.Windows.Forms.ToolStripMenuItem menuNewHotstring;
@@ -372,5 +381,8 @@
 		System.Windows.Forms.ToolStripMenuItem menuOpenXML;
 		System.Windows.Forms.Button btnSaveToFile;
 		System.Windows.Forms.Label lblStatus;
+		private System.Windows.Forms.Label lblname;
+		private System.Windows.Forms.TextBox txtHotstringName;
+		private System.Windows.Forms.ToolTip ttCommandExists;
 	}
 }

@@ -32,18 +32,17 @@ namespace AHK_updater
 		public string CurrentChangelogItem { get { return currentChangelogEntry[0].Entry; } }
 
 		/**
-		 * Checks if a new command already exists
+		 * Checks if a command exists with same name
 		 * 
-		 * commandName: Name of command to be checked if present
+		 * commandName: Name of command to be checked
 		 * */
 		public bool commandExists(string commandName)
 		{
-			bool exists = false;
 			foreach (AHKCommand item in commandslist) {
-				if (item.Command.Equals(commandName))
-					exists = true;
+				if (item.Name.Equals(commandName))
+					return true;
 			}
-			return exists;
+			return false;
 		}
 
 		/**
@@ -64,9 +63,11 @@ namespace AHK_updater
 		 * command: Name of command to be updated
 		 * text: Text of command to be updated
 		 * */
-		public void updateCommandItem(string command, string text, string system)
+		public void updateItemCommand(string command, string name, string text, string system)
 		{
-			int commandIndex = commandslist.FindIndex(x => x.Command.Equals(command));
+			int commandIndex = commandslist.FindIndex(x => x.Name.Equals(command));
+
+			commandslist[commandIndex].Name = name;
 			commandslist[commandIndex].Text = text;
 			commandslist[commandIndex].System = system;
 		}
@@ -78,20 +79,8 @@ namespace AHK_updater
 		 * */
 		public void deleteItem(string command)
 		{
-			AHKCommand item = commandslist.Single(r => r.Command.Equals(command));
+			AHKCommand item = commandslist.Single(r => r.Name.Equals(command));
 			commandslist.Remove(item);
-		}
-
-		/**
-		 * Sets new name for command
-		 * 
-		 * oldName: Name of command to change
-		 * newName: New of command
-		 * */
-		public void setNewName(string oldName, string newName)
-		{
-			int itemIndex = commandslist.FindIndex(x => x.Command.Equals(oldName));
-			commandslist[itemIndex].Command = newName;
 		}
 
 		/**
@@ -118,14 +107,12 @@ namespace AHK_updater
 		public string getChangelogXML()
 		{
 			string text = "";
-			int i = 0;
 
 			if (!currentChangelogEntry[0].Entry.Equals("")) {
 				text = "<ahkcommand><version>" + currentChangelogEntry[0].Version + "</version><entry>" + currentChangelogEntry[0].Entry + "</entry></ahkcommand>\r\n";
-				i = 1;
 			}
 
-			for (; i < changelog.Count; i++)
+			for (int i = 0; i < changelog.Count; i++)
 				text = text + "<ahkcommand><version>" + changelog[i].Version + "</version><entry>" + changelog[i].Entry + "</entry></ahkcommand>\r\n";
 			return text;
 		}
@@ -165,12 +152,12 @@ namespace AHK_updater
 		 * */
 		public string initiateChangelog()
 		{
-			DateTime changelogToday = DateTime.Today;
+			DateTime currentDate = DateTime.Today;
 
-			if (changelog[0].Version.Equals(changelogToday.ToString("yyyy-MM-dd"))) {
+			if (changelog[0].Version.Equals(currentDate.ToString("yyyy-MM-dd"))) {
 				currentChangelogEntry.Add(new ChangelogEntry(changelog[0].Version, changelog[0].Entry));
 			} else {
-				currentChangelogEntry.Add(new ChangelogEntry(changelogToday.ToString("yyyy-MM-dd"), ""));
+				currentChangelogEntry.Add(new ChangelogEntry(currentDate.ToString("yyyy-MM-dd"), ""));
 			}
 			return currentChangelogEntry[0].Entry;
 		}

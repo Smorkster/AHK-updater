@@ -16,7 +16,7 @@
 		
 		void InitializeComponent()
 		{
-			this.btnSave = new System.Windows.Forms.Button();
+			this.btnCreate = new System.Windows.Forms.Button();
 			this.btnCancel = new System.Windows.Forms.Button();
 			this.txtName = new System.Windows.Forms.TextBox();
 			this.label1 = new System.Windows.Forms.Label();
@@ -26,16 +26,16 @@
 			this.label3 = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
-			// btnSave
+			// btnCreate
 			// 
-			this.btnSave.Enabled = false;
-			this.btnSave.Location = new System.Drawing.Point(342, 9);
-			this.btnSave.Name = "btnSave";
-			this.btnSave.Size = new System.Drawing.Size(75, 23);
-			this.btnSave.TabIndex = 0;
-			this.btnSave.Text = "Save";
-			this.btnSave.UseVisualStyleBackColor = true;
-			this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+			this.btnCreate.Enabled = false;
+			this.btnCreate.Location = new System.Drawing.Point(342, 9);
+			this.btnCreate.Name = "btnCreate";
+			this.btnCreate.Size = new System.Drawing.Size(75, 23);
+			this.btnCreate.TabIndex = 0;
+			this.btnCreate.Text = "Create";
+			this.btnCreate.UseVisualStyleBackColor = true;
+			this.btnCreate.Click += new System.EventHandler(this.btnCreate_Click);
 			// 
 			// btnCancel
 			// 
@@ -110,7 +110,7 @@
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.txtName);
 			this.Controls.Add(this.btnCancel);
-			this.Controls.Add(this.btnSave);
+			this.Controls.Add(this.btnCreate);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
@@ -131,6 +131,6 @@
 		System.Windows.Forms.Label label1;
 		System.Windows.Forms.TextBox txtName;
 		System.Windows.Forms.Button btnCancel;
-		System.Windows.Forms.Button btnSave;
+		System.Windows.Forms.Button btnCreate;
 	}
 }

@@ -10,6 +10,7 @@ namespace AHK_updater
 		{
 			InitializeComponent();
 			this.ActiveControl = txtName;
+			cbType.SelectedIndex = 0;
 			data = temp;
 		}
 
@@ -38,9 +39,27 @@ namespace AHK_updater
 		}
 
 		/**
+		 * Catch keypress
+		 * If Escape, close form
+		 * If Enter, act as if createbutton is pressed
+		 * */
+		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+		{
+			switch (keyData){
+				case Keys.Escape:
+					Close();
+					return true;
+				case Keys.Enter:
+					btnCreate_Click(null, null);
+					break;
+			}
+			return base.ProcessCmdKey(ref msg, keyData);
+		}
+
+		/**
 		 * Set DialogResult and close form
 		 * */
-		void btnSave_Click(object sender, EventArgs e)
+		void btnCreate_Click(object sender, EventArgs e)
 		{
 			DialogResult = DialogResult.OK;
 			Close();
@@ -54,15 +73,15 @@ namespace AHK_updater
 		{
 			switch (cbType.SelectedIndex) {
 				case -1:
-					btnSave.Enabled = false;
+					btnCreate.Enabled = false;
 					break;
-				case 1:
+				case 1: case 2:
 					txtSystem.Enabled = false;
-					btnSave.Enabled = true;
+					btnCreate.Enabled = true;
 					break;
 				default:
 					txtSystem.Enabled = true;
-					btnSave.Enabled = true;
+					btnCreate.Enabled = true;
 					break;
 			}
 		}
@@ -79,9 +98,13 @@ namespace AHK_updater
 			if (DialogResult == DialogResult.OK) {
 				switch (cbType.SelectedIndex) {
 					case 0:
-					case 2:
-						if (txtName.Text.Equals("") || txtSystem.Text.Equals("")) {
-							answer = MessageBox.Show("Textbox for name is empty.", "", MessageBoxButtons.OKCancel);
+						if (txtName.Text.Equals("")) {
+							answer = MessageBox.Show("Textbox for name of the command is empty.", "", MessageBoxButtons.OKCancel);
+							ActiveControl = txtName;
+							e.Cancel = true;
+						} else if  (txtSystem.Text.Equals("")) {
+							answer = MessageBox.Show("Textbox for system of the command is empty.", "", MessageBoxButtons.OKCancel);
+							ActiveControl = txtSystem;
 							e.Cancel = true;
 						} else if (data.commandExists(txtName.Text)) {
 							MessageBox.Show("Command already exists.\r\nChoose a new name.");
@@ -92,10 +115,14 @@ namespace AHK_updater
 					default:
 						if (txtName.Text.Equals("")) {
 							answer = MessageBox.Show("Textbox for name is empty.", "", MessageBoxButtons.OKCancel);
+							ActiveControl = txtName;
 							e.Cancel = true;
 						} else if (data.commandExists(txtName.Text)) {
-							MessageBox.Show("Command already exists.\r\nChoose a new name.");
+							var type = "variable";
+							if (cbType.SelectedIndex == 2) type = "function";
+							MessageBox.Show("A hotstring with this name already exists. Can't have a " + type + " with the same name.\r\nChoose a new name.");
 							ActiveControl = txtName;
+							txtName.Select(0, txtName.Text.Length);
 							e.Cancel = true;
 						}
 						break;
