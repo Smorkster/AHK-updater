@@ -7,46 +7,59 @@ namespace AHK_updater
 {
 	public class AHKCommand
 	{
-		string command;
+		string name;
 		string text;
 		string system;
 
-		public AHKCommand(string c, string te, string sys)
+		/// <summary>
+		/// Create a AHKCommand object
+		/// </summary>
+		/// <param name="name">Name of the command</param>
+		/// <param name="text">Codetext of the command</param>
+		/// <param name="system">System for the command</param>
+		public AHKCommand(string name, string text, string system)
 		{
-			this.command = c;
-			this.text = te;
-			this.system = sys;
+			this.name = name;
+			this.text = text;
+			this.system = system;
 		}
-		public AHKCommand(AHKCommand c)
+		
+		/// <summary>
+		/// Create a AHKCommand object from a AHKCommand
+		/// </summary>
+		/// <param name="hotstring">Created hotstring to be copied</param>
+		public AHKCommand(AHKCommand hotstring)
 		{
-			this.command = c.command;
-			this.text = c.text;
-			this.system = c.System;
+			this.name = hotstring.name;
+			this.text = hotstring.text;
+			this.system = hotstring.System;
 		}
 
-		public string Name { get { return command; } set { command = value; } }
+		public string Name { get { return name; } set { name = value; } }
 		public string Text { get { return text; } set { text = value; } }
 		public string System { get { return system; } set { system = value; } }
 
-		/**
-		 * Return property as XML-node
-		 * */
+		/// <summary>
+		/// Return property as XML-node 
+		/// </summary>
+		/// <returns>String with AHKCommand formated as XML</returns>
 		public string getXmlString()
 		{
-			return string.Format("<ahkcommand><command>{0}</command><text>{1}</text><system>{2}</system></ahkcommand>", command, text, system);
+			return string.Format("<ahkcommand><command>{0}</command><text>{1}</text><system>{2}</system></ahkcommand>", name, text, system);
 		}
 
-		/**
-		 * Return property as AutoHotKey hotstring-command
-		 * */
+		/// <summary>
+		/// Return property as AutoHotKey-scriptcommand 
+		/// </summary>
+		/// <returns>String with AHKCommand formated as script</returns>
 		public string getScriptString()
 		{
 			string v = "";
 
 			if (system.Equals("Variables"))
-				v = command + " = " + text;
+				v = name + " = " + text.Trim();
 			else
-				v = "::" + command + "::\r\n" + text.Trim();
+				v = "::" + name + "::\r\n" + text.Trim();
 			return v + "\r\n";
 		}
 	}

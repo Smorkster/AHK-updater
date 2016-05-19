@@ -12,154 +12,193 @@ namespace AHK_updater
 {
 	public class AllData
 	{
-		public List<AHKCommand> commandslist;
-		List<ChangelogEntry> changelog, currentChangelogEntry;
+		public List<AHKCommand> hotstringsList;
+		public List<Function> functionsList;
+		List<ChangelogEntry> changelogList;
+		public ChangelogEntry currentChangelogEntry;
 		string functions, username;
 		bool updated = false;
 
-		/**
-		 * Initiate the lists
-		 * */
+		/// <summary>
+		/// Initiate the lists 
+		/// </summary>
 		public AllData()
 		{
-			commandslist = new List<AHKCommand>();
-			changelog = new List<ChangelogEntry>();
-			currentChangelogEntry = new List<ChangelogEntry>();
+			hotstringsList = new List<AHKCommand>();
+			functionsList = new List<Function>();
+			changelogList = new List<ChangelogEntry>();
+			currentChangelogEntry = new ChangelogEntry();
 		}
 		public string Functions { get { return functions; } set { functions = value; } }
 		public string UserName { get { return username; } set { username = value; } }
 		public bool Updated { get { return updated; } set { updated = value; } }
-		public string CurrentChangelogItem { get { return currentChangelogEntry[0].Entry; } }
 
-		/**
-		 * Checks if a command exists with same name
-		 * 
-		 * commandName: Name of command to be checked
-		 * */
-		public bool commandExists(string commandName)
+		/// <summary>
+		/// Checks if a command exists with same name 
+		/// </summary>
+		/// <param name="commandName">Name of command to be checked</param>
+		/// <returns>True if another hotstring with same name exists</returns>
+		public bool hotstringExists(string commandName)
 		{
-			foreach (AHKCommand item in commandslist) {
+			foreach (AHKCommand item in hotstringsList) {
 				if (item.Name.Equals(commandName))
 					return true;
 			}
 			return false;
 		}
 
-		/**
-		 * Save new command to list of commands
-		 * 
-		 * command: Name of command
-		 * text: Text for command
-		 * system: System specifying type of command
-		 * */
-		public void addCommand(string command, string text, string system)
+		/// <summary>
+		/// Save new command to list of commands 
+		/// </summary>
+		/// <param name="command">Name of command</param>
+		/// <param name="text">Text of command</param>
+		/// <param name="system">System specifying type of command</param>
+		public void addHotstring(string command, string text, string system)
 		{
-			commandslist.Add(new AHKCommand(command, text, system));
+			hotstringsList.Add(new AHKCommand(command, text, system));
 		}
 
-		/**
-		 * Update an existing command with new text
-		 * 
-		 * command: Name of command to be updated
-		 * text: Text of command to be updated
-		 * */
-		public void updateItemCommand(string command, string name, string text, string system)
+		/// <summary>
+		/// Update an existing hotstring 
+		/// </summary>
+		/// <param name="command">Name of hotstring to be updated</param>
+		/// <param name="name">Possible new name of hotstring</param>
+		/// <param name="text">Text of hotstring to be updated</param>
+		/// <param name="system">System of hotstring to be updated</param>
+		public void updateHotstring(string command, string name, string text, string system)
 		{
-			int commandIndex = commandslist.FindIndex(x => x.Name.Equals(command));
+			int hotstringIndex = hotstringsList.FindIndex(x => x.Name.Equals(command));
 
-			commandslist[commandIndex].Name = name;
-			commandslist[commandIndex].Text = text;
-			commandslist[commandIndex].System = system;
+			hotstringsList[hotstringIndex].Name = name;
+			hotstringsList[hotstringIndex].Text = text;
+			hotstringsList[hotstringIndex].System = system;
 		}
 
-		/**
-		 * Deletes command from commandslist
-		 * 
-		 * command: Name of command to be deleted
-		 * */
-		public void deleteItem(string command)
+		/// <summary>
+		/// Deletes hotstring 
+		/// </summary>
+		/// <param name="command">Name of hotstring to be deleted</param>
+		public void deleteHotstring(string command)
 		{
-			AHKCommand item = commandslist.Single(r => r.Name.Equals(command));
-			commandslist.Remove(item);
+			AHKCommand item = hotstringsList.Single(r => r.Name.Equals(command));
+			hotstringsList.Remove(item);
 		}
 
-		/**
-		 * Format text of changelogentry to be written to changelog textbox
-		 * 
-		 * Return as string
-		 * */
+		/// <summary>
+		/// Look up hotstring by name
+		/// </summary>
+		/// <param name="hotstringName">Name of hotstring to be searched</param>
+		/// <returns>Hotstring being looked for</returns>
+		public AHKCommand getHotstring(string hotstringName)
+		{
+			return hotstringsList.Single(r => r.Name.Equals(hotstringName));
+		}
+
+		public void addFunction(string fname, string ftext)
+		{
+			functionsList.Add(new Function(fname, ftext));
+		}
+		public void updateFunction(string oldname, string fname, string ftext)
+		{
+			int functionIndex = functionsList.FindIndex(x => x.Name.Equals(oldname));
+			
+			functionsList[functionIndex].Name = fname;
+			functionsList[functionIndex].Text = ftext;
+		}
+		public void deleteFunction(string fname)
+		{
+			Function item = functionsList.Single(x => x.Name.Equals(fname));
+			functionsList.Remove(item);
+		}
+		public Function getFunction(string fname)
+		{
+			return functionsList.Single(x=>x.Name.Equals(fname));
+		}
+		public bool functionExists(string fname)
+		{
+			foreach(Function item in functionsList)
+				if (item.Name.Equals(fname))
+					return true;
+			return false;
+		}
+
+		/// <summary>
+		/// Format text of changelogentry to be written to changelog textbox 
+		/// </summary>
+		/// <returns>Return text as string</returns>
 		public string getChangelogText()
 		{
 			string changelogText = "";
-			for (int i = changelog.Count - 1; i >= 0; i--) {
-				changelogText = changelogText + changelog[i].Version + "\r\n------------\r\n" + changelog[i].Entry + "\r\n";
+			for (int i = changelogList.Count - 1; i >= 0; i--) {
+				changelogText = changelogText + changelogList[i].Version + "\r\n------------\r\n" + changelogList[i].Entry + "\r\n";
 			}
 			return changelogText;
 		}
 
-		/**
-		 * Format changelogentry as XML
-		 * If there have been no change made this time, use latest entry,
-		 * set indexnumber to one to skip this while parsing through all entries
-		 * 
-		 * Return as string
-		 * */
+		/// <summary>
+		/// Format changelogentry as XML
+		/// If there have been no change made this time, use latest entry,
+		/// set indexnumber to one to skip this while parsing through all entries
+		/// </summary>
+		/// <returns>Return text as string</returns>
 		public string getChangelogXML()
 		{
 			string text = "";
 
-			if (!currentChangelogEntry[0].Entry.Equals("")) {
-				text = "<ahkcommand><version>" + currentChangelogEntry[0].Version + "</version><entry>" + currentChangelogEntry[0].Entry + "</entry></ahkcommand>\r\n";
+			if (!currentChangelogEntry.Entry.Equals("")) {
+				text = "<ahkcommand><version>" + currentChangelogEntry.Version + "</version><entry>" + currentChangelogEntry.Entry + "</entry></ahkcommand>\r\n";
 			}
 
-			for (int i = 0; i < changelog.Count; i++)
-				text = text + "<ahkcommand><version>" + changelog[i].Version + "</version><entry>" + changelog[i].Entry + "</entry></ahkcommand>\r\n";
+			for (int i = 0; i < changelogList.Count; i++)
+				text = text + "<ahkcommand><version>" + changelogList[i].Version + "</version><entry>" + changelogList[i].Entry + "</entry></ahkcommand>\r\n";
+
 			return text;
 		}
 
-		/**
-		 * Adds old changelogentries to changelog
-		 * 
-		 * version: Versionnumber of entry
-		 * entry: Text for changelogentry
-		 * */
+		/// <summary>
+		/// Adds previous changelogentries to changelog 
+		/// </summary>
+		/// <param name="version">Versionnumber of entry</param>
+		/// <param name="entry">Text for changelogentry</param>
 		public void updateChangelog(string version, string entry)
 		{
-			changelog.Add(new ChangelogEntry(version, entry));
+			changelogList.Add(new ChangelogEntry(version, entry));
 		}
 
-		/**
-		 * Save latest changelogentry to changelog
-		 * Checks if entry is empty, otherwise add as new row/-s
-		 * 
-		 * entry: Text for changelogentry
-		 * */
+		/// <summary>
+		/// Save latest changelogentry to changelog
+		/// Checks if entry is empty, otherwise add as new row/-s
+		/// </summary>
+		/// <param name="entry">Text of changelogentry</param>
+		/// <param name="save"></param>
 		public void updateCurrentChangelogItem(string entry, bool save)
 		{
-			if (currentChangelogEntry[0].Entry.Equals(""))
-				currentChangelogEntry[0].Entry = entry;
+			if (currentChangelogEntry.Entry.Equals(""))
+				currentChangelogEntry.Entry = entry;
 			else if (save)
-				currentChangelogEntry[0].Entry = entry;
+				currentChangelogEntry.Entry = entry;
 			else
-				currentChangelogEntry[0].Entry = currentChangelogEntry[0].Entry + "\r\n" + entry;
+				currentChangelogEntry.Entry = currentChangelogEntry.Entry + "\r\n" + entry;
 		}
 
-		/**
-		 * Create a changelog entry for changes made this time
-		 * Entries are named for the current date
-		 * 
-		 * Return entry as string
-		 * */
-		public string initiateChangelog()
+		/// <summary>
+		/// Create a changelog entry for changes made this time
+		/// Entries are named for the current date 
+		/// </summary>
+		public void initiateChangelog()
 		{
 			DateTime currentDate = DateTime.Today;
+			string temp=currentDate.ToString("yyyy-MM-dd");
 
-			if (changelog[0].Version.Equals(currentDate.ToString("yyyy-MM-dd"))) {
-				currentChangelogEntry.Add(new ChangelogEntry(changelog[0].Version, changelog[0].Entry));
-			} else {
-				currentChangelogEntry.Add(new ChangelogEntry(currentDate.ToString("yyyy-MM-dd"), ""));
-			}
-			return currentChangelogEntry[0].Entry;
+			if (changelogList[0].Version.Equals(temp))
+				currentChangelogEntry = new ChangelogEntry(changelogList[0].Version, changelogList[0].Entry);
+			else
+				currentChangelogEntry = new ChangelogEntry(currentDate.ToString("yyyy-MM-dd"), "");
+		}
+		
+		public ChangelogEntry getChangelogEntry(string version)
+		{
+			return changelogList.Find(x => x.Version.Equals(version));
 		}
 	}
 }

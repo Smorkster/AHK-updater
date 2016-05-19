@@ -74,6 +74,7 @@
       <DependentUpon>ChangeLogText.cs</DependentUpon>
     </Compile>
     <Compile Include="ChangelogEntry.cs" />
+    <Compile Include="Function.cs" />
     <Compile Include="MainForm.cs" />
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>

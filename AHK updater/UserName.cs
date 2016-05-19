@@ -3,9 +3,9 @@ using System.Windows.Forms;
 
 namespace AHK_updater
 {
-	/**
-	 * No local XML-file found, ask user for name to be used in script
-	 * */
+	/// <summary>
+	/// No local XML-file found, ask user for name to be used in script 
+	/// </summary>
 	public partial class UserName : Form
 	{
 		public UserName()
@@ -15,25 +15,30 @@ namespace AHK_updater
 			this.ActiveControl = txtUserName;
 		}
 
-		/**
-		 * Close form
-		 * */
+		/// <summary>
+		/// Close form 
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
 		void btnSave_Click(object sender, EventArgs e)
 		{
 			Close();
 		}
 
-		/**
-		 * Return the name chosen by user
-		 * */
+		/// <summary>
+		/// Return the name chosen by user 
+		/// </summary>
+		/// <returns>Name of user</returns>
 		public string getName()
 		{
 			return txtUserName.Text;
 		}
 
-		/**
-		 * Catches keypress 
-		 * */
+		/// <summary>
+		/// Catches keypress 
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic KeyPressEventArgs</param>
 		void txtUserName_KeyPress(object sender, KeyPressEventArgs e)
 		{
 			if(e.KeyChar == (char) 13)

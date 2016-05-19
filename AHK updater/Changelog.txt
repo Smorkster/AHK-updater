@@ -1,4 +1,24 @@
-﻿Version 2.6
+﻿Version 3.0
+***********
+Renamed some functions and variables
+Added funtionality to extract hotstrings to another script-file
+If changelogtext is equal to hotstring name, no new row in changelog is added
+btnExtract is now disabled by default
+	Is enabled if items are added to extractionlist
+	Is disabled if all items in extractionlist is removed
+Now also adds text in txtHotstringText for variables and puts carret at the end of the line
+Removed unnecessary checks of updated texts when closing mainform
+Removed unnecessary function btnSaveHotstring_Click
+Modified handling of currentChangelog
+Modified handling of Leave event from textboxes
+Added listbox to show previous changelog entries
+Textboxes leave-event-handlers now uses ContainsFocus to accurately avoid if the updatebutton is pressed
+NewCommand form now defautls DialogResult to Cancel
+Recreated all method comments for XML formating
+Some renaming
+Functions are now separate
+
+Version 2.6
 ***********
 Now shows a messagebox where the scriptfile is saved
 Changed the way a command is updated

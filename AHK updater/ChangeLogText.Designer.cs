@@ -21,7 +21,7 @@
 			this.btnCancelChange = new System.Windows.Forms.Button();
 			this.txtChange = new System.Windows.Forms.TextBox();
 			this.label1 = new System.Windows.Forms.Label();
-			this.btnCancelChangeText = new System.Windows.Forms.Button();
+			this.btnNoChangeText = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// btnSave
@@ -64,23 +64,23 @@
 			this.label1.TabIndex = 4;
 			this.label1.Text = "What type of change have you made?";
 			// 
-			// btnCancelChangeText
+			// btnNoChangeText
 			// 
-			this.btnCancelChangeText.AutoSize = true;
-			this.btnCancelChangeText.Location = new System.Drawing.Point(317, 12);
-			this.btnCancelChangeText.Name = "btnCancelChangeText";
-			this.btnCancelChangeText.Size = new System.Drawing.Size(104, 23);
-			this.btnCancelChangeText.TabIndex = 1;
-			this.btnCancelChangeText.Text = "No changelog text";
-			this.btnCancelChangeText.UseVisualStyleBackColor = true;
-			this.btnCancelChangeText.Click += new System.EventHandler(this.btnCancelChangeText_Click);
+			this.btnNoChangeText.AutoSize = true;
+			this.btnNoChangeText.Location = new System.Drawing.Point(317, 12);
+			this.btnNoChangeText.Name = "btnNoChangeText";
+			this.btnNoChangeText.Size = new System.Drawing.Size(104, 23);
+			this.btnNoChangeText.TabIndex = 1;
+			this.btnNoChangeText.Text = "No changelog text";
+			this.btnNoChangeText.UseVisualStyleBackColor = true;
+			this.btnNoChangeText.Click += new System.EventHandler(this.btnNoChangeText_Click);
 			// 
 			// ChangeLogText
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(528, 76);
-			this.Controls.Add(this.btnCancelChangeText);
+			this.Controls.Add(this.btnNoChangeText);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.txtChange);
 			this.Controls.Add(this.btnCancelChange);
@@ -95,6 +95,6 @@
 		System.Windows.Forms.TextBox txtChange;
 		System.Windows.Forms.Button btnCancelChange;
 		System.Windows.Forms.Button btnSave;
-		private System.Windows.Forms.Button btnCancelChangeText;
+		private System.Windows.Forms.Button btnNoChangeText;
 	}
 }
