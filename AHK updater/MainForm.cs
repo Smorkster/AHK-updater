@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -37,28 +38,32 @@ namespace AHK_updater
 		/// </summary>
 		/// <param name="sender">Generic object</param>
 		/// <param name="e">Generic EventArgs</param>
-		void MainForm_Load(object sender, EventArgs e)
+		void MainForm_Load (object sender, EventArgs e)
 		{
-			Text = "AHK Updater " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+			Text = "AHK Updater " + System.Reflection.Assembly.GetExecutingAssembly()
+				.GetName().Version;
 
-			if(test)
+			if (test)
 			{
 				menuStrip1.BackColor = Color.Red;
 				Text = "IN TEST MODE";
 			}
 
 			//If file is present, open and read. Otherwise, read original file
-			if (File.Exists(test ? xmlfilenameTest : xmlfilename)) {
+			if (File.Exists(test ? xmlfilenameTest : xmlfilename))
+			{
 				xmlFile = test ? xmlfilenameTest : xmlfilename;
-			} else if (File.Exists(test ? originalxmlfilenameTest : originalxmlfilename)) {
+			} else if (File.Exists(test ? originalxmlfilenameTest : originalxmlfilename))
+			{
 				xmlFile = test ? originalxmlfilenameTest : originalxmlfilename;
 				MessageBox.Show("No local XML-file found. Using original.");
 			}
 			scriptFile = test ? scriptfilenameTest : scriptfilename;
 
 			if (xmlFile != null)
+			{
 				getXMLCommands();
-			else
+			} else
 				MessageBox.Show("No file found. The list of commands will be empty.");
 		}
 
@@ -66,45 +71,52 @@ namespace AHK_updater
 		/// Reads the XML-file and sends the NodeLists for parsing
 		/// If a username can not be found in the file, application asks user 
 		/// </summary>
-		void getXMLCommands()
+		void getXMLCommands ()
 		{
 			var xRead = new XmlTextReader(xmlFile);
 			var doc = new XmlDocument();
 
-			if (new FileInfo(xmlFile).Length != 0) {
-				try {
+			if (new FileInfo(xmlFile).Length != 0)
+			{
+				try
+				{
 					doc.Load(xRead);
 					xRead.WhitespaceHandling = WhitespaceHandling.None;
 
 					XmlNodeList name = doc.GetElementsByTagName("name"),
-								command = doc.GetElementsByTagName("command"),
-								text = doc.GetElementsByTagName("text"),
-								system = doc.GetElementsByTagName("system"),
-								functionname = doc.GetElementsByTagName("functionname"),
-								functiontext = doc.GetElementsByTagName("functiontext"),
-								changelogVersion = doc.GetElementsByTagName("version"),
-								changelogEntry = doc.GetElementsByTagName("entry");
+					command = doc.GetElementsByTagName("command"),
+					text = doc.GetElementsByTagName("text"),
+					system = doc.GetElementsByTagName("system"),
+					functionname = doc.GetElementsByTagName("functionname"),
+					functiontext = doc.GetElementsByTagName("functiontext"),
+					changelogVersion = doc.GetElementsByTagName("version"),
+					changelogEntry = doc.GetElementsByTagName("entry");
 
 					insertHotstrings(command, text, system);
 					insertFunctions(functionname, functiontext);
 					insertChangelog(changelogVersion, changelogEntry);
 
 					//Check if username is present, if not, ask for username
-					if (name.Count > 0) {
-						if (name[0].InnerText.Equals("")) {
+					if (name.Count > 0)
+					{
+						if (name[0].InnerText.Equals(""))
+						{
 							askForUserName();
-						} else {
+						} else
+						{
 							data.UserName = name[0].InnerText;
 						}
 						Text = Text + " - " + data.UserName;
-					} else {
+					} else
+					{
 						askForUserName();
 					}
 
 					updateTreeView();
 
 					xRead.Close();
-				} catch (Exception e) {
+				} catch (Exception e)
+				{
 					MessageBox.Show("Error while reading XML-file.\r\n" + e);
 				}
 			}
@@ -113,11 +125,13 @@ namespace AHK_updater
 		/// <summary>
 		/// Ask the user to give a username to be available in scripts 
 		/// </summary>
-		void askForUserName()
+		void askForUserName ()
 		{
 			var username = new UserName();
 			username.ShowDialog(this);
-			if (!username.getName().Equals("")) {
+			if (!username.getName()
+				    .Equals(""))
+			{
 				updatedData(true);
 			}
 			data.UserName = username.getName();
@@ -133,10 +147,12 @@ namespace AHK_updater
 		/// <param name="hotstringName">Name of the hotstring</param>
 		/// <param name="hotstringText">Codetext of the hotstring</param>
 		/// <param name="hotstringSystem">System of the hotstring for grouping</param>
-		void insertHotstrings(XmlNodeList hotstringName, XmlNodeList hotstringText, XmlNodeList hotstringSystem)
+		void insertHotstrings (XmlNodeList hotstringName, XmlNodeList hotstringText, XmlNodeList hotstringSystem)
 		{
-			if (hotstringName.Count > 0) {
-				for (int i = 0; i < hotstringName.Count; i++) {
+			if (hotstringName.Count > 0)
+			{
+				for (int i = 0; i < hotstringName.Count; i++)
+				{
 					data.addHotstring(hotstringName[i].InnerText, hotstringText[i].InnerText.Trim(), hotstringSystem[i].InnerText);
 				}
 			}
@@ -148,19 +164,15 @@ namespace AHK_updater
 		/// </summary>
 		/// <param name="functionname">Name of function</param>
 		/// <param name="functiontext">Codetext of function</param>
-		void insertFunctions(XmlNodeList functionname, XmlNodeList functiontext)
+		void insertFunctions (XmlNodeList functionname, XmlNodeList functiontext)
 		{
-			if (functionname.Count > 0) {
+			if (functionname.Count > 0)
+			{
 				for (int i = 0; i < functionname.Count; i++)
 				{
 					data.addFunction(functionname[i].InnerText, functiontext[i].InnerText);
 					lbFunctions.Items.Add(functionname[i].InnerText);
 				}
-
-				/*txtFunctions.TextChanged -= txtFunctions_TextChanged;
-				txtFunctions.Text = functions;
-				txtFunctions.TextChanged += txtFunctions_TextChanged;
-				data.Functions = functions;*/
 			}
 		}
 
@@ -169,11 +181,13 @@ namespace AHK_updater
 		/// </summary>
 		/// <param name="changelogVersion">NodeList with versionnumbers</param>
 		/// <param name="changelogEntry">NodeList with changelogentries</param>
-		void insertChangelog(XmlNodeList changelogVersion, XmlNodeList changelogEntry)
+		void insertChangelog (XmlNodeList changelogVersion, XmlNodeList changelogEntry)
 		{
 			txtChangelog.TextChanged -= txtChangelog_TextChanged;
-			if (changelogVersion.Count > 0) {
-				for (int i = 0; i < changelogVersion.Count; i++) {
+			if (changelogVersion.Count > 0)
+			{
+				for (int i = 0; i < changelogVersion.Count; i++)
+				{
 					data.updateChangelog(changelogVersion[i].InnerText, changelogEntry[i].InnerText);
 					lbChangelogItems.Items.Add(changelogVersion[i].InnerText);
 				}
@@ -186,7 +200,7 @@ namespace AHK_updater
 		/// <summary>
 		/// Closes the application 
 		/// </summary>
-		void shutdown()
+		void shutdown ()
 		{
 			hotstringTextChanged = functionsTextChanged = changelogTextChanged = false;
 			updatedData(false);
@@ -197,12 +211,15 @@ namespace AHK_updater
 		/// Sets all commands in data.commandslist and inserts in treeview
 		/// If a system is not present, create a node under root
 		/// </summary>
-		void updateTreeView()
+		void updateTreeView ()
 		{
 			treeHotstrings.Nodes.Clear();
-			foreach (AHKCommand item in data.hotstringsList) {
-				if (!item.System.Equals("")) {
-					if (!treeHotstrings.Nodes.ContainsKey(item.System)) {
+			foreach (AHKCommand item in data.hotstringsList)
+			{
+				if (!item.System.Equals(""))
+				{
+					if (!treeHotstrings.Nodes.ContainsKey(item.System))
+					{
 						var treeNode = new TreeNode(item.System);
 						treeNode.Name = item.System;
 						treeHotstrings.Nodes.Add(treeNode);
@@ -215,22 +232,28 @@ namespace AHK_updater
 			treeHotstrings.Sort();
 		}
 
-		void updateFunctionListBox()
+		/// <summary>
+		/// An update of a function have been made
+		/// Reload list to correspond with current data
+		/// </summary>
+		void updateFunctionListBox ()
 		{
 			lbFunctions.Items.Clear();
-			foreach(Function item in data.functionsList)
+			foreach (Function item in data.functionsList)
 				lbFunctions.Items.Add(item.Name);
 		}
+
 		/// <summary>
 		/// Collect the hotstrings and write to AutoHotKey scriptfile 
 		/// </summary>
-		void saveToScriptFile()
+		void saveToScriptFile ()
 		{
 			var writer = new StreamWriter((scriptFile), false, System.Text.Encoding.GetEncoding(1252));
 
-			try {
+			try
+			{
 				writer.WriteLine("SetTimer,UPDATEDSCRIPT,1000");
-				writer.Write("UPDATEDSCRIPT:\nFileGetAttrib,attribs,%A_ScriptFullPath%\nIfInString,attribs,A\n{\nFileSetAttrib,-A,%A_ScriptFullPath%\nSplashTextOn,,,Updated script,\nSleep,500\nReload\n}\nReturn\n\n");
+				writer.Write("UPDATEDSCRIPT:\r\nFileGetAttrib,attribs,%A_ScriptFullPath%\r\nIfInString,attribs,A\r\n{\r\nFileSetAttrib,-A,%A_ScriptFullPath%\r\nSplashTextOn,,,Updated script,\r\nSleep,500\r\nReload\r\n}\r\nReturn\r\n\r\n");
 				writer.Write(fetchHotstringsForScript());
 				writer.Flush();
 				writer.Write(fetchFunctionsForScript());
@@ -239,7 +262,8 @@ namespace AHK_updater
 				statusUpdate(", Scriptfile", true);
 
 				updatedData(false);
-			} catch (Exception e) {
+			} catch (Exception e)
+			{
 				MessageBox.Show("Something went wrong when writing script-file.\nError:\n" + e.Message, "Write error", MessageBoxButtons.OK);
 			}
 		}
@@ -247,11 +271,12 @@ namespace AHK_updater
 		/// <summary>
 		/// Collect the hotstrings and write to XML-file 
 		/// </summary>
-		void saveToXMLFile()
+		void saveToXMLFile ()
 		{
 			var writer = new StreamWriter((xmlFile), false, System.Text.Encoding.UTF8);
 
-			try {
+			try
+			{
 				writer.WriteLine("<?xml version=\"1.0\"?>\r\n<ahk>");
 				writer.WriteLine("<ahkcommand><name>" + data.UserName + "</name></ahkcommand>");
 				writer.Write(fetchHotstringsForXML());
@@ -263,7 +288,8 @@ namespace AHK_updater
 				statusUpdate("Files have been saved: XMLfile", false);
 
 				updatedData(false);
-			} catch (Exception exc) {
+			} catch (Exception exc)
+			{
 				MessageBox.Show("Something went wrong when writing XML-file.\nError:\n" + exc.Message.ToString(), "Write error", MessageBoxButtons.OK);
 			}
 		}
@@ -271,15 +297,17 @@ namespace AHK_updater
 		/// <summary>
 		/// Write changelog to file 
 		/// </summary>
-		void saveToChangelog()
+		void saveToChangelog ()
 		{
 			var writer = new StreamWriter((test ? changelogfileTest : changelogfile), false, System.Text.UnicodeEncoding.Unicode);
 
-			try {
+			try
+			{
 				writer.Write(data.getChangelogText());
 				writer.Flush();
 				writer.Close();
-			} catch (Exception e) {
+			} catch (Exception e)
+			{
 				MessageBox.Show("Something went wrong when writing Changelog.\nError:\n" + e.Message, "Write error", MessageBoxButtons.OK);
 			}
 		}
@@ -288,14 +316,17 @@ namespace AHK_updater
 		/// Collect all hotstrings 
 		/// </summary>
 		/// <returns>Return each as XML-formated string</returns>
-		string fetchHotstringsForXML()
+		string fetchHotstringsForXML ()
 		{
 			var xmlText = "";
 
-			foreach (AHKCommand item in data.hotstringsList) {
-				if (item.System.Equals("Variables")) {
+			foreach (AHKCommand item in data.hotstringsList)
+			{
+				if (item.System.Equals("Variables"))
+				{
 					xmlText = item.getXmlString() + "\r\n" + xmlText;
-				} else {
+				} else
+				{
 					xmlText = xmlText + item.getXmlString() + "\r\n";
 				}
 			}
@@ -307,14 +338,17 @@ namespace AHK_updater
 		/// Collect all hotstrings 
 		/// </summary>
 		/// <returns>Return each as AHK-formated string</returns>
-		string fetchHotstringsForScript()
+		string fetchHotstringsForScript ()
 		{
 			string scriptData = "";
 
-			foreach (AHKCommand item in data.hotstringsList) {
-				if (item.System.Equals("Variables")) {
+			foreach (AHKCommand item in data.hotstringsList)
+			{
+				if (item.System.Equals("Variables"))
+				{
 					scriptData = item.getScriptString() + "\r\n" + scriptData;
-				} else {
+				} else
+				{
 					scriptData = scriptData + item.getScriptString() + "\r\n";
 				}
 			}
@@ -326,15 +360,19 @@ namespace AHK_updater
 		/// Insert functiontext as XML-code 
 		/// </summary>
 		/// <returns>XML-string of the functions</returns>
-		string fetchFunctionsXML()
+		string fetchFunctionsXML ()
 		{
 			var xmlText = "";
-			foreach(Function item in data.functionsList)
+			foreach (Function item in data.functionsList)
 				xmlText = xmlText + "\r\n" + item.getXmlString();
 			return xmlText;
 		}
 
-		string fetchFunctionsForScript()
+		/// <summary>
+		/// Loops through list of functions and returns name and text as scripttext
+		/// </summary>
+		/// <returns>String with functions formated as AHK-script</returns>
+		string fetchFunctionsForScript ()
 		{
 			string scriptData = "";
 			
@@ -347,7 +385,7 @@ namespace AHK_updater
 		/// Collect all changelogentries 
 		/// </summary>
 		/// <returns>Return each as string</returns>
-		string fetchChangelogXML()
+		string fetchChangelogXML ()
 		{
 			return data.getChangelogXML();
 		}
@@ -357,7 +395,7 @@ namespace AHK_updater
 		/// </summary>
 		/// <param name="newStatus">Information of that was last performed</param>
 		/// <param name="addition">If the text is to be added to any previous text</param>
-		void statusUpdate(string newStatus, bool addition)
+		void statusUpdate (string newStatus, bool addition)
 		{
 			if (addition)
 				lblStatus.Text += newStatus;
@@ -369,17 +407,17 @@ namespace AHK_updater
 		/// Sets Updated to true and making button for Save to file visible 
 		/// </summary>
 		/// <param name="updated">If data is to be updated</param>
-		void updatedData(bool updated)
+		void updatedData (bool updated)
 		{
 			data.Updated = updated;
-			btnSaveToFile.Visible = updated;
+			btnSaveToFile.Enabled = updated;
 		}
 
 		/// <summary>
 		/// Calls a texteditor to open specified file 
 		/// </summary>
 		/// <param name="fileToOpen">Name of file to be opened</param>
-		void openFile(string fileToOpen)
+		void openFile (string fileToOpen)
 		{
 			var startInfo = new ProcessStartInfo();
 
@@ -394,10 +432,12 @@ namespace AHK_updater
 		/// </summary>
 		/// <param name="sender">Reference of which textbox the keystroke is made in</param>
 		/// <param name="e">Generic KeyEventArgs</param>
-		void shortcutSave(string sender, KeyEventArgs e)
+		void shortcutSave (string sender, KeyEventArgs e)
 		{
-			if (e.Control && e.KeyCode == Keys.S) {
-				switch (sender) {
+			if (e.Control && e.KeyCode == Keys.S)
+			{
+				switch (sender)
+				{
 					case "hotstring":
 						if (currentHotstring != null)
 							btnUpdateHotstring_Click(null, null);
@@ -417,10 +457,11 @@ namespace AHK_updater
 		/// </summary>
 		/// <param name="sender">Reference of which textbox the event is made in</param>
 		/// <param name="e">Generic Eventargs</param>
-		void textbox_leave(string sender, EventArgs e)
+		void textbox_leave (string sender, EventArgs e)
 		{
 			var textType = "";
-			switch (sender) {
+			switch (sender)
+			{
 				case "hotstring":
 					textType = "Commandtext";
 					break;
@@ -435,10 +476,52 @@ namespace AHK_updater
 			var ans = MessageBox.Show(textType + " have changed.\nDo you want to save?", "Text changed", MessageBoxButtons.YesNo);
 			if (ans == DialogResult.Yes)
 				btnUpdateHotstring_Click(null, null);
-			else {
+			else
+			{
 				btnUpdateHotstring.Enabled = false;
 				hotstringTextChanged = false;
 			}
+		}
+
+		/// <summary>
+		/// Searches treeview for a child node and returns that node
+		/// </summary>
+		/// <param name="name">Name of the to search for</param>
+		/// <param name="system">Name of parentnode to search for</param>
+		/// <returns>TreeNode with the searched name</returns>
+		TreeNode getHotstringNode (string name, string system)
+		{
+			TreeNode sysNode = treeHotstrings.Nodes.Find(system, false)[0];
+			foreach (TreeNode node in sysNode.Nodes)
+			{
+				if (node.Text == name)
+					return node;
+			}
+			return null;
+		}
+
+		/// <summary>
+		/// Function to easily handle turning eventhandlers off
+		/// </summary>
+		void eventsOff ()
+		{
+			txtFunctionName.TextChanged -= txtFunctionName_TextChanged;
+			txtFunctionText.TextChanged -= txtFunctions_TextChanged;
+			txtHotstringName.TextChanged -= txtHotstringName_TextChanged;
+			txtHotstringText.TextChanged -= txtHotstringText_TextChanged;
+			txtChangelog.TextChanged -= txtChangelog_TextChanged;
+		}
+
+		/// <summary>
+		/// Function to easily handle turning eventhandlers on
+		/// </summary>
+		void eventsOn ()
+		{
+			txtFunctionName.TextChanged += txtFunctionName_TextChanged;
+			txtFunctionText.TextChanged += txtFunctions_TextChanged;
+			txtHotstringName.TextChanged += txtHotstringName_TextChanged;
+			txtHotstringText.TextChanged += txtHotstringText_TextChanged;
+			txtChangelog.TextChanged += txtChangelog_TextChanged;
 		}
 
 		/// <summary>
@@ -448,13 +531,16 @@ namespace AHK_updater
 		/// </summary>
 		/// <param name="sender">Generic object</param>
 		/// <param name="e">Generic EventArgs</param>
-		void txtHotstringText_TextChanged(object sender, EventArgs e)
+		void txtHotstringText_TextChanged (object sender, EventArgs e)
 		{
-			if (currentHotstring != null) {
-				if (txtHotstringText.Text != currentHotstring.Text) {
+			if (currentHotstring != null)
+			{
+				if (txtHotstringText.Text != currentHotstring.Text)
+				{
 					btnUpdateHotstring.Enabled = true;
 					hotstringTextChanged = true;
-				} else {
+				} else
+				{
 					btnUpdateHotstring.Enabled = false;
 					hotstringTextChanged = false;
 				}
@@ -467,16 +553,21 @@ namespace AHK_updater
 		/// </summary>
 		/// <param name="sender">Generic object</param>
 		/// <param name="e">Generic EventArgs</param>
-		void txtFunctions_TextChanged(object sender, EventArgs e)
+		void txtFunctions_TextChanged (object sender, EventArgs e)
 		{
-			if (!data.getFunction(lbFunctions.SelectedItem.ToString()).Text.Equals(txtFunctionText.Text)) {
-				btnUpdateFunction.Enabled = true;
-				btnUpdateFunction.Visible = true;
-				functionsTextChanged = true;
-			} else {
-				btnUpdateFunction.Enabled = false;
-				btnUpdateFunction.Visible = false;
-				functionsTextChanged = false;
+			if (currentFunction != null)
+			{
+				if (!currentFunction.Text.Equals(txtFunctionText.Text))
+				{
+					btnUpdateFunction.Enabled = true;
+					btnUpdateFunction.Visible = true;
+					functionsTextChanged = true;
+				} else
+				{
+					btnUpdateFunction.Enabled = false;
+					btnUpdateFunction.Visible = false;
+					functionsTextChanged = false;
+				}
 			}
 		}
 
@@ -485,14 +576,16 @@ namespace AHK_updater
 		/// </summary>
 		/// <param name="sender">Generic object</param>
 		/// <param name="e">Generic EventArgs</param>
-		void txtSystem_TextChanged(object sender, EventArgs e)
+		void txtSystem_TextChanged (object sender, EventArgs e)
 		{
-			if(currentHotstring != null)
+			if (currentHotstring != null)
 			{
-				if (!currentHotstring.System.Equals(txtHotstringSystem.Text)) {
+				if (!currentHotstring.System.Equals(txtHotstringSystem.Text))
+				{
 					btnUpdateHotstring.Enabled = true;
 					hotstringTextChanged = true;
-				} else {
+				} else
+				{
 					btnUpdateHotstring.Enabled = false;
 					hotstringTextChanged = false;
 				}
@@ -504,36 +597,52 @@ namespace AHK_updater
 		/// </summary>
 		/// <param name="sender">Generic object</param>
 		/// <param name="e">Generic EventArgs</param>
-		void txtHotstringText_Leave(object sender, EventArgs e)
+		void txtHotstringText_Leave (object sender, EventArgs e)
 		{
-			if (!btnUpdateHotstring.ContainsFocus)
+			if (ActiveForm == this)
 			{
-				if (hotstringTextChanged)
-					textbox_leave("hotstring", e);
+				if (!btnUpdateHotstring.ContainsFocus)
+				{
+					if (hotstringTextChanged)
+						textbox_leave("hotstring", e);
+				}
 			}
 			hotstringTextChanged = false;
 		}
+
 		/// <summary>
 		/// Function to check if users want to save changes in textbox before changing focus 
 		/// </summary>
 		/// <param name="sender">Generic object</param>
 		/// <param name="e">Generic EventArgs</param>
-		void txtFunctionsText_Leave(object sender, EventArgs e)
+		void txtFunctionsText_Leave (object sender, EventArgs e)
 		{
-			if (!btnUpdateFunction.ContainsFocus)
-				if (functionsTextChanged)
-					textbox_leave("functions", e);
+			if (ActiveForm == this)
+			{
+				if (!btnUpdateFunction.ContainsFocus)
+				{
+					if (functionsTextChanged)
+						textbox_leave("functions", e);
+				}
+			}
 		}
+
 		/// <summary>
 		/// Function to check if users want to save changes in textbox before changing focus 
 		/// </summary>
 		/// <param name="sender">Generic object</param>
 		/// <param name="e">Generic EventArgs</param>
-		void txtChangelogText_Leave(object sender, EventArgs e)
+		void txtChangelogText_Leave (object sender, EventArgs e)
 		{
-			if (!btnUpdateChangelog.ContainsFocus)
-				if (changelogTextChanged)
-					textbox_leave("changelog", e);
+			if (ActiveForm == this)
+			{
+
+				if (!btnUpdateChangelog.ContainsFocus)
+				{
+					if (changelogTextChanged)
+						textbox_leave("changelog", e);
+				}
+			}
 		}
 
 		/// <summary>
@@ -541,9 +650,9 @@ namespace AHK_updater
 		/// </summary>
 		/// <param name="sender">Generic object</param>
 		/// <param name="e">Generic EventArgs</param>
-		void txtHotstringName_TextChanged(object sender, EventArgs e)
+		void txtHotstringName_TextChanged (object sender, EventArgs e)
 		{
-			if(currentHotstring != null)
+			if (currentHotstring != null)
 			{
 				ttHotstringExists.Hide(btnUpdateHotstring);
 				if (!currentHotstring.Name.Equals(txtHotstringName.Text))
@@ -553,11 +662,13 @@ namespace AHK_updater
 						ttHotstringExists.Show("Hotstring with this name already exists.\r\nChoose a new name.", txtHotstringName, 0, 18);
 						btnUpdateHotstring.Enabled = false;
 						hotstringTextChanged = false;
-					} else {
+					} else
+					{
 						btnUpdateHotstring.Enabled = true;
 						hotstringTextChanged = true;
-				    }
-				} else {
+					}
+				} else
+				{
 					btnUpdateHotstring.Enabled = false;
 					hotstringTextChanged = false;
 				}
@@ -569,34 +680,44 @@ namespace AHK_updater
 		/// </summary>
 		/// <param name="sender">Generic object</param>
 		/// <param name="e">Generic EventArgs</param>
-		void txtChangelog_TextChanged(object sender, EventArgs e)
+		void txtChangelog_TextChanged (object sender, EventArgs e)
 		{
 			string en = txtChangelog.Text.Substring(26);
-			if (!data.currentChangelogEntry.Entry.Equals(en)) {
+			if (!data.currentChangelogEntry.Entry.Equals(en))
+			{
 				btnUpdateChangelog.Enabled = true;
 				btnUpdateChangelog.Visible = true;
 				changelogTextChanged = true;
-			} else {
+			} else
+			{
 				btnUpdateChangelog.Enabled = false;
 				btnUpdateChangelog.Visible = false;
 				changelogTextChanged = true;
 			}
 		}
 
-		void txtFunctionName_TextChanged(object sender, EventArgs e)
+		/// <summary>
+		/// Name of the function have changed
+		/// Enable updatebutton
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void txtFunctionName_TextChanged (object sender, EventArgs e)
 		{
-			if(currentFunction != null)
+			if (currentFunction != null)
 			{
-				if(!currentFunction.Name.Equals(txtFunctionName.Text))
+				if (!currentFunction.Name.Equals(txtFunctionName.Text))
 				{
 					if (data.functionExists(txtFunctionName.Text))
 					{
 						ttHotstringExists.Show("Hotstring with this name already exists.\r\nChoose a new name.", txtFunctionName, 0, 18);
 						btnUpdateFunction.Enabled = false;
-					} else {
+					} else
+					{
 						btnUpdateFunction.Enabled = true;
 					}
-				} else {
+				} else
+				{
 					btnUpdateFunction.Enabled = false;
 				}
 			}
@@ -607,7 +728,7 @@ namespace AHK_updater
 		/// </summary>
 		/// <param name="sender">Generic object</param>
 		/// <param name="e">Generic KeyEventArgs</param>
-		void txtHotstringText_KeyUp(object sender, KeyEventArgs e)
+		void txtHotstringText_KeyUp (object sender, KeyEventArgs e)
 		{
 			if (hotstringTextChanged)
 				shortcutSave("hotstring", e);
@@ -617,17 +738,18 @@ namespace AHK_updater
 		/// </summary>
 		/// <param name="sender">Generic object</param>
 		/// <param name="e">Generic KeyEventArgs</param>
-		void txtFunctions_KeyUp(object sender, KeyEventArgs e)
+		void txtFunctions_KeyUp (object sender, KeyEventArgs e)
 		{
 			if (functionsTextChanged)
 				shortcutSave("functions", e);
 		}
+
 		/// <summary>
 		/// Function to catch Ctrl+S for saving the text in textboxes
 		/// </summary>
 		/// <param name="sender">Generic object</param>
 		/// <param name="e">Generic KeyEventArgs</param>
-		void txtChangelog_KeyUp(object sender, KeyEventArgs e)
+		void txtChangelog_KeyUp (object sender, KeyEventArgs e)
 		{
 			if (changelogTextChanged)
 				shortcutSave("changelog", e);
@@ -640,18 +762,20 @@ namespace AHK_updater
 		/// </summary>
 		/// <param name="sender">Generic object</param>
 		/// <param name="e">Generic EventArgs</param>
-		void btnRemoveHotstring_Click(object sender, EventArgs e)
+		void btnRemoveHotstring_Click (object sender, EventArgs e)
 		{
-			if(currentHotstring != null)
+			if (currentHotstring != null)
 			{
 				DialogResult answer = MessageBox.Show("Remove command " + currentHotstring.Name + "?", "Remove", MessageBoxButtons.YesNo);
 
-				if (answer == DialogResult.Yes) {
+				if (answer == DialogResult.Yes)
+				{
 					var hotstringSystem = currentHotstring.System;
 					var hotstringName = currentHotstring.Name;
 					treeHotstrings.Nodes[hotstringSystem].Nodes.Remove(treeHotstrings.SelectedNode);
 					data.deleteHotstring(hotstringName);
-					if (treeHotstrings.Nodes[hotstringSystem].Nodes.Count == 0) {
+					if (treeHotstrings.Nodes[hotstringSystem].Nodes.Count == 0)
+					{
 						treeHotstrings.Nodes.RemoveByKey(hotstringSystem);
 					}
 	
@@ -666,7 +790,7 @@ namespace AHK_updater
 		/// </summary>
 		/// <param name="sender">Generic object</param>
 		/// <param name="e">Generic EventArgs</param>
-		void btnUpdateChangelog_Click(object sender, EventArgs e)
+		void btnUpdateChangelog_Click (object sender, EventArgs e)
 		{
 			data.updateCurrentChangelogItem(txtChangelog.Text.Substring(26), true);
 
@@ -683,19 +807,22 @@ namespace AHK_updater
 		/// </summary>
 		/// <param name="sender">Generic object</param>
 		/// <param name="e">Generic EventArgs</param>
-		void btnUpdateHotstring_Click(object sender, EventArgs e)
+		void btnUpdateHotstring_Click (object sender, EventArgs e)
 		{
-			if(currentHotstring != null)
+			if (currentHotstring != null)
 			{
-				var answer = new ChangeLogText(currentHotstring.Name);
+				var answer = new ChangeLogText(txtHotstringName.Text);
 				answer.ShowDialog(this);
 
-				switch (answer.DialogResult) {
+				switch (answer.DialogResult)
+				{
 					case DialogResult.OK:
 					case DialogResult.Cancel:
 						if (!currentHotstring.System.Equals(txtHotstringSystem.Text))
 							updateTreeView();
-						if (answer.DialogResult == DialogResult.OK && !answer.getChangeInfo().Equals(currentHotstring.Name)) {
+						if (answer.DialogResult == DialogResult.OK && !answer.getChangeInfo()
+							    .Equals(currentHotstring.Name))
+						{
 							data.updateCurrentChangelogItem(answer.getChangeInfo(), false);
 							txtChangelog.TextChanged -= txtChangelog_TextChanged;
 							txtChangelog.Text = data.currentChangelogEntry.Version + "\r\n----------\r\n" + data.currentChangelogEntry.Entry;
@@ -706,6 +833,7 @@ namespace AHK_updater
 						hotstringTextChanged = false;
 						statusUpdate("Hotstring " + currentHotstring.Name + " have been updated", false);
 						updateTreeView();
+						btnSaveToFile.Enabled = true;
 						break;
 					case DialogResult.Abort:
 						statusUpdate("Hotstring " + currentHotstring.Name + " was not updated", false);
@@ -714,8 +842,12 @@ namespace AHK_updater
 						txtHotstringName.Text = currentHotstring.Name;
 						break;
 				}
+				TreeNode currentNode = getHotstringNode(currentHotstring.Name, currentHotstring.System);
+				if (currentNode != null)
+				{
+					treeHotstrings.SelectedNode = currentNode;
+				}
 			}
-			treeHotstrings.HideSelection = false;
 			btnUpdateHotstring.Enabled = false;
 		}
 
@@ -724,12 +856,13 @@ namespace AHK_updater
 		/// </summary>
 		/// <param name="sender">Generic object</param>
 		/// <param name="e">Generic EventArgs</param>
-		void btnUpdateFunction_Click(object sender, EventArgs e)
+		void btnUpdateFunction_Click (object sender, EventArgs e)
 		{
-			var newChangelogText = new ChangeLogText();
+			ChangeLogText newChangelogText = new ChangeLogText(txtFunctionName.Text);
 			newChangelogText.ShowDialog(this);
 
-			switch (newChangelogText.DialogResult) {
+			switch (newChangelogText.DialogResult)
+			{
 				case DialogResult.OK:
 				case DialogResult.Cancel:
 					if (newChangelogText.DialogResult == DialogResult.OK)
@@ -739,8 +872,9 @@ namespace AHK_updater
 						txtChangelog.Text = data.currentChangelogEntry.Version + "\r\n----------\r\n" + data.currentChangelogEntry.Entry;
 						txtChangelog.TextChanged += txtChangelog_TextChanged;
 					}
-					if (!currentFunction.Name.Equals(txtFunctionName))
+					if (!currentFunction.Name.Equals(txtFunctionName.Text))
 						txtFunctionText.Text = txtFunctionText.Text.Replace(currentFunction.Name, txtFunctionName.Text);
+					currentFunction = data.getFunction(txtFunctionName.Text);
 					data.updateFunction(currentFunction.Name, txtFunctionName.Text, txtFunctionText.Text);
 					updateFunctionListBox();
 
@@ -751,11 +885,9 @@ namespace AHK_updater
 					break;
 				case DialogResult.Abort:
 					statusUpdate("Functions was not updated", false);
-					txtFunctionText.Text = data.Functions;
+					txtFunctionText.Text = currentFunction.Text;
 					break;
 			}
-
-			btnUpdateFunction.Enabled = false;
 			ActiveControl = txtFunctionText;
 		}
 
@@ -767,7 +899,7 @@ namespace AHK_updater
 		/// </summary>
 		/// <param name="sender">Generid sender</param>
 		/// <param name="e">Generic Eventargs</param>
-		void btnSaveToFile_Click(object sender, EventArgs e)
+		void btnSaveToFile_Click (object sender, EventArgs e)
 		{
 			saveToXMLFile();
 			saveToScriptFile();
@@ -780,48 +912,55 @@ namespace AHK_updater
 		/// </summary>
 		/// <param name="sender">Generid sender</param>
 		/// <param name="e">Generic Eventargs</param>
-		void menuClose_Click(object sender, EventArgs e)
+		void menuClose_Click (object sender, EventArgs e)
 		{
 			Close();
 		}
 
-		/**
-		 * 
-		 * 
-		 * */
 		/// <summary>
 		/// Open form for defining name of hotstring
 		/// Change selected tab in tabControl if new function is to be created		
 		/// </summary>
 		/// <param name="sender">Generic object</param>
 		/// <param name="e">Generic EventArgs</param>
-		void menuNewCommand_Click(object sender, EventArgs e)
+		void menuNewCommand_Click (object sender, EventArgs e)
 		{
 			var newCommand = new NewCommand(ref data);
 			DialogResult newCommandDialog = newCommand.ShowDialog(this);
 
-			if (newCommandDialog == DialogResult.OK) {
+			eventsOff();
+			if (newCommandDialog == DialogResult.OK)
+			{
 				string commandName = newCommand.getItem(), commandSystem = newCommand.getSystem(), commandText;
 				int commandType = newCommand.getCommandType();
 				TreeNode newNode = null;
 
-				if (commandType == 2) {
+				if (commandType == 2) // New function
+				{
 					tabControl.SelectedIndex = 1;
 					txtFunctionText.Focus();
-					txtFunctionText.Text = "\r\n" + txtFunctionText.Text + "\r\n" + commandName + "()\r\n{\r\n\r\n}";
-					txtFunctionText.Select(txtFunctionText.Text.Length - 2, 0);
+					txtFunctionText.Text = commandName + "()\r\n{\r\n\r\n}";
+					txtFunctionName.Text = commandName;
+					currentFunction = new Function(commandName, txtFunctionText.Text);
+					data.addFunction(currentFunction.Name, currentFunction.Text);
+					btnUpdateFunction.Enabled = true;
+					txtFunctionText.Select(txtFunctionText.Text.Length - 3, 0);
 					txtFunctionText.ScrollToCaret();
-				} else {
+				} else // New hotstring/variable
+				{
 					currentHotstring = new AHKCommand(commandName, "", commandSystem);
-					if (commandType == 0) {
+					if (commandType == 0)
+					{
 						commandText = "SendInput,\r\n(\r\n\r\n)\r\nReturn";
-					} else {
+					} else
+					{
 						commandSystem = "Variables";
 						commandText = commandName + " = ";
 					}
 					data.addHotstring(commandName, commandText, commandSystem);
 
-					if (!treeHotstrings.Nodes.ContainsKey(commandSystem)) {
+					if (!treeHotstrings.Nodes.ContainsKey(commandSystem))
+					{
 						var treeNode = new TreeNode(commandSystem);
 						treeNode.Name = commandSystem;
 						treeHotstrings.Nodes.Add(treeNode);
@@ -832,13 +971,13 @@ namespace AHK_updater
 					treeHotstrings.Sort();
 					tabControl.SelectedIndex = 0;
 					treeHotstrings.SelectedNode = newNode;
-					if(commandType == 0)
+					if (commandType == 0)
 						txtHotstringText.Select(15, 0);
 					else
 						txtHotstringText.Select(commandText.Length, 0);
 				}
-				updatedData(true);
 			}
+			eventsOn();
 		}
 
 		/// <summary>
@@ -846,7 +985,7 @@ namespace AHK_updater
 		/// </summary>
 		/// <param name="sender">Generic object</param>
 		/// <param name="e">Generic EventArgs</param>
-		void menuOpenScript_Click(object sender, EventArgs e)
+		void menuOpenScript_Click (object sender, EventArgs e)
 		{
 			openFile(scriptFile);
 		}
@@ -856,7 +995,7 @@ namespace AHK_updater
 		/// </summary>
 		/// <param name="sender">Generic object</param>
 		/// <param name="e">Generic EventArgs</param>
-		void menuOpenXML_Click(object sender, EventArgs e)
+		void menuOpenXML_Click (object sender, EventArgs e)
 		{
 			openFile(xmlFile);
 		}
@@ -867,9 +1006,9 @@ namespace AHK_updater
 		/// </summary>
 		/// <param name="sender">Generic object</param>
 		/// <param name="e">Generic EventArgs</param>
-		void tabControl_SelectedIndexChanged(object sender, EventArgs e)
+		void tabControl_SelectedIndexChanged (object sender, EventArgs e)
 		{
-			if(tabControl.SelectedIndex == 1)
+			if (tabControl.SelectedIndex == 1)
 				ActiveControl = txtFunctionText;
 			else if (tabControl.SelectedIndex == 2)
 				ActiveControl = txtChangelog;
@@ -880,9 +1019,10 @@ namespace AHK_updater
 		/// </summary>
 		/// <param name="sender">Generic object</param>
 		/// <param name="e">Generic TreeVieEventArgs</param>
-		void treeHotstrings_AfterSelect(object sender, TreeViewEventArgs e)
+		void treeHotstrings_AfterSelect (object sender, TreeViewEventArgs e)
 		{
-			if (e.Node.Level != 0) {
+			if (e.Node.Level != 0)
+			{
 				currentHotstring = data.hotstringsList.Find(x => x.Name.Equals(e.Node.Text));
 				txtHotstringText.Text = currentHotstring.Text;
 				txtHotstringSystem.Text = currentHotstring.System;
@@ -891,7 +1031,8 @@ namespace AHK_updater
 
 				ActiveControl = txtHotstringText;
 
-			} else {
+			} else
+			{
 				currentHotstring = null;
 				txtHotstringText.Text = "";
 				txtHotstringSystem.Text = "";
@@ -905,15 +1046,18 @@ namespace AHK_updater
 		/// </summary>
 		/// <param name="sender">Generic object</param>
 		/// <param name="e">Generic TreeNodeMouseClick</param>
-		void treeHotstrings_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+		void treeHotstrings_NodeMouseClick (object sender, TreeNodeMouseClickEventArgs e)
 		{
-			if(e.Button == MouseButtons.Right)
+			if (e.Node.Level != 0)
 			{
-				if(e.Node.Level != 0)
+				if (e.Button == MouseButtons.Right)
 				{
 					contextMenu.Show(treeHotstrings, e.Location);
 					treeHotstrings.SelectedNode = e.Node;
 				}
+			} else
+			{
+				e.Node.Toggle();
 			}
 		}
 
@@ -922,7 +1066,7 @@ namespace AHK_updater
 		/// </summary>
 		/// <param name="sender">Generic object</param>
 		/// <param name="e">Generic EventArgs</param>
-		void contextItem_Click(object sender, EventArgs e)
+		void contextItem_Click (object sender, EventArgs e)
 		{
 			lbExtractions.Items.Add(treeHotstrings.SelectedNode.Text);
 			toExtract.Add(new AHKCommand(data.getHotstring(treeHotstrings.SelectedNode.Text)));
@@ -934,7 +1078,7 @@ namespace AHK_updater
 		/// </summary>
 		/// <param name="sender">Generic object</param>
 		/// <param name="e">Generic EventArgs</param>
-		void btnCancelExtract_Click(object sender, EventArgs e)
+		void btnCancelExtract_Click (object sender, EventArgs e)
 		{
 			lbExtractions.Items.Clear();
 			toExtract = null;
@@ -946,7 +1090,7 @@ namespace AHK_updater
 		/// </summary>
 		/// <param name="sender">Generic object</param>
 		/// <param name="e">Generic EventArgs</param>
-		void btnRemoveExtract_Click(object sender, EventArgs e)
+		void btnRemoveExtract_Click (object sender, EventArgs e)
 		{
 			toExtract.RemoveAll(x => x.Name.Equals(lbExtractions.SelectedItem.ToString()));
 			lbExtractions.Items.Remove(lbExtractions.SelectedItem);
@@ -959,15 +1103,15 @@ namespace AHK_updater
 		/// </summary>
 		/// <param name="sender">Generic object</param>
 		/// <param name="e">Generic EventArgs</param>
-		void btnExtract_Click(object sender, EventArgs e)
+		void btnExtract_Click (object sender, EventArgs e)
 		{
 			SaveFileDialog dir = new SaveFileDialog();
 			dir.FileName = "Extracted hotstrings.ahk";
 			dir.ShowDialog();
 
-			StreamWriter writer = new StreamWriter (dir.FileName, false, System.Text.Encoding.GetEncoding(1252));
+			StreamWriter writer = new StreamWriter(dir.FileName, false, System.Text.Encoding.GetEncoding(1252));
 
-			foreach(AHKCommand item in toExtract)
+			foreach (AHKCommand item in toExtract)
 			{
 				writer.WriteLine(item.getScriptString());
 			}
@@ -977,10 +1121,11 @@ namespace AHK_updater
 
 		/// <summary>
 		/// User switches item in listbox
+		/// Search for corresponding changelogentry and display in txtChangelogText
 		/// </summary>
 		/// <param name="sender">Generic object</param>
 		/// <param name="e">Generic EventArgs</param>
-		void lbChangelogItems_SelectedIndexChanged(object sender, EventArgs e)
+		void lbChangelogItems_SelectedIndexChanged (object sender, EventArgs e)
 		{
 			var item = data.getChangelogEntry(lbChangelogItems.SelectedItem.ToString());
 			txtChangelog.TextChanged -= txtChangelog_TextChanged;
@@ -988,7 +1133,13 @@ namespace AHK_updater
 			txtChangelog.TextChanged += txtChangelog_TextChanged;
 		}
 
-		void lbFunctions_SelectedIndexChanged(object sender, EventArgs e)
+		/// <summary>
+		/// User switches item in listbox
+		/// Search for corresponding function and display in txtFunctionText
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		void lbFunctions_SelectedIndexChanged (object sender, EventArgs e)
 		{
 			var item = data.getFunction(lbFunctions.SelectedItem.ToString());
 			currentFunction = item;
@@ -1005,12 +1156,14 @@ namespace AHK_updater
 		/// </summary>
 		/// <param name="sender">Generic object</param>
 		/// <param name="e">Generic FormClosingEventArgs</param>
-		void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+		void MainForm_FormClosing (object sender, FormClosingEventArgs e)
 		{
-			if (data.Updated) {
+			if (data.Updated)
+			{
 				DialogResult answer = MessageBox.Show("Unsaved changes have been made.\r\nDo you want to save?", "", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
 
-				switch (answer) {
+				switch (answer)
+				{
 					case DialogResult.Yes:
 						saveToScriptFile();
 						saveToXMLFile();
@@ -1023,7 +1176,8 @@ namespace AHK_updater
 						e.Cancel = true;
 						break;
 				}
-			} else {
+			} else
+			{
 				shutdown();
 			}
 		}

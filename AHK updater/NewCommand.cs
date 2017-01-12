@@ -10,7 +10,6 @@ namespace AHK_updater
 		{
 			InitializeComponent();
 			this.ActiveControl = txtName;
-			cbType.SelectedIndex = 0;
 			this.DialogResult = DialogResult.Cancel;
 			data = temp;
 		}

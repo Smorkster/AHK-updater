@@ -16,7 +16,7 @@ namespace AHK_updater
 		public List<Function> functionsList;
 		List<ChangelogEntry> changelogList;
 		public ChangelogEntry currentChangelogEntry;
-		string functions, username;
+		string username;
 		bool updated = false;
 
 		/// <summary>
@@ -29,7 +29,7 @@ namespace AHK_updater
 			changelogList = new List<ChangelogEntry>();
 			currentChangelogEntry = new ChangelogEntry();
 		}
-		public string Functions { get { return functions; } set { functions = value; } }
+
 		public string UserName { get { return username; } set { username = value; } }
 		public bool Updated { get { return updated; } set { updated = value; } }
 
@@ -94,10 +94,22 @@ namespace AHK_updater
 			return hotstringsList.Single(r => r.Name.Equals(hotstringName));
 		}
 
+		/// <summary>
+		/// Adds a new function
+		/// </summary>
+		/// <param name="fname">Name of the new function</param>
+		/// <param name="ftext">AHK-code for the function</param>
 		public void addFunction(string fname, string ftext)
 		{
 			functionsList.Add(new Function(fname, ftext));
 		}
+
+		/// <summary>
+		/// Updates a function with new text/name
+		/// </summary>
+		/// <param name="oldname">Name of the old/existing function</param>
+		/// <param name="fname">An eventual new name of the function</param>
+		/// <param name="ftext">AHK-code for the function</param>
 		public void updateFunction(string oldname, string fname, string ftext)
 		{
 			int functionIndex = functionsList.FindIndex(x => x.Name.Equals(oldname));
@@ -105,15 +117,32 @@ namespace AHK_updater
 			functionsList[functionIndex].Name = fname;
 			functionsList[functionIndex].Text = ftext;
 		}
+
+		/// <summary>
+		/// Deletes a function from the list
+		/// </summary>
+		/// <param name="fname">Name of function to be removed</param>
 		public void deleteFunction(string fname)
 		{
 			Function item = functionsList.Single(x => x.Name.Equals(fname));
 			functionsList.Remove(item);
 		}
+
+		/// <summary>
+		/// Get a function-object based on its name
+		/// </summary>
+		/// <param name="fname">Name of function to search for</param>
+		/// <returns>A function-object related to the name given on calling</returns>
 		public Function getFunction(string fname)
 		{
 			return functionsList.Single(x=>x.Name.Equals(fname));
 		}
+
+		/// <summary>
+		/// Checks if there is already a function existing with given name
+		/// </summary>
+		/// <param name="fname">Name of eventual new function to check with</param>
+		/// <returns>True if there is a function existing with given name. Otherwise false</returns>
 		public bool functionExists(string fname)
 		{
 			foreach(Function item in functionsList)

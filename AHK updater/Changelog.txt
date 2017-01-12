@@ -1,4 +1,21 @@
-﻿Version 3.0
+﻿Version 3.1
+***********
+Added an icon as resource
+No longer selects command type by default in form for new command
+Now selects the current node in treeview after an update
+Removed unnecessary HideSelection for treeHotstrings
+Corrected anchoring of some controls
+Corrected buttontext for btnUpdateFunction
+Corrected logic for creating new function
+Now shows the new name of hotstring in form for changelogtext
+Added comments to differentiate functionality of new command function
+Now correctly enables btnSaveToFile when a function is saved
+Now moves the carret to a more apporiate position in new function when created
+If a node for system in treeHotstrings is selected, toggle expand
+Changed default size of window, makes it easier to read full names of commands
+Now handles pressing of Enter in the ChangeLogText form
+
+Version 3.0
 ***********
 Renamed some functions and variables
 Added funtionality to extract hotstrings to another script-file

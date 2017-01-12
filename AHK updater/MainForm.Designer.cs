@@ -16,43 +16,43 @@
 		
 		void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
-			this.tabControl = new System.Windows.Forms.TabControl();
-			this.tabPage1 = new System.Windows.Forms.TabPage();
-			this.lblname = new System.Windows.Forms.Label();
-			this.txtHotstringName = new System.Windows.Forms.TextBox();
-			this.btnUpdateHotstring = new System.Windows.Forms.Button();
-			this.btnRemoveCommand = new System.Windows.Forms.Button();
-			this.label1 = new System.Windows.Forms.Label();
-			this.txtHotstringSystem = new System.Windows.Forms.TextBox();
-			this.treeHotstrings = new System.Windows.Forms.TreeView();
-			this.txtHotstringText = new System.Windows.Forms.TextBox();
-			this.tabPage2 = new System.Windows.Forms.TabPage();
-			this.label2 = new System.Windows.Forms.Label();
-			this.txtFunctionName = new System.Windows.Forms.TextBox();
-			this.btnUpdateFunction = new System.Windows.Forms.Button();
-			this.lbFunctions = new System.Windows.Forms.ListBox();
-			this.txtFunctionText = new System.Windows.Forms.TextBox();
-			this.tabPage3 = new System.Windows.Forms.TabPage();
-			this.lbChangelogItems = new System.Windows.Forms.ListBox();
-			this.btnUpdateChangelog = new System.Windows.Forms.Button();
-			this.txtChangelog = new System.Windows.Forms.TextBox();
-			this.tabPage4 = new System.Windows.Forms.TabPage();
-			this.btnRemoveExtract = new System.Windows.Forms.Button();
-			this.lbExtractions = new System.Windows.Forms.ListBox();
-			this.btnCancelExtract = new System.Windows.Forms.Button();
-			this.btnExtract = new System.Windows.Forms.Button();
-			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-			this.menuNewCommand = new System.Windows.Forms.ToolStripMenuItem();
-			this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.menuOpenScript = new System.Windows.Forms.ToolStripMenuItem();
-			this.menuOpenXML = new System.Windows.Forms.ToolStripMenuItem();
-			this.menuClose = new System.Windows.Forms.ToolStripMenuItem();
-			this.btnSaveToFile = new System.Windows.Forms.Button();
-			this.lblStatus = new System.Windows.Forms.Label();
-			this.ttHotstringExists = new System.Windows.Forms.ToolTip(this.components);
-			this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.contextItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnCancelExtract = new System.Windows.Forms.Button();
+            this.btnExtract = new System.Windows.Forms.Button();
+            this.btnRemoveCommand = new System.Windows.Forms.Button();
+            this.btnRemoveExtract = new System.Windows.Forms.Button();
+            this.btnSaveToFile = new System.Windows.Forms.Button();
+            this.btnUpdateChangelog = new System.Windows.Forms.Button();
+            this.btnUpdateFunction = new System.Windows.Forms.Button();
+            this.btnUpdateHotstring = new System.Windows.Forms.Button();
+            this.components = new System.ComponentModel.Container();
+            this.contextItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.lbChangelogItems = new System.Windows.Forms.ListBox();
+            this.lbExtractions = new System.Windows.Forms.ListBox();
+            this.lbFunctions = new System.Windows.Forms.ListBox();
+            this.lblname = new System.Windows.Forms.Label();
+            this.lblStatus = new System.Windows.Forms.Label();
+            this.menuClose = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuNewCommand = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuOpenScript = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuOpenXML = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tabControl = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.treeHotstrings = new System.Windows.Forms.TreeView();
+            this.ttHotstringExists = new System.Windows.Forms.ToolTip(this.components);
+            this.txtChangelog = new System.Windows.Forms.TextBox();
+            this.txtFunctionName = new System.Windows.Forms.TextBox();
+            this.txtFunctionText = new System.Windows.Forms.TextBox();
+            this.txtHotstringName = new System.Windows.Forms.TextBox();
+            this.txtHotstringSystem = new System.Windows.Forms.TextBox();
+            this.txtHotstringText = new System.Windows.Forms.TextBox();
 			this.tabControl.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
@@ -74,7 +74,7 @@
 			this.tabControl.Location = new System.Drawing.Point(12, 27);
 			this.tabControl.Name = "tabControl";
 			this.tabControl.SelectedIndex = 0;
-			this.tabControl.Size = new System.Drawing.Size(690, 393);
+			this.tabControl.Size = new System.Drawing.Size(864, 563);
 			this.tabControl.TabIndex = 3;
 			this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
 			this.tabControl.Leave += new System.EventHandler(this.txtFunctionsText_Leave);
@@ -92,14 +92,15 @@
 			this.tabPage1.Location = new System.Drawing.Point(4, 22);
 			this.tabPage1.Name = "tabPage1";
 			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage1.Size = new System.Drawing.Size(682, 367);
+			this.tabPage1.Size = new System.Drawing.Size(856, 537);
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "Hotstrings";
 			this.tabPage1.UseVisualStyleBackColor = true;
 			// 
 			// lblname
 			// 
-			this.lblname.Location = new System.Drawing.Point(185, 321);
+			this.lblname.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.lblname.Location = new System.Drawing.Point(359, 491);
 			this.lblname.Name = "lblname";
 			this.lblname.Size = new System.Drawing.Size(47, 18);
 			this.lblname.TabIndex = 8;
@@ -107,8 +108,9 @@
 			// 
 			// txtHotstringName
 			// 
+			this.txtHotstringName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.txtHotstringName.Font = new System.Drawing.Font("Lucida Console", 8.25F);
-			this.txtHotstringName.Location = new System.Drawing.Point(238, 320);
+			this.txtHotstringName.Location = new System.Drawing.Point(412, 490);
 			this.txtHotstringName.Name = "txtHotstringName";
 			this.txtHotstringName.Size = new System.Drawing.Size(331, 18);
 			this.txtHotstringName.TabIndex = 7;
@@ -117,9 +119,10 @@
 			// 
 			// btnUpdateHotstring
 			// 
+			this.btnUpdateHotstring.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnUpdateHotstring.AutoSize = true;
 			this.btnUpdateHotstring.Enabled = false;
-			this.btnUpdateHotstring.Location = new System.Drawing.Point(575, 315);
+			this.btnUpdateHotstring.Location = new System.Drawing.Point(749, 485);
 			this.btnUpdateHotstring.Name = "btnUpdateHotstring";
 			this.btnUpdateHotstring.Size = new System.Drawing.Size(101, 23);
 			this.btnUpdateHotstring.TabIndex = 6;
@@ -129,8 +132,9 @@
 			// 
 			// btnRemoveCommand
 			// 
+			this.btnRemoveCommand.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnRemoveCommand.Enabled = false;
-			this.btnRemoveCommand.Location = new System.Drawing.Point(575, 338);
+			this.btnRemoveCommand.Location = new System.Drawing.Point(749, 508);
 			this.btnRemoveCommand.Name = "btnRemoveCommand";
 			this.btnRemoveCommand.Size = new System.Drawing.Size(101, 23);
 			this.btnRemoveCommand.TabIndex = 5;
@@ -140,7 +144,8 @@
 			// 
 			// label1
 			// 
-			this.label1.Location = new System.Drawing.Point(185, 343);
+			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.label1.Location = new System.Drawing.Point(359, 513);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(47, 18);
 			this.label1.TabIndex = 4;
@@ -148,8 +153,9 @@
 			// 
 			// txtHotstringSystem
 			// 
+			this.txtHotstringSystem.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.txtHotstringSystem.Font = new System.Drawing.Font("Lucida Console", 8.25F);
-			this.txtHotstringSystem.Location = new System.Drawing.Point(238, 342);
+			this.txtHotstringSystem.Location = new System.Drawing.Point(412, 512);
 			this.txtHotstringSystem.Name = "txtHotstringSystem";
 			this.txtHotstringSystem.Size = new System.Drawing.Size(331, 18);
 			this.txtHotstringSystem.TabIndex = 3;
@@ -166,7 +172,7 @@
 			this.treeHotstrings.Indent = 19;
 			this.treeHotstrings.Location = new System.Drawing.Point(6, 6);
 			this.treeHotstrings.Name = "treeHotstrings";
-			this.treeHotstrings.Size = new System.Drawing.Size(173, 355);
+			this.treeHotstrings.Size = new System.Drawing.Size(259, 525);
 			this.treeHotstrings.TabIndex = 2;
 			this.treeHotstrings.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeHotstrings_AfterSelect);
 			this.treeHotstrings.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeHotstrings_NodeMouseClick);
@@ -178,11 +184,11 @@
 			| System.Windows.Forms.AnchorStyles.Left) 
 			| System.Windows.Forms.AnchorStyles.Right)));
 			this.txtHotstringText.Font = new System.Drawing.Font("Lucida Console", 8.25F);
-			this.txtHotstringText.Location = new System.Drawing.Point(185, 6);
+			this.txtHotstringText.Location = new System.Drawing.Point(271, 6);
 			this.txtHotstringText.Multiline = true;
 			this.txtHotstringText.Name = "txtHotstringText";
 			this.txtHotstringText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.txtHotstringText.Size = new System.Drawing.Size(491, 308);
+			this.txtHotstringText.Size = new System.Drawing.Size(579, 478);
 			this.txtHotstringText.TabIndex = 0;
 			this.txtHotstringText.TabStop = false;
 			this.txtHotstringText.TextChanged += new System.EventHandler(this.txtHotstringText_TextChanged);
@@ -199,14 +205,15 @@
 			this.tabPage2.Location = new System.Drawing.Point(4, 22);
 			this.tabPage2.Name = "tabPage2";
 			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage2.Size = new System.Drawing.Size(682, 367);
+			this.tabPage2.Size = new System.Drawing.Size(856, 537);
 			this.tabPage2.TabIndex = 1;
 			this.tabPage2.Text = "Functions";
 			this.tabPage2.UseVisualStyleBackColor = true;
 			// 
 			// label2
 			// 
-			this.label2.Location = new System.Drawing.Point(185, 344);
+			this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.label2.Location = new System.Drawing.Point(359, 514);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(47, 18);
 			this.label2.TabIndex = 11;
@@ -214,8 +221,9 @@
 			// 
 			// txtFunctionName
 			// 
+			this.txtFunctionName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.txtFunctionName.Font = new System.Drawing.Font("Lucida Console", 8.25F);
-			this.txtFunctionName.Location = new System.Drawing.Point(238, 343);
+			this.txtFunctionName.Location = new System.Drawing.Point(412, 513);
 			this.txtFunctionName.Name = "txtFunctionName";
 			this.txtFunctionName.Size = new System.Drawing.Size(331, 18);
 			this.txtFunctionName.TabIndex = 10;
@@ -223,16 +231,14 @@
 			// 
 			// btnUpdateFunction
 			// 
-			this.btnUpdateFunction.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-			| System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
+			this.btnUpdateFunction.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnUpdateFunction.AutoSize = true;
 			this.btnUpdateFunction.Enabled = false;
-			this.btnUpdateFunction.Location = new System.Drawing.Point(575, 338);
+			this.btnUpdateFunction.Location = new System.Drawing.Point(749, 508);
 			this.btnUpdateFunction.Name = "btnUpdateFunction";
 			this.btnUpdateFunction.Size = new System.Drawing.Size(101, 23);
 			this.btnUpdateFunction.TabIndex = 9;
-			this.btnUpdateFunction.Text = "Update hotstring";
+			this.btnUpdateFunction.Text = "Update function";
 			this.btnUpdateFunction.UseVisualStyleBackColor = true;
 			this.btnUpdateFunction.Click += new System.EventHandler(this.btnUpdateFunction_Click);
 			// 
@@ -243,7 +249,7 @@
 			this.lbFunctions.FormattingEnabled = true;
 			this.lbFunctions.Location = new System.Drawing.Point(6, 6);
 			this.lbFunctions.Name = "lbFunctions";
-			this.lbFunctions.Size = new System.Drawing.Size(173, 355);
+			this.lbFunctions.Size = new System.Drawing.Size(173, 524);
 			this.lbFunctions.Sorted = true;
 			this.lbFunctions.TabIndex = 4;
 			this.lbFunctions.SelectedIndexChanged += new System.EventHandler(this.lbFunctions_SelectedIndexChanged);
@@ -258,8 +264,8 @@
 			this.txtFunctionText.Location = new System.Drawing.Point(185, 6);
 			this.txtFunctionText.Multiline = true;
 			this.txtFunctionText.Name = "txtFunctionText";
-			this.txtFunctionText.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-			this.txtFunctionText.Size = new System.Drawing.Size(491, 326);
+			this.txtFunctionText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+			this.txtFunctionText.Size = new System.Drawing.Size(665, 496);
 			this.txtFunctionText.TabIndex = 0;
 			this.txtFunctionText.TabStop = false;
 			this.txtFunctionText.TextChanged += new System.EventHandler(this.txtFunctions_TextChanged);
@@ -272,17 +278,19 @@
 			this.tabPage3.Controls.Add(this.txtChangelog);
 			this.tabPage3.Location = new System.Drawing.Point(4, 22);
 			this.tabPage3.Name = "tabPage3";
-			this.tabPage3.Size = new System.Drawing.Size(682, 367);
+			this.tabPage3.Size = new System.Drawing.Size(856, 537);
 			this.tabPage3.TabIndex = 2;
 			this.tabPage3.Text = "Changelog";
 			this.tabPage3.UseVisualStyleBackColor = true;
 			// 
 			// lbChangelogItems
 			// 
+			this.lbChangelogItems.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			| System.Windows.Forms.AnchorStyles.Left)));
 			this.lbChangelogItems.FormattingEnabled = true;
 			this.lbChangelogItems.Location = new System.Drawing.Point(6, 6);
 			this.lbChangelogItems.Name = "lbChangelogItems";
-			this.lbChangelogItems.Size = new System.Drawing.Size(173, 355);
+			this.lbChangelogItems.Size = new System.Drawing.Size(173, 524);
 			this.lbChangelogItems.TabIndex = 4;
 			this.lbChangelogItems.SelectedIndexChanged += new System.EventHandler(this.lbChangelogItems_SelectedIndexChanged);
 			// 
@@ -291,7 +299,7 @@
 			this.btnUpdateChangelog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnUpdateChangelog.AutoSize = true;
 			this.btnUpdateChangelog.Enabled = false;
-			this.btnUpdateChangelog.Location = new System.Drawing.Point(634, 6);
+			this.btnUpdateChangelog.Location = new System.Drawing.Point(808, 6);
 			this.btnUpdateChangelog.Name = "btnUpdateChangelog";
 			this.btnUpdateChangelog.Size = new System.Drawing.Size(42, 23);
 			this.btnUpdateChangelog.TabIndex = 2;
@@ -310,8 +318,8 @@
 			this.txtChangelog.Location = new System.Drawing.Point(185, 6);
 			this.txtChangelog.Multiline = true;
 			this.txtChangelog.Name = "txtChangelog";
-			this.txtChangelog.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-			this.txtChangelog.Size = new System.Drawing.Size(491, 355);
+			this.txtChangelog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+			this.txtChangelog.Size = new System.Drawing.Size(665, 525);
 			this.txtChangelog.TabIndex = 0;
 			this.txtChangelog.TextChanged += new System.EventHandler(this.txtChangelog_TextChanged);
 			this.txtChangelog.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtChangelog_KeyUp);
@@ -325,7 +333,7 @@
 			this.tabPage4.Controls.Add(this.btnExtract);
 			this.tabPage4.Location = new System.Drawing.Point(4, 22);
 			this.tabPage4.Name = "tabPage4";
-			this.tabPage4.Size = new System.Drawing.Size(682, 367);
+			this.tabPage4.Size = new System.Drawing.Size(856, 537);
 			this.tabPage4.TabIndex = 3;
 			this.tabPage4.Text = "To extract";
 			this.tabPage4.UseVisualStyleBackColor = true;
@@ -345,7 +353,7 @@
 			this.lbExtractions.FormattingEnabled = true;
 			this.lbExtractions.Location = new System.Drawing.Point(6, 6);
 			this.lbExtractions.Name = "lbExtractions";
-			this.lbExtractions.Size = new System.Drawing.Size(173, 355);
+			this.lbExtractions.Size = new System.Drawing.Size(173, 524);
 			this.lbExtractions.TabIndex = 3;
 			// 
 			// btnCancelExtract
@@ -377,7 +385,7 @@
 			this.menuClose});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(714, 24);
+			this.menuStrip1.Size = new System.Drawing.Size(888, 24);
 			this.menuStrip1.TabIndex = 4;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -421,22 +429,22 @@
 			// btnSaveToFile
 			// 
 			this.btnSaveToFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnSaveToFile.Location = new System.Drawing.Point(591, 422);
+			this.btnSaveToFile.Enabled = false;
+			this.btnSaveToFile.Location = new System.Drawing.Point(765, 592);
 			this.btnSaveToFile.Name = "btnSaveToFile";
 			this.btnSaveToFile.Size = new System.Drawing.Size(101, 23);
 			this.btnSaveToFile.TabIndex = 5;
 			this.btnSaveToFile.Text = "Save to file";
 			this.btnSaveToFile.UseVisualStyleBackColor = true;
-			this.btnSaveToFile.Visible = false;
 			this.btnSaveToFile.Click += new System.EventHandler(this.btnSaveToFile_Click);
 			// 
 			// lblStatus
 			// 
 			this.lblStatus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
 			| System.Windows.Forms.AnchorStyles.Right)));
-			this.lblStatus.Location = new System.Drawing.Point(12, 423);
+			this.lblStatus.Location = new System.Drawing.Point(12, 593);
 			this.lblStatus.Name = "lblStatus";
-			this.lblStatus.Size = new System.Drawing.Size(573, 23);
+			this.lblStatus.Size = new System.Drawing.Size(747, 23);
 			this.lblStatus.TabIndex = 6;
 			// 
 			// contextMenu
@@ -457,17 +465,16 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(714, 451);
+			this.ClientSize = new System.Drawing.Size(888, 621);
 			this.Controls.Add(this.lblStatus);
 			this.Controls.Add(this.btnSaveToFile);
 			this.Controls.Add(this.tabControl);
 			this.Controls.Add(this.menuStrip1);
+			this.Icon = global::AHK_updater.Resources.ICON;
 			this.KeyPreview = true;
 			this.MainMenuStrip = this.menuStrip1;
 			this.MinimumSize = new System.Drawing.Size(720, 457);
 			this.Name = "MainForm";
-			this.RightToLeft = System.Windows.Forms.RightToLeft.No;
-			this.ShowIcon = false;
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "AHK Updater";
@@ -488,41 +495,41 @@
 			this.PerformLayout();
 
 		}
-		System.Windows.Forms.Button btnRemoveCommand;
-		System.Windows.Forms.Button btnUpdateHotstring;
-		System.Windows.Forms.Label label1;
-		System.Windows.Forms.TextBox txtHotstringSystem;
-		System.Windows.Forms.TreeView treeHotstrings;
-		System.Windows.Forms.Button btnUpdateChangelog;
-		System.Windows.Forms.TextBox txtChangelog;
-		System.Windows.Forms.TabPage tabPage3;
-		System.Windows.Forms.ToolStripMenuItem menuClose;
-		System.Windows.Forms.ToolStripMenuItem menuNewCommand;
-		System.Windows.Forms.MenuStrip menuStrip1;
-		System.Windows.Forms.TextBox txtFunctionText;
-		System.Windows.Forms.TabPage tabPage2;
-		System.Windows.Forms.TabPage tabPage1;
-		System.Windows.Forms.TabControl tabControl;
-		System.Windows.Forms.TextBox txtHotstringText;
-		System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
-		System.Windows.Forms.ToolStripMenuItem menuOpenScript;
-		System.Windows.Forms.ToolStripMenuItem menuOpenXML;
-		System.Windows.Forms.Button btnSaveToFile;
-		System.Windows.Forms.Label lblStatus;
-		private System.Windows.Forms.Label lblname;
-		private System.Windows.Forms.TextBox txtHotstringName;
-		private System.Windows.Forms.ToolTip ttHotstringExists;
-		private System.Windows.Forms.ContextMenuStrip contextMenu;
-		private System.Windows.Forms.ToolStripMenuItem contextItem;
-		private System.Windows.Forms.TabPage tabPage4;
-		private System.Windows.Forms.Button btnCancelExtract;
-		private System.Windows.Forms.Button btnExtract;
-		private System.Windows.Forms.Button btnRemoveExtract;
-		private System.Windows.Forms.ListBox lbExtractions;
-		private System.Windows.Forms.ListBox lbChangelogItems;
-		private System.Windows.Forms.ListBox lbFunctions;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.TextBox txtFunctionName;
-		private System.Windows.Forms.Button btnUpdateFunction;
+        private System.Windows.Forms.Button btnCancelExtract;
+        private System.Windows.Forms.Button btnExtract;
+        private System.Windows.Forms.Button btnRemoveCommand;
+        private System.Windows.Forms.Button btnRemoveExtract;
+        private System.Windows.Forms.Button btnSaveToFile;
+        private System.Windows.Forms.Button btnUpdateChangelog;
+        private System.Windows.Forms.Button btnUpdateFunction;
+        private System.Windows.Forms.Button btnUpdateHotstring;
+        private System.Windows.Forms.ContextMenuStrip contextMenu;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label lblname;
+        private System.Windows.Forms.Label lblStatus;
+        private System.Windows.Forms.ListBox lbChangelogItems;
+        private System.Windows.Forms.ListBox lbExtractions;
+        private System.Windows.Forms.ListBox lbFunctions;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.TabControl tabControl;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.TabPage tabPage4;
+        private System.Windows.Forms.TextBox txtChangelog;
+        private System.Windows.Forms.TextBox txtFunctionName;
+        private System.Windows.Forms.TextBox txtFunctionText;
+        private System.Windows.Forms.TextBox txtHotstringName;
+        private System.Windows.Forms.TextBox txtHotstringSystem;
+        private System.Windows.Forms.TextBox txtHotstringText;
+        private System.Windows.Forms.ToolStripMenuItem contextItem;
+        private System.Windows.Forms.ToolStripMenuItem menuClose;
+        private System.Windows.Forms.ToolStripMenuItem menuNewCommand;
+        private System.Windows.Forms.ToolStripMenuItem menuOpenScript;
+        private System.Windows.Forms.ToolStripMenuItem menuOpenXML;
+        private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
+        private System.Windows.Forms.ToolTip ttHotstringExists;
+        private System.Windows.Forms.TreeView treeHotstrings;
 	}
 }

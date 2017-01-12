@@ -16,7 +16,7 @@ namespace AHK_updater
 		public ChangeLogText(string command)
 		{
 			InitializeComponent();
-			txtChange.Text = command;
+			txtChange.Text = command + " - ";
 			this.ActiveControl = txtChange;
 			this.DialogResult = DialogResult.Cancel;
 		}
@@ -38,7 +38,7 @@ namespace AHK_updater
 		/// </summary>
 		/// <param name="sender">Generic object</param>
 		/// <param name="e">Generic EventArgs</param>
-		void btnCancel_Click(object sender, EventArgs e)
+		void btnCancel_Click (object sender, EventArgs e)
 		{
 			DialogResult = DialogResult.Abort;
 			Close();
@@ -50,7 +50,7 @@ namespace AHK_updater
 		/// </summary>
 		/// <param name="sender">Generic object</param>
 		/// <param name="e">Generic EventArgs</param>
-		void btnSave_Click(object sender, EventArgs e)
+		void btnSave_Click (object sender, EventArgs e)
 		{
 			DialogResult = DialogResult.OK;
 			Close();
@@ -62,7 +62,7 @@ namespace AHK_updater
 		/// </summary>
 		/// <param name="sender">Generic object</param>
 		/// <param name="e">Generic EventArgs</param>
-		void btnNoChangeText_Click(object sender, EventArgs e)
+		void btnNoChangeText_Click (object sender, EventArgs e)
 		{
 			DialogResult = DialogResult.Cancel;
 			Close();
@@ -72,7 +72,7 @@ namespace AHK_updater
 		/// Return specified changelog entry as string
 		/// </summary>
 		/// <returns>String of changeinfo</returns>
-		public string getChangeInfo()
+		public string getChangeInfo ()
 		{
 			return txtChange.Text;
 		}
@@ -82,9 +82,23 @@ namespace AHK_updater
 		/// </summary>
 		/// <param name="sender">Generic object</param>
 		/// <param name="e">Generic EventArgs</param>
-		void txtChange_Enter(object sender, EventArgs e)
+		void txtChange_Enter (object sender, EventArgs e)
 		{
 			txtChange.Select(txtChange.Text.Length, 0);
+		}
+
+		/// <summary>
+		/// Checks if Enter is pressed in the textbox
+		/// If so, handle as if the Save-button is pressed
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic KeyPressEventArgs</param>
+		void TxtChangeKeyPress (object sender, KeyPressEventArgs e)
+		{
+			if (e.KeyChar.Equals(Keys.Enter))
+			{
+				btnSave_Click(null, null);
+			}
 		}
 	}
 }

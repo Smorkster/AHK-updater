@@ -1,9 +1,8 @@
-﻿/**
- * Contains one entry of the changelog
- * */
-
-namespace AHK_updater
+﻿namespace AHK_updater
 {
+	/// <summary>
+	/// Contains one entry of the changelog 
+	/// </summary>
 	public class ChangelogEntry
 	{
 		readonly string version;
