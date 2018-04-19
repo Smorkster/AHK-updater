@@ -9,9 +9,10 @@ namespace AHK_updater
 		public NewCommand(ref AllData temp)
 		{
 			InitializeComponent();
+			data = temp;
 			this.ActiveControl = txtName;
 			this.DialogResult = DialogResult.Cancel;
-			data = temp;
+			txtSystem.AutoCompleteCustomSource = data.getAutoCompletionList();
 		}
 
 		/// <summary>
@@ -51,7 +52,7 @@ namespace AHK_updater
 		/// <returns>Generic bool if character was processed</returns>
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
 		{
-			switch (keyData){
+			switch (keyData) {
 				case Keys.Escape:
 					Close();
 					return true;
@@ -93,13 +94,13 @@ namespace AHK_updater
 		/// <param name="e">Generic EventArgs</param>
 		void cbType_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if(txtName.Text.Length != 0)
-			{
+			if (txtName.Text.Length != 0) {
 				switch (cbType.SelectedIndex) {
 					case -1:
 						btnCreate.Enabled = false;
 						break;
-					case 1: case 2:
+					case 1:
+					case 2:
 						txtSystem.Enabled = false;
 						btnCreate.Enabled = true;
 						break;
@@ -118,7 +119,7 @@ namespace AHK_updater
 		/// <param name="e">Generic EventArgs</param>
 		void txtName_TextChanged(object sender, EventArgs e)
 		{
-			if(txtName.Text.Length < 1)
+			if (txtName.Text.Length < 1)
 				btnCreate.Enabled = false;
 		}
 

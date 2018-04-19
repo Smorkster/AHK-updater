@@ -16,51 +16,276 @@
 		
 		void InitializeComponent()
 		{
-            this.btnCancelExtract = new System.Windows.Forms.Button();
-            this.btnExtract = new System.Windows.Forms.Button();
-            this.btnRemoveCommand = new System.Windows.Forms.Button();
-            this.btnRemoveExtract = new System.Windows.Forms.Button();
-            this.btnSaveToFile = new System.Windows.Forms.Button();
-            this.btnUpdateChangelog = new System.Windows.Forms.Button();
-            this.btnUpdateFunction = new System.Windows.Forms.Button();
-            this.btnUpdateHotstring = new System.Windows.Forms.Button();
-            this.components = new System.ComponentModel.Container();
-            this.contextItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.lbChangelogItems = new System.Windows.Forms.ListBox();
-            this.lbExtractions = new System.Windows.Forms.ListBox();
-            this.lbFunctions = new System.Windows.Forms.ListBox();
-            this.lblname = new System.Windows.Forms.Label();
-            this.lblStatus = new System.Windows.Forms.Label();
-            this.menuClose = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuNewCommand = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuOpenScript = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuOpenXML = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tabControl = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.treeHotstrings = new System.Windows.Forms.TreeView();
-            this.ttHotstringExists = new System.Windows.Forms.ToolTip(this.components);
-            this.txtChangelog = new System.Windows.Forms.TextBox();
-            this.txtFunctionName = new System.Windows.Forms.TextBox();
-            this.txtFunctionText = new System.Windows.Forms.TextBox();
-            this.txtHotstringName = new System.Windows.Forms.TextBox();
-            this.txtHotstringSystem = new System.Windows.Forms.TextBox();
-            this.txtHotstringText = new System.Windows.Forms.TextBox();
+			this.components = new System.ComponentModel.Container();
+			this.btnCancelExtract = new System.Windows.Forms.Button();
+			this.btnExtract = new System.Windows.Forms.Button();
+			this.btnRemoveCommand = new System.Windows.Forms.Button();
+			this.btnRemoveExtract = new System.Windows.Forms.Button();
+			this.btnSaveToFile = new System.Windows.Forms.Button();
+			this.btnUpdateChangelog = new System.Windows.Forms.Button();
+			this.btnUpdateFunction = new System.Windows.Forms.Button();
+			this.btnUpdateHotstring = new System.Windows.Forms.Button();
+			this.contextItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.label1 = new System.Windows.Forms.Label();
+			this.label2 = new System.Windows.Forms.Label();
+			this.lbChangelogItems = new System.Windows.Forms.ListBox();
+			this.lbExtractions = new System.Windows.Forms.ListBox();
+			this.lbFunctions = new System.Windows.Forms.ListBox();
+			this.lblname = new System.Windows.Forms.Label();
+			this.lblStatus = new System.Windows.Forms.Label();
+			this.menuClose = new System.Windows.Forms.ToolStripMenuItem();
+			this.menuNewCommand = new System.Windows.Forms.ToolStripMenuItem();
+			this.menuOpenScript = new System.Windows.Forms.ToolStripMenuItem();
+			this.menuOpenXML = new System.Windows.Forms.ToolStripMenuItem();
+			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+			this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.tabControl = new System.Windows.Forms.TabControl();
+			this.tabPage1 = new System.Windows.Forms.TabPage();
+			this.txtHotstringName = new System.Windows.Forms.TextBox();
+			this.txtHotstringSystem = new System.Windows.Forms.TextBox();
+			this.treeHotstrings = new System.Windows.Forms.TreeView();
+			this.txtHotstringText = new System.Windows.Forms.TextBox();
+			this.tabPage2 = new System.Windows.Forms.TabPage();
+			this.txtFunctionName = new System.Windows.Forms.TextBox();
+			this.txtFunctionText = new System.Windows.Forms.TextBox();
+			this.tabPage3 = new System.Windows.Forms.TabPage();
+			this.txtChangelog = new System.Windows.Forms.TextBox();
+			this.tabPage4 = new System.Windows.Forms.TabPage();
+			this.ttHotstringExists = new System.Windows.Forms.ToolTip(this.components);
+			this.contextMenu.SuspendLayout();
+			this.menuStrip1.SuspendLayout();
 			this.tabControl.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
 			this.tabPage3.SuspendLayout();
 			this.tabPage4.SuspendLayout();
-			this.menuStrip1.SuspendLayout();
-			this.contextMenu.SuspendLayout();
 			this.SuspendLayout();
+			// 
+			// btnCancelExtract
+			// 
+			this.btnCancelExtract.Location = new System.Drawing.Point(185, 64);
+			this.btnCancelExtract.Name = "btnCancelExtract";
+			this.btnCancelExtract.Size = new System.Drawing.Size(75, 23);
+			this.btnCancelExtract.TabIndex = 2;
+			this.btnCancelExtract.Text = "Cancel";
+			this.btnCancelExtract.UseVisualStyleBackColor = true;
+			this.btnCancelExtract.Click += new System.EventHandler(this.btnCancelExtract_Click);
+			// 
+			// btnExtract
+			// 
+			this.btnExtract.Enabled = false;
+			this.btnExtract.Location = new System.Drawing.Point(185, 6);
+			this.btnExtract.Name = "btnExtract";
+			this.btnExtract.Size = new System.Drawing.Size(75, 23);
+			this.btnExtract.TabIndex = 1;
+			this.btnExtract.Text = "Extract";
+			this.btnExtract.UseVisualStyleBackColor = true;
+			this.btnExtract.Click += new System.EventHandler(this.btnExtract_Click);
+			// 
+			// btnRemoveCommand
+			// 
+			this.btnRemoveCommand.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.btnRemoveCommand.Enabled = false;
+			this.btnRemoveCommand.Location = new System.Drawing.Point(749, 508);
+			this.btnRemoveCommand.Name = "btnRemoveCommand";
+			this.btnRemoveCommand.Size = new System.Drawing.Size(101, 23);
+			this.btnRemoveCommand.TabIndex = 5;
+			this.btnRemoveCommand.Text = "Remove";
+			this.btnRemoveCommand.UseVisualStyleBackColor = true;
+			this.btnRemoveCommand.Click += new System.EventHandler(this.btnRemoveHotstring_Click);
+			// 
+			// btnRemoveExtract
+			// 
+			this.btnRemoveExtract.Location = new System.Drawing.Point(185, 35);
+			this.btnRemoveExtract.Name = "btnRemoveExtract";
+			this.btnRemoveExtract.Size = new System.Drawing.Size(75, 23);
+			this.btnRemoveExtract.TabIndex = 4;
+			this.btnRemoveExtract.Text = "Remove";
+			this.btnRemoveExtract.UseVisualStyleBackColor = true;
+			this.btnRemoveExtract.Click += new System.EventHandler(this.btnRemoveExtract_Click);
+			// 
+			// btnSaveToFile
+			// 
+			this.btnSaveToFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.btnSaveToFile.Enabled = false;
+			this.btnSaveToFile.Location = new System.Drawing.Point(765, 592);
+			this.btnSaveToFile.Name = "btnSaveToFile";
+			this.btnSaveToFile.Size = new System.Drawing.Size(101, 23);
+			this.btnSaveToFile.TabIndex = 5;
+			this.btnSaveToFile.Text = "Save to file";
+			this.btnSaveToFile.UseVisualStyleBackColor = true;
+			this.btnSaveToFile.Click += new System.EventHandler(this.btnSaveToFile_Click);
+			// 
+			// btnUpdateChangelog
+			// 
+			this.btnUpdateChangelog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.btnUpdateChangelog.AutoSize = true;
+			this.btnUpdateChangelog.Enabled = false;
+			this.btnUpdateChangelog.Location = new System.Drawing.Point(808, 6);
+			this.btnUpdateChangelog.Name = "btnUpdateChangelog";
+			this.btnUpdateChangelog.Size = new System.Drawing.Size(42, 23);
+			this.btnUpdateChangelog.TabIndex = 2;
+			this.btnUpdateChangelog.Text = "Save";
+			this.btnUpdateChangelog.UseVisualStyleBackColor = true;
+			this.btnUpdateChangelog.Visible = false;
+			this.btnUpdateChangelog.Click += new System.EventHandler(this.btnUpdateChangelog_Click);
+			// 
+			// btnUpdateFunction
+			// 
+			this.btnUpdateFunction.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.btnUpdateFunction.AutoSize = true;
+			this.btnUpdateFunction.Enabled = false;
+			this.btnUpdateFunction.Location = new System.Drawing.Point(749, 508);
+			this.btnUpdateFunction.Name = "btnUpdateFunction";
+			this.btnUpdateFunction.Size = new System.Drawing.Size(101, 23);
+			this.btnUpdateFunction.TabIndex = 9;
+			this.btnUpdateFunction.Text = "Update function";
+			this.btnUpdateFunction.UseVisualStyleBackColor = true;
+			this.btnUpdateFunction.Click += new System.EventHandler(this.btnUpdateFunction_Click);
+			// 
+			// btnUpdateHotstring
+			// 
+			this.btnUpdateHotstring.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.btnUpdateHotstring.AutoSize = true;
+			this.btnUpdateHotstring.Enabled = false;
+			this.btnUpdateHotstring.Location = new System.Drawing.Point(749, 485);
+			this.btnUpdateHotstring.Name = "btnUpdateHotstring";
+			this.btnUpdateHotstring.Size = new System.Drawing.Size(101, 23);
+			this.btnUpdateHotstring.TabIndex = 6;
+			this.btnUpdateHotstring.Text = "Update hotstring";
+			this.btnUpdateHotstring.UseVisualStyleBackColor = true;
+			this.btnUpdateHotstring.Click += new System.EventHandler(this.btnUpdateHotstring_Click);
+			// 
+			// contextItem
+			// 
+			this.contextItem.Name = "contextItem";
+			this.contextItem.Size = new System.Drawing.Size(109, 22);
+			this.contextItem.Text = "Extract";
+			this.contextItem.Click += new System.EventHandler(this.contextItem_Click);
+			// 
+			// contextMenu
+			// 
+			this.contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.contextItem});
+			this.contextMenu.Name = "contextMenuStrip1";
+			this.contextMenu.Size = new System.Drawing.Size(110, 26);
+			// 
+			// label1
+			// 
+			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.label1.Location = new System.Drawing.Point(359, 513);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(47, 18);
+			this.label1.TabIndex = 4;
+			this.label1.Text = "System";
+			// 
+			// label2
+			// 
+			this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.label2.Location = new System.Drawing.Point(359, 514);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(47, 18);
+			this.label2.TabIndex = 11;
+			this.label2.Text = "Name";
+			// 
+			// lbChangelogItems
+			// 
+			this.lbChangelogItems.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			| System.Windows.Forms.AnchorStyles.Left)));
+			this.lbChangelogItems.FormattingEnabled = true;
+			this.lbChangelogItems.Location = new System.Drawing.Point(6, 6);
+			this.lbChangelogItems.Name = "lbChangelogItems";
+			this.lbChangelogItems.Size = new System.Drawing.Size(173, 524);
+			this.lbChangelogItems.TabIndex = 4;
+			this.lbChangelogItems.SelectedIndexChanged += new System.EventHandler(this.lbChangelogItems_SelectedIndexChanged);
+			// 
+			// lbExtractions
+			// 
+			this.lbExtractions.FormattingEnabled = true;
+			this.lbExtractions.Location = new System.Drawing.Point(6, 6);
+			this.lbExtractions.Name = "lbExtractions";
+			this.lbExtractions.Size = new System.Drawing.Size(173, 524);
+			this.lbExtractions.TabIndex = 3;
+			// 
+			// lbFunctions
+			// 
+			this.lbFunctions.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			| System.Windows.Forms.AnchorStyles.Left)));
+			this.lbFunctions.FormattingEnabled = true;
+			this.lbFunctions.Location = new System.Drawing.Point(6, 6);
+			this.lbFunctions.Name = "lbFunctions";
+			this.lbFunctions.Size = new System.Drawing.Size(173, 524);
+			this.lbFunctions.Sorted = true;
+			this.lbFunctions.TabIndex = 4;
+			this.lbFunctions.SelectedIndexChanged += new System.EventHandler(this.lbFunctions_SelectedIndexChanged);
+			// 
+			// lblname
+			// 
+			this.lblname.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.lblname.Location = new System.Drawing.Point(359, 491);
+			this.lblname.Name = "lblname";
+			this.lblname.Size = new System.Drawing.Size(47, 18);
+			this.lblname.TabIndex = 8;
+			this.lblname.Text = "Name";
+			// 
+			// lblStatus
+			// 
+			this.lblStatus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+			| System.Windows.Forms.AnchorStyles.Right)));
+			this.lblStatus.Location = new System.Drawing.Point(12, 593);
+			this.lblStatus.Name = "lblStatus";
+			this.lblStatus.Size = new System.Drawing.Size(747, 23);
+			this.lblStatus.TabIndex = 6;
+			// 
+			// menuClose
+			// 
+			this.menuClose.Name = "menuClose";
+			this.menuClose.Size = new System.Drawing.Size(48, 20);
+			this.menuClose.Text = "Close";
+			this.menuClose.Click += new System.EventHandler(this.menuClose_Click);
+			// 
+			// menuNewCommand
+			// 
+			this.menuNewCommand.Name = "menuNewCommand";
+			this.menuNewCommand.Size = new System.Drawing.Size(101, 20);
+			this.menuNewCommand.Text = "New command";
+			this.menuNewCommand.Click += new System.EventHandler(this.menuNewCommand_Click);
+			// 
+			// menuOpenScript
+			// 
+			this.menuOpenScript.Name = "menuOpenScript";
+			this.menuOpenScript.Size = new System.Drawing.Size(120, 22);
+			this.menuOpenScript.Text = "Scriptfile";
+			this.menuOpenScript.Click += new System.EventHandler(this.menuOpenScript_Click);
+			// 
+			// menuOpenXML
+			// 
+			this.menuOpenXML.Name = "menuOpenXML";
+			this.menuOpenXML.Size = new System.Drawing.Size(120, 22);
+			this.menuOpenXML.Text = "XMLfile";
+			this.menuOpenXML.Click += new System.EventHandler(this.menuOpenXML_Click);
+			// 
+			// menuStrip1
+			// 
+			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.menuNewCommand,
+			this.openToolStripMenuItem,
+			this.menuClose});
+			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+			this.menuStrip1.Name = "menuStrip1";
+			this.menuStrip1.Size = new System.Drawing.Size(888, 24);
+			this.menuStrip1.TabIndex = 4;
+			this.menuStrip1.Text = "menuStrip1";
+			// 
+			// openToolStripMenuItem
+			// 
+			this.openToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.menuOpenScript,
+			this.menuOpenXML});
+			this.openToolStripMenuItem.Name = "openToolStripMenuItem";
+			this.openToolStripMenuItem.Size = new System.Drawing.Size(57, 20);
+			this.openToolStripMenuItem.Text = "Open...";
 			// 
 			// tabControl
 			// 
@@ -97,15 +322,6 @@
 			this.tabPage1.Text = "Hotstrings";
 			this.tabPage1.UseVisualStyleBackColor = true;
 			// 
-			// lblname
-			// 
-			this.lblname.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.lblname.Location = new System.Drawing.Point(359, 491);
-			this.lblname.Name = "lblname";
-			this.lblname.Size = new System.Drawing.Size(47, 18);
-			this.lblname.TabIndex = 8;
-			this.lblname.Text = "Name";
-			// 
 			// txtHotstringName
 			// 
 			this.txtHotstringName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -115,51 +331,21 @@
 			this.txtHotstringName.Size = new System.Drawing.Size(331, 18);
 			this.txtHotstringName.TabIndex = 7;
 			this.txtHotstringName.TextChanged += new System.EventHandler(this.txtHotstringName_TextChanged);
+			this.txtHotstringName.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtHotstringName_KeyUp);
 			this.txtHotstringName.Leave += new System.EventHandler(this.txtHotstringText_Leave);
-			// 
-			// btnUpdateHotstring
-			// 
-			this.btnUpdateHotstring.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnUpdateHotstring.AutoSize = true;
-			this.btnUpdateHotstring.Enabled = false;
-			this.btnUpdateHotstring.Location = new System.Drawing.Point(749, 485);
-			this.btnUpdateHotstring.Name = "btnUpdateHotstring";
-			this.btnUpdateHotstring.Size = new System.Drawing.Size(101, 23);
-			this.btnUpdateHotstring.TabIndex = 6;
-			this.btnUpdateHotstring.Text = "Update hotstring";
-			this.btnUpdateHotstring.UseVisualStyleBackColor = true;
-			this.btnUpdateHotstring.Click += new System.EventHandler(this.btnUpdateHotstring_Click);
-			// 
-			// btnRemoveCommand
-			// 
-			this.btnRemoveCommand.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnRemoveCommand.Enabled = false;
-			this.btnRemoveCommand.Location = new System.Drawing.Point(749, 508);
-			this.btnRemoveCommand.Name = "btnRemoveCommand";
-			this.btnRemoveCommand.Size = new System.Drawing.Size(101, 23);
-			this.btnRemoveCommand.TabIndex = 5;
-			this.btnRemoveCommand.Text = "Remove";
-			this.btnRemoveCommand.UseVisualStyleBackColor = true;
-			this.btnRemoveCommand.Click += new System.EventHandler(this.btnRemoveHotstring_Click);
-			// 
-			// label1
-			// 
-			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.label1.Location = new System.Drawing.Point(359, 513);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(47, 18);
-			this.label1.TabIndex = 4;
-			this.label1.Text = "System";
 			// 
 			// txtHotstringSystem
 			// 
 			this.txtHotstringSystem.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.txtHotstringSystem.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+			this.txtHotstringSystem.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
 			this.txtHotstringSystem.Font = new System.Drawing.Font("Lucida Console", 8.25F);
 			this.txtHotstringSystem.Location = new System.Drawing.Point(412, 512);
 			this.txtHotstringSystem.Name = "txtHotstringSystem";
 			this.txtHotstringSystem.Size = new System.Drawing.Size(331, 18);
 			this.txtHotstringSystem.TabIndex = 3;
-			this.txtHotstringSystem.TextChanged += new System.EventHandler(this.txtSystem_TextChanged);
+			this.txtHotstringSystem.TextChanged += new System.EventHandler(this.txtHotstringSystem_TextChanged);
+			this.txtHotstringSystem.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtHotstringSystem_KeyUp);
 			this.txtHotstringSystem.Leave += new System.EventHandler(this.txtHotstringText_Leave);
 			// 
 			// treeHotstrings
@@ -210,15 +396,6 @@
 			this.tabPage2.Text = "Functions";
 			this.tabPage2.UseVisualStyleBackColor = true;
 			// 
-			// label2
-			// 
-			this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.label2.Location = new System.Drawing.Point(359, 514);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(47, 18);
-			this.label2.TabIndex = 11;
-			this.label2.Text = "Name";
-			// 
 			// txtFunctionName
 			// 
 			this.txtFunctionName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -228,31 +405,6 @@
 			this.txtFunctionName.Size = new System.Drawing.Size(331, 18);
 			this.txtFunctionName.TabIndex = 10;
 			this.txtFunctionName.TextChanged += new System.EventHandler(this.txtFunctionName_TextChanged);
-			// 
-			// btnUpdateFunction
-			// 
-			this.btnUpdateFunction.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnUpdateFunction.AutoSize = true;
-			this.btnUpdateFunction.Enabled = false;
-			this.btnUpdateFunction.Location = new System.Drawing.Point(749, 508);
-			this.btnUpdateFunction.Name = "btnUpdateFunction";
-			this.btnUpdateFunction.Size = new System.Drawing.Size(101, 23);
-			this.btnUpdateFunction.TabIndex = 9;
-			this.btnUpdateFunction.Text = "Update function";
-			this.btnUpdateFunction.UseVisualStyleBackColor = true;
-			this.btnUpdateFunction.Click += new System.EventHandler(this.btnUpdateFunction_Click);
-			// 
-			// lbFunctions
-			// 
-			this.lbFunctions.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-			| System.Windows.Forms.AnchorStyles.Left)));
-			this.lbFunctions.FormattingEnabled = true;
-			this.lbFunctions.Location = new System.Drawing.Point(6, 6);
-			this.lbFunctions.Name = "lbFunctions";
-			this.lbFunctions.Size = new System.Drawing.Size(173, 524);
-			this.lbFunctions.Sorted = true;
-			this.lbFunctions.TabIndex = 4;
-			this.lbFunctions.SelectedIndexChanged += new System.EventHandler(this.lbFunctions_SelectedIndexChanged);
 			// 
 			// txtFunctionText
 			// 
@@ -282,31 +434,6 @@
 			this.tabPage3.TabIndex = 2;
 			this.tabPage3.Text = "Changelog";
 			this.tabPage3.UseVisualStyleBackColor = true;
-			// 
-			// lbChangelogItems
-			// 
-			this.lbChangelogItems.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-			| System.Windows.Forms.AnchorStyles.Left)));
-			this.lbChangelogItems.FormattingEnabled = true;
-			this.lbChangelogItems.Location = new System.Drawing.Point(6, 6);
-			this.lbChangelogItems.Name = "lbChangelogItems";
-			this.lbChangelogItems.Size = new System.Drawing.Size(173, 524);
-			this.lbChangelogItems.TabIndex = 4;
-			this.lbChangelogItems.SelectedIndexChanged += new System.EventHandler(this.lbChangelogItems_SelectedIndexChanged);
-			// 
-			// btnUpdateChangelog
-			// 
-			this.btnUpdateChangelog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnUpdateChangelog.AutoSize = true;
-			this.btnUpdateChangelog.Enabled = false;
-			this.btnUpdateChangelog.Location = new System.Drawing.Point(808, 6);
-			this.btnUpdateChangelog.Name = "btnUpdateChangelog";
-			this.btnUpdateChangelog.Size = new System.Drawing.Size(42, 23);
-			this.btnUpdateChangelog.TabIndex = 2;
-			this.btnUpdateChangelog.Text = "Save";
-			this.btnUpdateChangelog.UseVisualStyleBackColor = true;
-			this.btnUpdateChangelog.Visible = false;
-			this.btnUpdateChangelog.Click += new System.EventHandler(this.btnUpdateChangelog_Click);
 			// 
 			// txtChangelog
 			// 
@@ -338,129 +465,6 @@
 			this.tabPage4.Text = "To extract";
 			this.tabPage4.UseVisualStyleBackColor = true;
 			// 
-			// btnRemoveExtract
-			// 
-			this.btnRemoveExtract.Location = new System.Drawing.Point(185, 35);
-			this.btnRemoveExtract.Name = "btnRemoveExtract";
-			this.btnRemoveExtract.Size = new System.Drawing.Size(75, 23);
-			this.btnRemoveExtract.TabIndex = 4;
-			this.btnRemoveExtract.Text = "Remove";
-			this.btnRemoveExtract.UseVisualStyleBackColor = true;
-			this.btnRemoveExtract.Click += new System.EventHandler(this.btnRemoveExtract_Click);
-			// 
-			// lbExtractions
-			// 
-			this.lbExtractions.FormattingEnabled = true;
-			this.lbExtractions.Location = new System.Drawing.Point(6, 6);
-			this.lbExtractions.Name = "lbExtractions";
-			this.lbExtractions.Size = new System.Drawing.Size(173, 524);
-			this.lbExtractions.TabIndex = 3;
-			// 
-			// btnCancelExtract
-			// 
-			this.btnCancelExtract.Location = new System.Drawing.Point(185, 64);
-			this.btnCancelExtract.Name = "btnCancelExtract";
-			this.btnCancelExtract.Size = new System.Drawing.Size(75, 23);
-			this.btnCancelExtract.TabIndex = 2;
-			this.btnCancelExtract.Text = "Cancel";
-			this.btnCancelExtract.UseVisualStyleBackColor = true;
-			this.btnCancelExtract.Click += new System.EventHandler(this.btnCancelExtract_Click);
-			// 
-			// btnExtract
-			// 
-			this.btnExtract.Enabled = false;
-			this.btnExtract.Location = new System.Drawing.Point(185, 6);
-			this.btnExtract.Name = "btnExtract";
-			this.btnExtract.Size = new System.Drawing.Size(75, 23);
-			this.btnExtract.TabIndex = 1;
-			this.btnExtract.Text = "Extract";
-			this.btnExtract.UseVisualStyleBackColor = true;
-			this.btnExtract.Click += new System.EventHandler(this.btnExtract_Click);
-			// 
-			// menuStrip1
-			// 
-			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.menuNewCommand,
-			this.openToolStripMenuItem,
-			this.menuClose});
-			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(888, 24);
-			this.menuStrip1.TabIndex = 4;
-			this.menuStrip1.Text = "menuStrip1";
-			// 
-			// menuNewCommand
-			// 
-			this.menuNewCommand.Name = "menuNewCommand";
-			this.menuNewCommand.Size = new System.Drawing.Size(101, 20);
-			this.menuNewCommand.Text = "New command";
-			this.menuNewCommand.Click += new System.EventHandler(this.menuNewCommand_Click);
-			// 
-			// openToolStripMenuItem
-			// 
-			this.openToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.menuOpenScript,
-			this.menuOpenXML});
-			this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-			this.openToolStripMenuItem.Size = new System.Drawing.Size(57, 20);
-			this.openToolStripMenuItem.Text = "Open...";
-			// 
-			// menuOpenScript
-			// 
-			this.menuOpenScript.Name = "menuOpenScript";
-			this.menuOpenScript.Size = new System.Drawing.Size(120, 22);
-			this.menuOpenScript.Text = "Scriptfile";
-			this.menuOpenScript.Click += new System.EventHandler(this.menuOpenScript_Click);
-			// 
-			// menuOpenXML
-			// 
-			this.menuOpenXML.Name = "menuOpenXML";
-			this.menuOpenXML.Size = new System.Drawing.Size(120, 22);
-			this.menuOpenXML.Text = "XMLfile";
-			this.menuOpenXML.Click += new System.EventHandler(this.menuOpenXML_Click);
-			// 
-			// menuClose
-			// 
-			this.menuClose.Name = "menuClose";
-			this.menuClose.Size = new System.Drawing.Size(48, 20);
-			this.menuClose.Text = "Close";
-			this.menuClose.Click += new System.EventHandler(this.menuClose_Click);
-			// 
-			// btnSaveToFile
-			// 
-			this.btnSaveToFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnSaveToFile.Enabled = false;
-			this.btnSaveToFile.Location = new System.Drawing.Point(765, 592);
-			this.btnSaveToFile.Name = "btnSaveToFile";
-			this.btnSaveToFile.Size = new System.Drawing.Size(101, 23);
-			this.btnSaveToFile.TabIndex = 5;
-			this.btnSaveToFile.Text = "Save to file";
-			this.btnSaveToFile.UseVisualStyleBackColor = true;
-			this.btnSaveToFile.Click += new System.EventHandler(this.btnSaveToFile_Click);
-			// 
-			// lblStatus
-			// 
-			this.lblStatus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-			| System.Windows.Forms.AnchorStyles.Right)));
-			this.lblStatus.Location = new System.Drawing.Point(12, 593);
-			this.lblStatus.Name = "lblStatus";
-			this.lblStatus.Size = new System.Drawing.Size(747, 23);
-			this.lblStatus.TabIndex = 6;
-			// 
-			// contextMenu
-			// 
-			this.contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.contextItem});
-			this.contextMenu.Name = "contextMenuStrip1";
-			this.contextMenu.Size = new System.Drawing.Size(110, 26);
-			// 
-			// contextItem
-			// 
-			this.contextItem.Name = "contextItem";
-			this.contextItem.Size = new System.Drawing.Size(109, 22);
-			this.contextItem.Text = "Extract";
-			this.contextItem.Click += new System.EventHandler(this.contextItem_Click);
-			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -480,6 +484,9 @@
 			this.Text = "AHK Updater";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
 			this.Load += new System.EventHandler(this.MainForm_Load);
+			this.contextMenu.ResumeLayout(false);
+			this.menuStrip1.ResumeLayout(false);
+			this.menuStrip1.PerformLayout();
 			this.tabControl.ResumeLayout(false);
 			this.tabPage1.ResumeLayout(false);
 			this.tabPage1.PerformLayout();
@@ -488,9 +495,6 @@
 			this.tabPage3.ResumeLayout(false);
 			this.tabPage3.PerformLayout();
 			this.tabPage4.ResumeLayout(false);
-			this.menuStrip1.ResumeLayout(false);
-			this.menuStrip1.PerformLayout();
-			this.contextMenu.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

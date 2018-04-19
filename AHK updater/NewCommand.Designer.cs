@@ -86,6 +86,8 @@
 			// 
 			// txtSystem
 			// 
+			this.txtSystem.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+			this.txtSystem.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
 			this.txtSystem.Location = new System.Drawing.Point(182, 62);
 			this.txtSystem.Name = "txtSystem";
 			this.txtSystem.Size = new System.Drawing.Size(136, 20);

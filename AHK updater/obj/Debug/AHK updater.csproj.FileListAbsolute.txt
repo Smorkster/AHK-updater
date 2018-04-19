@@ -16,9 +16,6 @@ H:\Programmering\AHK updater\AHK updater\obj\Debug\AHK_updater.ChangeLogText.res
 H:\Programmering\AHK updater\AHK updater\obj\Debug\AHK_updater.MainForm.resources
 H:\Programmering\AHK updater\AHK updater\obj\Debug\AHK_updater.NewCommand.resources
 H:\Programmering\AHK updater\AHK updater\obj\Debug\AHK_updater.Resources.resources
-H:\Programmering\AHK updater\AHK updater\obj\Debug\AHK_updater.UserName.resources
 H:\Programmering\AHK updater\AHK updater\obj\Debug\AHK updater.csproj.GenerateResource.Cache
 H:\Programmering\AHK updater\AHK updater\obj\Debug\AHK updater.exe
 H:\Programmering\AHK updater\AHK updater\obj\Debug\AHK updater.pdb
-H:\Programmering\AHK updater\AHK updater\bin\Debug\FastColoredTextBox.dll
-H:\Programmering\AHK updater\AHK updater\bin\Debug\FastColoredTextBox.xml

@@ -1,4 +1,13 @@
-﻿Version 3.1
+﻿Version 3.2
+***********
+Now escapes '&', '<' and '>' when saving to XML
+Added functionality for autocompletion for systemtextbox of new item
+Ctrl+A now selects all text in the textboxes for command-/function-/changelogtexts
+txtHotstringSystem now have autocompletion
+Pressing Escape when txtHotstringName and txtHotstringSystem have focus now resets text
+Removed all functionality around username
+
+Version 3.1
 ***********
 Added an icon as resource
 No longer selects command type by default in form for new command

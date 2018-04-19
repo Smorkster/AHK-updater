@@ -7,16 +7,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace AHK_updater
 {
 	public class AllData
 	{
+		AutoCompleteStringCollection autocomplete;
 		public List<AHKCommand> hotstringsList;
 		public List<Function> functionsList;
 		List<ChangelogEntry> changelogList;
 		public ChangelogEntry currentChangelogEntry;
-		string username;
 		bool updated = false;
 
 		/// <summary>
@@ -28,9 +29,9 @@ namespace AHK_updater
 			functionsList = new List<Function>();
 			changelogList = new List<ChangelogEntry>();
 			currentChangelogEntry = new ChangelogEntry();
+			autocomplete = new AutoCompleteStringCollection();
 		}
 
-		public string UserName { get { return username; } set { username = value; } }
 		public bool Updated { get { return updated; } set { updated = value; } }
 
 		/// <summary>
@@ -75,13 +76,16 @@ namespace AHK_updater
 		}
 
 		/// <summary>
-		/// Deletes hotstring 
+		/// Deletes hotstring from list
+		/// If there are no more item with this system, clear it from autocompletionlist
 		/// </summary>
 		/// <param name="command">Name of hotstring to be deleted</param>
 		public void deleteHotstring(string command)
 		{
 			AHKCommand item = hotstringsList.Single(r => r.Name.Equals(command));
 			hotstringsList.Remove(item);
+			if (hotstringsList.Count(x => x.System.Equals(item.System)) == 0)
+				autocomplete.Remove(item.System);
 		}
 
 		/// <summary>
@@ -135,7 +139,7 @@ namespace AHK_updater
 		/// <returns>A function-object related to the name given on calling</returns>
 		public Function getFunction(string fname)
 		{
-			return functionsList.Single(x=>x.Name.Equals(fname));
+			return functionsList.Single(x => x.Name.Equals(fname));
 		}
 
 		/// <summary>
@@ -145,7 +149,7 @@ namespace AHK_updater
 		/// <returns>True if there is a function existing with given name. Otherwise false</returns>
 		public bool functionExists(string fname)
 		{
-			foreach(Function item in functionsList)
+			foreach (Function item in functionsList)
 				if (item.Name.Equals(fname))
 					return true;
 			return false;
@@ -217,7 +221,7 @@ namespace AHK_updater
 		public void initiateChangelog()
 		{
 			DateTime currentDate = DateTime.Today;
-			string temp=currentDate.ToString("yyyy-MM-dd");
+			string temp = currentDate.ToString("yyyy-MM-dd");
 
 			if (changelogList[0].Version.Equals(temp))
 				currentChangelogEntry = new ChangelogEntry(changelogList[0].Version, changelogList[0].Entry);
@@ -228,6 +232,36 @@ namespace AHK_updater
 		public ChangelogEntry getChangelogEntry(string version)
 		{
 			return changelogList.Find(x => x.Version.Equals(version));
+		}
+
+		/// <summary>
+		/// Adds an item to the autocompletionlist
+		/// Checks if the item already exists to avoid duplicates
+		/// </summary>
+		/// <param name="item">Item to add</param>
+		public void addAutoCompletionItem(string item)
+		{
+			if (!autocomplete.Contains(item)) {
+				autocomplete.Add(item);
+			}
+		}
+
+		/// <summary>
+		/// Deletes an item from autocompletionlist
+		/// </summary>
+		/// <param name="item">Item to delete</param>
+		public void deleteAutoCompletionItem(string item)
+		{
+			autocomplete.Remove(item);
+		}
+
+		/// <summary>
+		/// Returns the autocompletionlist
+		/// </summary>
+		/// <returns>Autocompletionlist</returns>
+		public AutoCompleteStringCollection getAutoCompletionList()
+		{
+			return autocomplete;
 		}
 	}
 }

@@ -40,12 +40,16 @@ namespace AHK_updater
 		public string System { get { return system; } set { system = value; } }
 
 		/// <summary>
-		/// Return property as XML-node 
+		/// Escape reserved characters
+		/// Return property as XML-node
 		/// </summary>
 		/// <returns>String with AHKCommand formated as XML</returns>
 		public string getXmlString()
 		{
-			return string.Format("<ahkcommand><command>{0}</command><text>{1}</text><system>{2}</system></ahkcommand>", name, text, system);
+			string temptext = text.Replace("&", "&amp;");
+			temptext = temptext.Replace("<", "&lt;");
+			temptext = temptext.Replace(">", "&gt;");
+			return string.Format("<ahkcommand><command>{0}</command><text>{1}</text><system>{2}</system></ahkcommand>", name, temptext, system);
 		}
 
 		/// <summary>

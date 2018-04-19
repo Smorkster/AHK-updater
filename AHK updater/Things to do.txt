@@ -1,1 +1,2 @@
-﻿
+﻿* Move filefunctions to separate class
+* Rewrite currenthotstring functionality
