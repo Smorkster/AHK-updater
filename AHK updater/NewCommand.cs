@@ -12,6 +12,7 @@ namespace AHK_updater
 			data = temp;
 			this.ActiveControl = txtName;
 			this.DialogResult = DialogResult.Cancel;
+			this.cbType.SelectedIndex = 0;
 			txtSystem.AutoCompleteCustomSource = data.getAutoCompletionList();
 		}
 

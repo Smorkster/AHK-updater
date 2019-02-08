@@ -1,4 +1,10 @@
-﻿Version 3.2
+﻿Version 3.3
+***********
+btnRemoveCommand will be disabled, and text in txtHostringText removed, when a systemnode in treeHotstrings is clicked
+NewCommand-form now defaults with Hotstring as type
+ChangeLogText-form can now be canceled by clicking Escape-key
+
+Version 3.2
 ***********
 Now escapes '&', '<' and '>' when saving to XML
 Added functionality for autocompletion for systemtextbox of new item
@@ -6,6 +12,8 @@ Ctrl+A now selects all text in the textboxes for command-/function-/changelogtex
 txtHotstringSystem now have autocompletion
 Pressing Escape when txtHotstringName and txtHotstringSystem have focus now resets text
 Removed all functionality around username
+Added support for CTRL+Backspace to delete whole words in the big textboxes
+Added support for extraction to XML-file
 
 Version 3.1
 ***********

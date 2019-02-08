@@ -93,11 +93,13 @@ namespace AHK_updater
 		/// </summary>
 		/// <param name="sender">Generic object</param>
 		/// <param name="e">Generic KeyPressEventArgs</param>
-		void TxtChangeKeyPress (object sender, KeyPressEventArgs e)
+		void txtChange_KeyPress (object sender, KeyPressEventArgs e)
 		{
 			if (e.KeyChar.Equals(Keys.Enter))
 			{
 				btnSave_Click(null, null);
+			} else if (e.KeyChar.Equals(Keys.Escape)) {
+				btnCancel_Click(null, null);
 			}
 		}
 	}

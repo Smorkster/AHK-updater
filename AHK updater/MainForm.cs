@@ -137,7 +137,7 @@ namespace AHK_updater
 		/// <param name="changelogEntry">NodeList with changelogentries</param>
 		void insertChangelog(XmlNodeList changelogVersion, XmlNodeList changelogEntry)
 		{
-			txtChangelog.TextChanged -= txtChangelog_TextChanged;
+			txtChangelogText.TextChanged -= txtChangelog_TextChanged;
 			if (changelogVersion.Count > 0) {
 				for (int i = 0; i < changelogVersion.Count; i++) {
 					data.updateChangelog(changelogVersion[i].InnerText, changelogEntry[i].InnerText);
@@ -145,8 +145,8 @@ namespace AHK_updater
 				}
 			}
 			data.initiateChangelog();
-			txtChangelog.Text = data.currentChangelogEntry.Version + "\r\n----------\r\n\r\n" + data.currentChangelogEntry.Entry;
-			txtChangelog.TextChanged += txtChangelog_TextChanged;
+			txtChangelogText.Text = data.currentChangelogEntry.Version + "\r\n----------\r\n\r\n" + data.currentChangelogEntry.Entry;
+			txtChangelogText.TextChanged += txtChangelog_TextChanged;
 		}
 
 		/// <summary>
@@ -392,7 +392,7 @@ namespace AHK_updater
 						txtFunctionText.SelectAll();
 						break;
 					case "changelog":
-						txtChangelog.SelectAll();
+						txtChangelogText.SelectAll();
 						break;
 				}
 			}
@@ -452,7 +452,7 @@ namespace AHK_updater
 			txtFunctionText.TextChanged -= txtFunctions_TextChanged;
 			txtHotstringName.TextChanged -= txtHotstringName_TextChanged;
 			txtHotstringText.TextChanged -= txtHotstringText_TextChanged;
-			txtChangelog.TextChanged -= txtChangelog_TextChanged;
+			txtChangelogText.TextChanged -= txtChangelog_TextChanged;
 		}
 
 		/// <summary>
@@ -464,7 +464,7 @@ namespace AHK_updater
 			txtFunctionText.TextChanged += txtFunctions_TextChanged;
 			txtHotstringName.TextChanged += txtHotstringName_TextChanged;
 			txtHotstringText.TextChanged += txtHotstringText_TextChanged;
-			txtChangelog.TextChanged += txtChangelog_TextChanged;
+			txtChangelogText.TextChanged += txtChangelog_TextChanged;
 		}
 
 		/// <summary>
@@ -605,7 +605,7 @@ namespace AHK_updater
 		/// <param name="e">Generic EventArgs</param>
 		void txtChangelog_TextChanged(object sender, EventArgs e)
 		{
-			string en = txtChangelog.Text.Substring(26);
+			string en = txtChangelogText.Text.Substring(26);
 			if (!data.currentChangelogEntry.Entry.Equals(en)) {
 				btnUpdateChangelog.Enabled = true;
 				btnUpdateChangelog.Visible = true;
@@ -681,7 +681,7 @@ namespace AHK_updater
 				DialogResult answer = MessageBox.Show("Remove command " + currentHotstring.Name + "?", "Remove", MessageBoxButtons.YesNo);
 
 				if (answer == DialogResult.Yes) {
-					var hotstringSystem = currentHotstring.System;
+                    var hotstringSystem = currentHotstring.System;
 					var hotstringName = currentHotstring.Name;
 					treeHotstrings.Nodes[hotstringSystem].Nodes.Remove(treeHotstrings.SelectedNode);
 					data.deleteHotstring(hotstringName);
@@ -702,14 +702,14 @@ namespace AHK_updater
 		/// <param name="e">Generic EventArgs</param>
 		void btnUpdateChangelog_Click(object sender, EventArgs e)
 		{
-			data.updateCurrentChangelogItem(txtChangelog.Text.Substring(26), true);
+			data.updateCurrentChangelogItem(txtChangelogText.Text.Substring(26), true);
 
 			updatedData(true);
 			changelogTextChanged = false;
 			statusUpdate("Changelog have been updated", false);
 			btnUpdateChangelog.Enabled = false;
 			btnUpdateChangelog.Visible = false;
-			ActiveControl = txtChangelog;
+			ActiveControl = txtChangelogText;
 		}
 
 		/// <summary>
@@ -731,9 +731,9 @@ namespace AHK_updater
 						if (answer.DialogResult == DialogResult.OK && !answer.getChangeInfo()
 							    .Equals(currentHotstring.Name)) {
 							data.updateCurrentChangelogItem(answer.getChangeInfo(), false);
-							txtChangelog.TextChanged -= txtChangelog_TextChanged;
-							txtChangelog.Text = data.currentChangelogEntry.Version + "\r\n----------\r\n" + data.currentChangelogEntry.Entry;
-							txtChangelog.TextChanged += txtChangelog_TextChanged;
+							txtChangelogText.TextChanged -= txtChangelog_TextChanged;
+							txtChangelogText.Text = data.currentChangelogEntry.Version + "\r\n----------\r\n" + data.currentChangelogEntry.Entry;
+							txtChangelogText.TextChanged += txtChangelog_TextChanged;
 						}
 						data.updateHotstring(currentHotstring.Name, txtHotstringName.Text, txtHotstringText.Text, txtHotstringSystem.Text);
 						updatedData(true);
@@ -772,9 +772,9 @@ namespace AHK_updater
 				case DialogResult.Cancel:
 					if (newChangelogText.DialogResult == DialogResult.OK) {
 						data.updateCurrentChangelogItem(newChangelogText.getChangeInfo(), false);
-						txtChangelog.TextChanged -= txtChangelog_TextChanged;
-						txtChangelog.Text = data.currentChangelogEntry.Version + "\r\n----------\r\n" + data.currentChangelogEntry.Entry;
-						txtChangelog.TextChanged += txtChangelog_TextChanged;
+						txtChangelogText.TextChanged -= txtChangelog_TextChanged;
+						txtChangelogText.Text = data.currentChangelogEntry.Version + "\r\n----------\r\n" + data.currentChangelogEntry.Entry;
+						txtChangelogText.TextChanged += txtChangelog_TextChanged;
 					}
 					if (!currentFunction.Name.Equals(txtFunctionName.Text))
 						txtFunctionText.Text = txtFunctionText.Text.Replace(currentFunction.Name, txtFunctionName.Text);
@@ -818,7 +818,7 @@ namespace AHK_updater
 		/// <param name="e">Generic Eventargs</param>
 		void menuClose_Click(object sender, EventArgs e)
 		{
-			Close();
+			shutdown();
 		}
 
 		/// <summary>
@@ -909,11 +909,12 @@ namespace AHK_updater
 			if (tabControl.SelectedIndex == 1)
 				ActiveControl = txtFunctionText;
 			else if (tabControl.SelectedIndex == 2)
-				ActiveControl = txtChangelog;
+				ActiveControl = txtChangelogText;
 		}
 
 		/// <summary>
 		/// A node in treeHotstrings have been selected
+		/// If a hotstring, load data to textboxes
 		/// </summary>
 		/// <param name="sender">Generic object</param>
 		/// <param name="e">Generic TreeViewEventArgs</param>
@@ -927,17 +928,18 @@ namespace AHK_updater
 				btnRemoveCommand.Enabled = true;
 
 				ActiveControl = txtHotstringText;
-
 			} else {
 				currentHotstring = null;
 				txtHotstringText.Text = "";
 				txtHotstringSystem.Text = "";
 				txtHotstringName.Text = "";
 				btnUpdateHotstring.Enabled = false;
+                btnRemoveCommand.Enabled = false;
 			}
 		}
 
 		/// <summary>
+        /// Eventhandler for clicks in treeHotstrings
 		/// Rightclick on a node to open contextmenu for extraction of the hotstring 
 		/// </summary>
 		/// <param name="sender">Generic object</param>
@@ -951,11 +953,13 @@ namespace AHK_updater
 				}
 			} else {
 				e.Node.Toggle();
+                btnRemoveCommand.Enabled = false;
+                txtHotstringText.Text = "";
 			}
 		}
 
 		/// <summary>
-		/// Menuitem is clicked
+		/// Contextmenuitem for listview is clicked, i.e. add hotstring to extractionlist
 		/// </summary>
 		/// <param name="sender">Generic object</param>
 		/// <param name="e">Generic EventArgs</param>
@@ -963,7 +967,8 @@ namespace AHK_updater
 		{
 			lbExtractions.Items.Add(treeHotstrings.SelectedNode.Text);
 			toExtract.Add(new AHKCommand(data.getHotstring(treeHotstrings.SelectedNode.Text)));
-			btnExtract.Enabled = true;
+			btnExtractToAHK.Enabled = true;
+			btnExtractToXML.Enabled = true;
 		}
 
 		/// <summary>
@@ -975,7 +980,8 @@ namespace AHK_updater
 		{
 			lbExtractions.Items.Clear();
 			toExtract = null;
-			btnExtract.Enabled = false;
+			btnExtractToAHK.Enabled = false;
+			btnExtractToXML.Enabled = false;
 		}
 
 		/// <summary>
@@ -987,8 +993,10 @@ namespace AHK_updater
 		{
 			toExtract.RemoveAll(x => x.Name.Equals(lbExtractions.SelectedItem.ToString()));
 			lbExtractions.Items.Remove(lbExtractions.SelectedItem);
-			if (lbExtractions.Items.Count == 0)
-				btnExtract.Enabled = false;
+			if (lbExtractions.Items.Count == 0) {
+				btnExtractToAHK.Enabled = false;
+				btnExtractToXML.Enabled = false;
+			}
 		}
 
 		/// <summary>
@@ -996,7 +1004,7 @@ namespace AHK_updater
 		/// </summary>
 		/// <param name="sender">Generic object</param>
 		/// <param name="e">Generic EventArgs</param>
-		void btnExtract_Click(object sender, EventArgs e)
+		void btnExtractToAHK_Click(object sender, EventArgs e)
 		{
 			SaveFileDialog dir = new SaveFileDialog();
 			dir.FileName = "Extracted hotstrings.ahk";
@@ -1012,6 +1020,34 @@ namespace AHK_updater
 		}
 
 		/// <summary>
+		/// Ask the user what to name the extracted hotstrings and where to put it 
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void btnExtractToXML_Click(object sender, EventArgs e)
+		{
+			SaveFileDialog dir = new SaveFileDialog();
+			dir.FileName = "Extracted hotstrings.xml";
+			dir.ShowDialog();
+
+			StreamWriter writer = new StreamWriter(dir.FileName, false, System.Text.Encoding.GetEncoding(1252));
+
+			try {
+				writer.WriteLine("<?xml version=\"1.0\"?>\r\n<ahk>");
+				foreach (AHKCommand item in toExtract) {
+					writer.WriteLine(item.getXmlString());
+					writer.Flush();
+				}
+				writer.WriteLine("</ahk>");
+
+				writer.Flush();
+				writer.Close();
+			} catch (Exception exc) {
+				MessageBox.Show("Something went wrong when writing XML-file.\nError:\n" + exc.Message.ToString(), "Write error", MessageBoxButtons.OK);
+			}
+		}
+
+		/// <summary>
 		/// User switches item in listbox
 		/// Search for corresponding changelogentry and display in txtChangelogText
 		/// </summary>
@@ -1020,9 +1056,9 @@ namespace AHK_updater
 		void lbChangelogItems_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			var item = data.getChangelogEntry(lbChangelogItems.SelectedItem.ToString());
-			txtChangelog.TextChanged -= txtChangelog_TextChanged;
-			txtChangelog.Text = item.Version + "\r\n----------\r\n" + item.Entry;
-			txtChangelog.TextChanged += txtChangelog_TextChanged;
+			txtChangelogText.TextChanged -= txtChangelog_TextChanged;
+			txtChangelogText.Text = item.Version + "\r\n----------\r\n" + item.Entry;
+			txtChangelogText.TextChanged += txtChangelog_TextChanged;
 		}
 
 		/// <summary>
@@ -1094,8 +1130,7 @@ namespace AHK_updater
 		/// <param name="e">Generic KeyEventArgs</param>
 		void txtHotstringName_KeyUp(object sender, KeyEventArgs e)
 		{
-			if(e.KeyCode == Keys.Escape)
-			{
+			if (e.KeyCode == Keys.Escape) {
 				txtHotstringSystem.Text = currentHotstring.Name;
 				if (!hotstringTextChanged) {
 					btnUpdateHotstring.Enabled = false;

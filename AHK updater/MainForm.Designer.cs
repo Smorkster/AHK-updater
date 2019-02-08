@@ -13,12 +13,12 @@
 			}
 			base.Dispose(disposing);
 		}
-		
+
 		void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
 			this.btnCancelExtract = new System.Windows.Forms.Button();
-			this.btnExtract = new System.Windows.Forms.Button();
+			this.btnExtractToAHK = new System.Windows.Forms.Button();
 			this.btnRemoveCommand = new System.Windows.Forms.Button();
 			this.btnRemoveExtract = new System.Windows.Forms.Button();
 			this.btnSaveToFile = new System.Windows.Forms.Button();
@@ -45,13 +45,14 @@
 			this.txtHotstringName = new System.Windows.Forms.TextBox();
 			this.txtHotstringSystem = new System.Windows.Forms.TextBox();
 			this.treeHotstrings = new System.Windows.Forms.TreeView();
-			this.txtHotstringText = new System.Windows.Forms.TextBox();
+			this.txtHotstringText = new AHK_updater.MyTextBox();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
 			this.txtFunctionName = new System.Windows.Forms.TextBox();
-			this.txtFunctionText = new System.Windows.Forms.TextBox();
+			this.txtFunctionText = new AHK_updater.MyTextBox();
 			this.tabPage3 = new System.Windows.Forms.TabPage();
-			this.txtChangelog = new System.Windows.Forms.TextBox();
+			this.txtChangelogText = new AHK_updater.MyTextBox();
 			this.tabPage4 = new System.Windows.Forms.TabPage();
+			this.btnExtractToXML = new System.Windows.Forms.Button();
 			this.ttHotstringExists = new System.Windows.Forms.ToolTip(this.components);
 			this.contextMenu.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
@@ -66,22 +67,23 @@
 			// 
 			this.btnCancelExtract.Location = new System.Drawing.Point(185, 64);
 			this.btnCancelExtract.Name = "btnCancelExtract";
-			this.btnCancelExtract.Size = new System.Drawing.Size(75, 23);
+			this.btnCancelExtract.Size = new System.Drawing.Size(112, 23);
 			this.btnCancelExtract.TabIndex = 2;
 			this.btnCancelExtract.Text = "Cancel";
 			this.btnCancelExtract.UseVisualStyleBackColor = true;
 			this.btnCancelExtract.Click += new System.EventHandler(this.btnCancelExtract_Click);
 			// 
-			// btnExtract
+			// btnExtractToAHK
 			// 
-			this.btnExtract.Enabled = false;
-			this.btnExtract.Location = new System.Drawing.Point(185, 6);
-			this.btnExtract.Name = "btnExtract";
-			this.btnExtract.Size = new System.Drawing.Size(75, 23);
-			this.btnExtract.TabIndex = 1;
-			this.btnExtract.Text = "Extract";
-			this.btnExtract.UseVisualStyleBackColor = true;
-			this.btnExtract.Click += new System.EventHandler(this.btnExtract_Click);
+			this.btnExtractToAHK.AutoSize = true;
+			this.btnExtractToAHK.Enabled = false;
+			this.btnExtractToAHK.Location = new System.Drawing.Point(185, 6);
+			this.btnExtractToAHK.Name = "btnExtractToAHK";
+			this.btnExtractToAHK.Size = new System.Drawing.Size(112, 23);
+			this.btnExtractToAHK.TabIndex = 1;
+			this.btnExtractToAHK.Text = "Extract to a scriptfile";
+			this.btnExtractToAHK.UseVisualStyleBackColor = true;
+			this.btnExtractToAHK.Click += new System.EventHandler(this.btnExtractToAHK_Click);
 			// 
 			// btnRemoveCommand
 			// 
@@ -99,7 +101,7 @@
 			// 
 			this.btnRemoveExtract.Location = new System.Drawing.Point(185, 35);
 			this.btnRemoveExtract.Name = "btnRemoveExtract";
-			this.btnRemoveExtract.Size = new System.Drawing.Size(75, 23);
+			this.btnRemoveExtract.Size = new System.Drawing.Size(112, 23);
 			this.btnRemoveExtract.TabIndex = 4;
 			this.btnRemoveExtract.Text = "Remove";
 			this.btnRemoveExtract.UseVisualStyleBackColor = true;
@@ -427,7 +429,7 @@
 			// 
 			this.tabPage3.Controls.Add(this.lbChangelogItems);
 			this.tabPage3.Controls.Add(this.btnUpdateChangelog);
-			this.tabPage3.Controls.Add(this.txtChangelog);
+			this.tabPage3.Controls.Add(this.txtChangelogText);
 			this.tabPage3.Location = new System.Drawing.Point(4, 22);
 			this.tabPage3.Name = "tabPage3";
 			this.tabPage3.Size = new System.Drawing.Size(856, 537);
@@ -435,35 +437,48 @@
 			this.tabPage3.Text = "Changelog";
 			this.tabPage3.UseVisualStyleBackColor = true;
 			// 
-			// txtChangelog
+			// txtChangelogText
 			// 
-			this.txtChangelog.AcceptsTab = true;
-			this.txtChangelog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.txtChangelogText.AcceptsTab = true;
+			this.txtChangelogText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
 			| System.Windows.Forms.AnchorStyles.Left) 
 			| System.Windows.Forms.AnchorStyles.Right)));
-			this.txtChangelog.Font = new System.Drawing.Font("Lucida Console", 8.25F);
-			this.txtChangelog.Location = new System.Drawing.Point(185, 6);
-			this.txtChangelog.Multiline = true;
-			this.txtChangelog.Name = "txtChangelog";
-			this.txtChangelog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.txtChangelog.Size = new System.Drawing.Size(665, 525);
-			this.txtChangelog.TabIndex = 0;
-			this.txtChangelog.TextChanged += new System.EventHandler(this.txtChangelog_TextChanged);
-			this.txtChangelog.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtChangelog_KeyUp);
-			this.txtChangelog.Leave += new System.EventHandler(this.txtChangelogText_Leave);
+			this.txtChangelogText.Font = new System.Drawing.Font("Lucida Console", 8.25F);
+			this.txtChangelogText.Location = new System.Drawing.Point(185, 6);
+			this.txtChangelogText.Multiline = true;
+			this.txtChangelogText.Name = "txtChangelogText";
+			this.txtChangelogText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+			this.txtChangelogText.Size = new System.Drawing.Size(665, 525);
+			this.txtChangelogText.TabIndex = 0;
+			this.txtChangelogText.TextChanged += new System.EventHandler(this.txtChangelog_TextChanged);
+			this.txtChangelogText.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtChangelog_KeyUp);
+			this.txtChangelogText.Leave += new System.EventHandler(this.txtChangelogText_Leave);
 			// 
 			// tabPage4
 			// 
+			this.tabPage4.Controls.Add(this.btnExtractToXML);
 			this.tabPage4.Controls.Add(this.btnRemoveExtract);
 			this.tabPage4.Controls.Add(this.lbExtractions);
 			this.tabPage4.Controls.Add(this.btnCancelExtract);
-			this.tabPage4.Controls.Add(this.btnExtract);
+			this.tabPage4.Controls.Add(this.btnExtractToAHK);
 			this.tabPage4.Location = new System.Drawing.Point(4, 22);
 			this.tabPage4.Name = "tabPage4";
 			this.tabPage4.Size = new System.Drawing.Size(856, 537);
 			this.tabPage4.TabIndex = 3;
 			this.tabPage4.Text = "To extract";
 			this.tabPage4.UseVisualStyleBackColor = true;
+			// 
+			// btnExtractToXML
+			// 
+			this.btnExtractToXML.AutoSize = true;
+			this.btnExtractToXML.Enabled = false;
+			this.btnExtractToXML.Location = new System.Drawing.Point(303, 6);
+			this.btnExtractToXML.Name = "btnExtractToXML";
+			this.btnExtractToXML.Size = new System.Drawing.Size(118, 23);
+			this.btnExtractToXML.TabIndex = 5;
+			this.btnExtractToXML.Text = "Extract to an XML-file";
+			this.btnExtractToXML.UseVisualStyleBackColor = true;
+			this.btnExtractToXML.Click += new System.EventHandler(this.btnExtractToXML_Click);
 			// 
 			// MainForm
 			// 
@@ -495,12 +510,13 @@
 			this.tabPage3.ResumeLayout(false);
 			this.tabPage3.PerformLayout();
 			this.tabPage4.ResumeLayout(false);
+			this.tabPage4.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
 		}
         private System.Windows.Forms.Button btnCancelExtract;
-        private System.Windows.Forms.Button btnExtract;
+        private System.Windows.Forms.Button btnExtractToAHK;
         private System.Windows.Forms.Button btnRemoveCommand;
         private System.Windows.Forms.Button btnRemoveExtract;
         private System.Windows.Forms.Button btnSaveToFile;
@@ -521,12 +537,12 @@
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.TabPage tabPage4;
-        private System.Windows.Forms.TextBox txtChangelog;
+        private AHK_updater.MyTextBox txtChangelogText;
         private System.Windows.Forms.TextBox txtFunctionName;
-        private System.Windows.Forms.TextBox txtFunctionText;
+        private AHK_updater.MyTextBox txtFunctionText;
         private System.Windows.Forms.TextBox txtHotstringName;
         private System.Windows.Forms.TextBox txtHotstringSystem;
-        private System.Windows.Forms.TextBox txtHotstringText;
+        private AHK_updater.MyTextBox txtHotstringText;
         private System.Windows.Forms.ToolStripMenuItem contextItem;
         private System.Windows.Forms.ToolStripMenuItem menuClose;
         private System.Windows.Forms.ToolStripMenuItem menuNewCommand;
@@ -535,5 +551,6 @@
         private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
         private System.Windows.Forms.ToolTip ttHotstringExists;
         private System.Windows.Forms.TreeView treeHotstrings;
+private System.Windows.Forms.Button btnExtractToXML;
 	}
 }
