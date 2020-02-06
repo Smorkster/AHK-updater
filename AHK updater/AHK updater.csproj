@@ -22,6 +22,21 @@
     <RunCodeAnalysis>False</RunCodeAnalysis>
     <SourceAnalysisOverrideSettingsFile>C:\Users\6g1w\AppData\Roaming\ICSharpCode/SharpDevelop4\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
     <ApplicationIcon>ICON.ico</ApplicationIcon>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -68,23 +83,34 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AHKCommand.cs" />
-    <Compile Include="AllData.cs" />
-    <Compile Include="ChangeLogText.cs">
+    <Compile Include="Library\Extensions.cs" />
+    <Compile Include="Models\ChangeData.cs" />
+    <Compile Include="ErrorTracker.cs" />
+    <Compile Include="Models\FunctionData.cs" />
+    <Compile Include="Models\IData.cs" />
+    <Compile Include="Models\IType.cs" />
+    <Compile Include="Models\MarkedItem.cs" />
+    <Compile Include="Models\Setting.cs" />
+    <Compile Include="Models\SettingData.cs" />
+    <Compile Include="Models\WriteData.cs" />
+    <Compile Include="Models\Hotstring.cs" />
+    <Compile Include="Models\HotstringData.cs" />
+    <Compile Include="NewChange.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ChangeLogText.Designer.cs">
-      <DependentUpon>ChangeLogText.cs</DependentUpon>
+    <Compile Include="NewChange.Designer.cs">
+      <DependentUpon>NewChange.cs</DependentUpon>
     </Compile>
-    <Compile Include="ChangelogEntry.cs" />
-    <Compile Include="Function.cs" />
+    <Compile Include="Models\Change.cs" />
+    <Compile Include="FileHandler.cs" />
+    <Compile Include="Models\Function.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="MyTextBox.cs">
+    <Compile Include="Library\MyTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="NewCommand.cs">
@@ -95,18 +121,26 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="Resources.Designer.cs">
       <DependentUpon>Resources.resx</DependentUpon>
       <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Include="Models\Variable.cs" />
+    <Compile Include="Models\VariableData.cs" />
+    <Compile Include="Models\XmlData.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="ChangeLogText.resx">
-      <DependentUpon>ChangeLogText.cs</DependentUpon>
+    <EmbeddedResource Include="NewChange.resx">
+      <DependentUpon>NewChange.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
-      <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="NewCommand.resx">
       <DependentUpon>NewCommand.cs</DependentUpon>
@@ -117,8 +151,20 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="Changelog.txt" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
     <None Include="Things to do.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

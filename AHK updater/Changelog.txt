@@ -1,8 +1,27 @@
-﻿Version 3.3
+﻿Version 4.0
 ***********
-btnRemoveCommand will be disabled, and text in txtHostringText removed, when a systemnode in treeHotstrings is clicked
+Big overhaul with streamlining operations and moved filehandling to separate class
+New datatype Variable
+New datatype Setting, for holding settings for application, script etc.
+New datatypes *Data containing information for each type
+Remove AllData
+All datatypes are moved to 'Models'
+btnRemoveCommand renamed to btnRemoveHotstring
+btnRemoveHotstring will be disabled, and text in txtHostringText removed, when a systemnode in treeHotstrings is clicked
 NewCommand-form now defaults with Hotstring as type
-ChangeLogText-form can now be canceled by clicking Escape-key
+All functionality for keyboard shortcuts have been removed from MainForm
+Added simple undo functionality
+Textboxes and buttons for all datatypes have been placed in groupboxes
+Groupboxes are now disabled when no hotstring/variable/function/changelog is selected
+Corrected how clicks and itemselection is handled in listboxes and treeview
+ChangeLogText is now NewChange
+Added support for extracting all hotstrings associated with a system
+Rework of NewCommand form, now hides controls not associated with type
+New attribute MenuTitle for hotstrings, is used for AHK menus
+Listboxes for extraction now operates through datasources
+Added functionality to save the scriptfile that creates AutoHotKey-menu for each system
+Now initializes changelog for present day, when the first update occurs
+New functionality for autocompletion of function- and variablenames in txtHotstringText
 
 Version 3.2
 ***********

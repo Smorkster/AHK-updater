@@ -5,111 +5,164 @@ namespace AHK_updater
 {
 	public partial class NewCommand : Form
 	{
-		AllData data;
-		public NewCommand(ref AllData temp)
+		ErrorTracker tracker;
+
+		public NewCommand(AutoCompleteStringCollection names,
+							AutoCompleteStringCollection systems)
 		{
 			InitializeComponent();
-			data = temp;
-			this.ActiveControl = txtName;
-			this.DialogResult = DialogResult.Cancel;
-			this.cbType.SelectedIndex = 0;
-			txtSystem.AutoCompleteCustomSource = data.getAutoCompletionList();
+			txtName.AutoCompleteCustomSource = names;
+			lblSystem.Visible = txtHotstringSystem.Visible = true;
+			txtHotstringSystem.AutoCompleteCustomSource = systems;
+			lblMenuTitle.Visible = txtHotstringMenuTitle.Visible = true;
+			Text = $"{Text} hotstring";
+			Initialize();
+		}
+
+		public NewCommand(string type, AutoCompleteStringCollection names)
+		{
+			InitializeComponent();
+			txtName.AutoCompleteCustomSource = names;
+			Text = $"{Text} {type}";
+			Initialize();
+		}
+
+		void Initialize()
+		{
+			tracker = new ErrorTracker(errorProvider);
+			ActiveControl = txtName;
+			DialogResult = DialogResult.Cancel;
 		}
 
 		/// <summary>
-		/// Return name of command specified by user 
+		/// Return name of command
 		/// </summary>
 		/// <returns>Name of the new command</returns>
-		public string getItem()
+		public string GetName()
 		{
-			return txtName.Text; 
+			return txtName.Text;
 		}
 
 		/// <summary>
-		/// Return type of command 
-		/// </summary>
-		/// <returns>Type of the new command</returns>
-		public int getCommandType()
-		{
-			return cbType.SelectedIndex;
-		}
-
-		/// <summary>
-		/// Return system specified by user 
+		/// Return system
 		/// </summary>
 		/// <returns>System of the new command</returns>
-		public string getSystem()
+		public string GetSystem()
 		{
-			return txtSystem.Text;
+			return txtHotstringSystem.Text;
 		}
 
 		/// <summary>
-		/// Catch keypress from user
-		/// Escape: close form
-		/// Enter: act as if createbutton is pressed
+		/// Return menutitle
 		/// </summary>
-		/// <param name="msg">Generic Message</param>
-		/// <param name="keyData">Generic Keys</param>
-		/// <returns>Generic bool if character was processed</returns>
-		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+		/// <returns>System of the new command</returns>
+		public string GetMenuTitle()
 		{
-			switch (keyData) {
-				case Keys.Escape:
-					Close();
-					return true;
-				case Keys.Enter:
-					btnCreate_Click(null, null);
-					break;
-			}
-			return base.ProcessCmdKey(ref msg, keyData);
+			return txtHotstringMenuTitle.Text;
 		}
 
 		/// <summary>
-		/// User have finished entering data
-		/// Set DialogResult to OK and close form 
+		/// Validate that the textboxes have correct strings
+		/// </summary>
+		void ValidateCommand()
+		{
+			if (tracker.Count == 0 && ValidName() && ValidSystem() && ValidMenuTitle())
+			{
+				btnCreate.Enabled = true;
+			}
+			else
+			{
+				btnCreate.Enabled = false;
+			}
+		}
+
+		bool ValidMenuTitle()
+		{
+			if (!txtHotstringMenuTitle.Visible)
+			{ return true; }
+			else if (txtHotstringMenuTitle.Text.Length > 0)
+			{ return true; }
+
+			return false;
+		}
+
+		bool ValidSystem()
+		{
+			if (!txtHotstringSystem.Visible)
+			{ return true; }
+			else if (txtHotstringSystem.Text.Length > 0)
+			{ return true; }
+
+			return false;
+		}
+
+		bool ValidName()
+		{
+			if (txtName.Text.Length > 0)
+			{ return true; }
+
+			return false;
+		}
+
+		/// <summary>
+		/// Cancel creation of new command
 		/// </summary>
 		/// <param name="sender">Generic object</param>
 		/// <param name="e">Generic EventArgs</param>
-		void btnCreate_Click(object sender, EventArgs e)
+		void BtnCancel_Click(object sender, EventArgs e)
+		{
+			DialogResult = DialogResult.Cancel;
+			Close();
+		}
+
+		/// <summary>
+		/// Close form to create command
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void BtnCreate_Click(object sender, EventArgs e)
 		{
 			DialogResult = DialogResult.OK;
 			Close();
 		}
 
 		/// <summary>
-		/// User wants to cancel creating new command
+		/// Text have changed, verify if it is correct
+		/// If incorrect, disable button to create command
 		/// </summary>
 		/// <param name="sender">Generic object</param>
 		/// <param name="e">Generic EventArgs</param>
-		void btnCancel_Click(object sender, EventArgs e)
+		void TxtHotstringMenuTitle_TextChanged(object sender, EventArgs e)
 		{
-			Close();
+			if (txtHotstringMenuTitle.Text.Length < 1)
+			{
+				btnCreate.Enabled = false;
+				tracker.SetError(txtHotstringMenuTitle, "Menutitle can not be empty");
+			}
+			else
+			{
+				tracker.SetError(txtHotstringMenuTitle, "");
+				ValidateCommand();
+			}
 		}
 
 		/// <summary>
-		/// Depending on which index is selected, enable or disable controls
-		/// No index: disable savebutton
-		/// Index 1 or 2 (Variable or Function): disable textbox for system 
+		/// Text have changed, verify if it is correct
+		/// If incorrect, disable button to create command
 		/// </summary>
 		/// <param name="sender">Generic object</param>
 		/// <param name="e">Generic EventArgs</param>
-		void cbType_SelectedIndexChanged(object sender, EventArgs e)
+		void TxtHotstringSystem_TextChanged(object sender, EventArgs e)
 		{
-			if (txtName.Text.Length != 0) {
-				switch (cbType.SelectedIndex) {
-					case -1:
-						btnCreate.Enabled = false;
-						break;
-					case 1:
-					case 2:
-						txtSystem.Enabled = false;
-						btnCreate.Enabled = true;
-						break;
-					default:
-						txtSystem.Enabled = true;
-						btnCreate.Enabled = true;
-						break;
-				}
+			if (txtHotstringSystem.Text.Length < 1)
+			{
+				btnCreate.Enabled = false;
+				tracker.SetError(txtHotstringSystem, "System can not be empty");
+			}
+			else
+			{
+				tracker.SetError(txtHotstringSystem, "");
+				ValidateCommand();
 			}
 		}
 
@@ -118,53 +171,22 @@ namespace AHK_updater
 		/// </summary>
 		/// <param name="sender">Generic object</param>
 		/// <param name="e">Generic EventArgs</param>
-		void txtName_TextChanged(object sender, EventArgs e)
+		void TxtName_TextChanged(object sender, EventArgs e)
 		{
 			if (txtName.Text.Length < 1)
+			{
 				btnCreate.Enabled = false;
-		}
-
-		/// <summary>
-		/// The form is closing
-		/// If button for saving is pressed, check if textbox for system is empty
-		/// If so, notify user and focus textbox
-		/// Checks if command exists, notify user
-		/// </summary>
-		/// <param name="sender">Generic object</param>
-		/// <param name="e">Generic FormClosingEventArgs</param>
-		void NewCommand_FormClosing(object sender, FormClosingEventArgs e)
-		{
-			DialogResult answer;
-
-			if (DialogResult == DialogResult.OK) {
-				switch (cbType.SelectedIndex) {
-					case 0:
-						if (txtSystem.Text.Equals("")) {
-							answer = MessageBox.Show("Textbox for system of the command is empty.", "", MessageBoxButtons.OKCancel);
-							ActiveControl = txtSystem;
-							e.Cancel = true;
-						} else if (data.hotstringExists(txtName.Text)) {
-							MessageBox.Show("Command already exists.\r\nChoose a new name.");
-							ActiveControl = txtName;
-							e.Cancel = true;
-						}
-						break;
-					default:
-						if (txtName.Text.Equals("")) {
-							answer = MessageBox.Show("Textbox for name is empty.", "", MessageBoxButtons.OKCancel);
-							ActiveControl = txtName;
-							e.Cancel = true;
-						} else if (data.hotstringExists(txtName.Text)) {
-							var type = "variable";
-							if (cbType.SelectedIndex == 2)
-								type = "function";
-							MessageBox.Show("A hotstring with this name already exists. Can't have a " + type + " with the same name.\r\nChoose a new name.");
-							ActiveControl = txtName;
-							txtName.Select(0, txtName.Text.Length);
-							e.Cancel = true;
-						}
-						break;
-				}
+				tracker.SetError(txtName, "Name can not be empty");
+			}
+			else if (txtName.AutoCompleteCustomSource.Contains(txtName.Text))
+			{
+				btnCreate.Enabled = false;
+				tracker.SetError(txtName, "Name already exists");
+			}
+			else
+			{
+				tracker.SetError(txtName, "");
+				ValidateCommand();
 			}
 		}
 	}

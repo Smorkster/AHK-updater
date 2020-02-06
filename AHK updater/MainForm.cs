@@ -1,1080 +1,62 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using System.Xml;
+using AHK_updater.Library;
+using AHK_updater.Models;
 
 namespace AHK_updater
 {
 	public partial class MainForm : Form
 	{
+		bool test = false;
+		ChangeData changeData;
+		ErrorTracker errorTracker;
+		FileHandler fileHandler;
+		FunctionData functionData;
+		HotstringData hotstringData;
+		MarkedItem markedItem;
+		SettingData settingsData;
+		Timer updateTimer;
+		VariableData variableData;
+		WriteData extractionData = null;
+
 		public MainForm()
 		{
-			InitializeComponent();
-		}
-		bool test = false;
-		string xmlFile, scriptFile;
+			markedItem = new MarkedItem();
+			fileHandler = new FileHandler(test);
+			errorTracker = new ErrorTracker(errorProvider);
 
-		string scriptfilenameTest = @"H:\AHK - Standardsvar Test.ahk",
-			xmlfilenameTest = @"H:\AHK - Standardsvar Test.xml",
-			originalxmlfilenameTest = @"G:\Lit\Servicedesk\Verktyg\AutoHotKey\AHK - Standardsvar Test.xml",
-			changelogfileTest = @"H:\AHK Changelog.txt";
-		string scriptfilename = @"H:\AHK - Standardsvar.ahk",
-			xmlfilename = @"H:\AHK - Standardsvar.xml",
-			originalxmlfilename = @"G:\Lit\Servicedesk\Verktyg\AutoHotKey\AHK - Standardsvar.xml",
-			changelogfile = @"G:\Lit\Servicedesk\Verktyg\AutoHotKey\AHK - changelog.txt";
-		AllData data = new AllData();
-		AHKCommand currentHotstring;
-		Function currentFunction;
-		List<AHKCommand> toExtract = new List<AHKCommand>();
-		bool hotstringTextChanged, functionsTextChanged, changelogTextChanged;
+			InitializeComponent();
+			InitializeData();
+			InitializeBindings();
+			InitializeEvents();
+		}
 
 		/// <summary>
-		/// Set form title and check which XML-file to be read with data
+		/// Set form title depending on teststate
 		/// </summary>
 		/// <param name="sender">Generic object</param>
 		/// <param name="e">Generic EventArgs</param>
 		void MainForm_Load(object sender, EventArgs e)
 		{
-			Text = "AHK Updater " + System.Reflection.Assembly.GetExecutingAssembly()
-				.GetName().Version;
-
-			if (test) {
-				menuStrip1.BackColor = Color.Red;
+			Text = "AHK Updater " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+			if (test)
+			{
+				menuStrip.BackColor = Color.Red;
 				Text = "IN TEST MODE";
 			}
-
-			//If file is present, open and read. Otherwise, read original file
-			if (File.Exists(test ? xmlfilenameTest : xmlfilename)) {
-				xmlFile = test ? xmlfilenameTest : xmlfilename;
-			} else if (File.Exists(test ? originalxmlfilenameTest : originalxmlfilename)) {
-				xmlFile = test ? originalxmlfilenameTest : originalxmlfilename;
-				MessageBox.Show("No local XML-file found. Using original.");
-			}
-			scriptFile = test ? scriptfilenameTest : scriptfilename;
-
-			if (xmlFile != null) {
-				getXMLCommands();
-			} else
-				MessageBox.Show("No file found. The list of commands will be empty.");
-		}
-
-		/// <summary>
-		/// Reads the XML-file and sends the NodeLists for parsing
-		/// If a username can not be found in the file, application asks user 
-		/// </summary>
-		void getXMLCommands()
-		{
-			var xRead = new XmlTextReader(xmlFile);
-			var doc = new XmlDocument();
-
-			if (new FileInfo(xmlFile).Length != 0) {
-				try {
-					doc.Load(xRead);
-					xRead.WhitespaceHandling = WhitespaceHandling.None;
-
-					XmlNodeList command = doc.GetElementsByTagName("command"),
-					text = doc.GetElementsByTagName("text"),
-					system = doc.GetElementsByTagName("system"),
-					functionname = doc.GetElementsByTagName("functionname"),
-					functiontext = doc.GetElementsByTagName("functiontext"),
-					changelogVersion = doc.GetElementsByTagName("version"),
-					changelogEntry = doc.GetElementsByTagName("entry");
-
-					insertHotstrings(command, text, system);
-					insertFunctions(functionname, functiontext);
-					insertChangelog(changelogVersion, changelogEntry);
-
-					updateTreeView();
-
-					xRead.Close();
-				} catch (Exception e) {
-					MessageBox.Show("Error while reading XML-file.\r\n" + e);
-				}
-			}
-		}
-
-		/// <summary>
-		/// Add all hotstrings to the dataset and all systems to autocompletionlist
-		/// </summary>
-		/// <param name="hotstringName">Name of the hotstring</param>
-		/// <param name="hotstringText">Codetext of the hotstring</param>
-		/// <param name="hotstringSystem">System of the hotstring for grouping</param>
-		void insertHotstrings(XmlNodeList hotstringName, XmlNodeList hotstringText, XmlNodeList hotstringSystem)
-		{
-			if (hotstringName.Count > 0) {
-				for (int i = 0; i < hotstringName.Count; i++) {
-					data.addHotstring(hotstringName[i].InnerText, hotstringText[i].InnerText.Trim(), hotstringSystem[i].InnerText);
-					data.addAutoCompletionItem(hotstringSystem[i].InnerText);
-				}
-				txtHotstringSystem.AutoCompleteCustomSource = data.getAutoCompletionList();
-			}
-		}
-
-		/// <summary>
-		/// Write all functions to txtFunctions
-		/// Remove eventhandler to avoid the button for saving to be shown
-		/// </summary>
-		/// <param name="functionname">Name of function</param>
-		/// <param name="functiontext">Codetext of function</param>
-		void insertFunctions(XmlNodeList functionname, XmlNodeList functiontext)
-		{
-			if (functionname.Count > 0) {
-				for (int i = 0; i < functionname.Count; i++) {
-					data.addFunction(functionname[i].InnerText, functiontext[i].InnerText);
-					lbFunctions.Items.Add(functionname[i].InnerText);
-				}
-			}
-		}
-
-		/// <summary>
-		/// Get previous changelogentries 
-		/// </summary>
-		/// <param name="changelogVersion">NodeList with versionnumbers</param>
-		/// <param name="changelogEntry">NodeList with changelogentries</param>
-		void insertChangelog(XmlNodeList changelogVersion, XmlNodeList changelogEntry)
-		{
-			txtChangelogText.TextChanged -= txtChangelog_TextChanged;
-			if (changelogVersion.Count > 0) {
-				for (int i = 0; i < changelogVersion.Count; i++) {
-					data.updateChangelog(changelogVersion[i].InnerText, changelogEntry[i].InnerText);
-					lbChangelogItems.Items.Add(changelogVersion[i].InnerText);
-				}
-			}
-			data.initiateChangelog();
-			txtChangelogText.Text = data.currentChangelogEntry.Version + "\r\n----------\r\n\r\n" + data.currentChangelogEntry.Entry;
-			txtChangelogText.TextChanged += txtChangelog_TextChanged;
-		}
-
-		/// <summary>
-		/// Closes the application 
-		/// </summary>
-		void shutdown()
-		{
-			hotstringTextChanged = functionsTextChanged = changelogTextChanged = false;
-			updatedData(false);
-			Application.Exit();
-		}
-
-		/// <summary>
-		/// Sets all commands in data.commandslist and inserts in treeview
-		/// If a system is not present, create a node under root
-		/// </summary>
-		void updateTreeView()
-		{
-			treeHotstrings.Nodes.Clear();
-			foreach (AHKCommand item in data.hotstringsList) {
-				if (!item.System.Equals("")) {
-					if (!treeHotstrings.Nodes.ContainsKey(item.System)) {
-						var treeNode = new TreeNode(item.System);
-						treeNode.Name = item.System;
-						treeHotstrings.Nodes.Add(treeNode);
-					}
-					var newNode = new TreeNode(item.Name);
-					newNode.Tag = item.Text;
-					treeHotstrings.Nodes[item.System].Nodes.Add(newNode);
-				}
-			}
-			treeHotstrings.Sort();
-		}
-
-		/// <summary>
-		/// An update of a function have been made
-		/// Reload list to correspond with current data
-		/// </summary>
-		void updateFunctionListBox()
-		{
-			lbFunctions.Items.Clear();
-			foreach (Function item in data.functionsList)
-				lbFunctions.Items.Add(item.Name);
-		}
-
-		/// <summary>
-		/// Collect the hotstrings and write to AutoHotKey scriptfile 
-		/// </summary>
-		void saveToScriptFile()
-		{
-			var writer = new StreamWriter((scriptFile), false, System.Text.Encoding.GetEncoding(1252));
-
-			try {
-				writer.WriteLine("SetTimer,UPDATEDSCRIPT,1000");
-				writer.Write("UPDATEDSCRIPT:\r\nFileGetAttrib,attribs,%A_ScriptFullPath%\r\nIfInString,attribs,A\r\n{\r\nFileSetAttrib,-A,%A_ScriptFullPath%\r\nSplashTextOn,,,Updated script,\r\nSleep,500\r\nReload\r\n}\r\nReturn\r\n\r\n");
-				writer.Write(fetchHotstringsForScript());
-				writer.Flush();
-				writer.Write(fetchFunctionsForScript());
-				writer.WriteLine("ExitApp");
-				writer.Close();
-				statusUpdate(", Scriptfile", true);
-
-				updatedData(false);
-			} catch (Exception e) {
-				MessageBox.Show("Something went wrong when writing script-file.\nError:\n" + e.Message, "Write error", MessageBoxButtons.OK);
-			}
-		}
-
-		/// <summary>
-		/// Collect the hotstrings and write to XML-file 
-		/// </summary>
-		void saveToXMLFile()
-		{
-			var writer = new StreamWriter((xmlFile), false, System.Text.Encoding.UTF8);
-
-			try {
-				writer.WriteLine("<?xml version=\"1.0\"?>\r\n<ahk>");
-				writer.Write(fetchHotstringsForXML());
-				writer.Flush();
-				writer.WriteLine(fetchFunctionsXML());
-				writer.Write(fetchChangelogXML());
-				writer.WriteLine("</ahk>");
-				writer.Close();
-				statusUpdate("Files have been saved: XMLfile", false);
-
-				updatedData(false);
-			} catch (Exception exc) {
-				MessageBox.Show("Something went wrong when writing XML-file.\nError:\n" + exc.Message.ToString(), "Write error", MessageBoxButtons.OK);
-			}
-		}
-
-		/// <summary>
-		/// Write changelog to file 
-		/// </summary>
-		void saveToChangelog()
-		{
-			var writer = new StreamWriter((test ? changelogfileTest : changelogfile), false, System.Text.UnicodeEncoding.Unicode);
-
-			try {
-				writer.Write(data.getChangelogText());
-				writer.Flush();
-				writer.Close();
-			} catch (Exception e) {
-				MessageBox.Show("Something went wrong when writing Changelog.\nError:\n" + e.Message, "Write error", MessageBoxButtons.OK);
-			}
-		}
-
-		/// <summary>
-		/// Collect all hotstrings 
-		/// </summary>
-		/// <returns>Return each as XML-formated string</returns>
-		string fetchHotstringsForXML()
-		{
-			var xmlText = "";
-
-			foreach (AHKCommand item in data.hotstringsList) {
-				if (item.System.Equals("Variables")) {
-					xmlText = item.getXmlString() + "\r\n" + xmlText;
-				} else {
-					xmlText = xmlText + item.getXmlString() + "\r\n";
-				}
-			}
-
-			return xmlText;
-		}
-
-		/// <summary>
-		/// Collect all hotstrings 
-		/// </summary>
-		/// <returns>Return each as AHK-formated string</returns>
-		string fetchHotstringsForScript()
-		{
-			string scriptData = "";
-
-			foreach (AHKCommand item in data.hotstringsList) {
-				if (item.System.Equals("Variables")) {
-					scriptData = item.getScriptString() + "\r\n" + scriptData;
-				} else {
-					scriptData = scriptData + item.getScriptString() + "\r\n";
-				}
-			}
-
-			return scriptData + "\r\n";
-		}
-
-		/// <summary>
-		/// Insert functiontext as XML-code 
-		/// </summary>
-		/// <returns>XML-string of the functions</returns>
-		string fetchFunctionsXML()
-		{
-			var xmlText = "";
-			foreach (Function item in data.functionsList)
-				xmlText = xmlText + "\r\n" + item.getXmlString();
-			return xmlText;
-		}
-
-		/// <summary>
-		/// Loops through list of functions and returns name and text as scripttext
-		/// </summary>
-		/// <returns>String with functions formated as AHK-script</returns>
-		string fetchFunctionsForScript()
-		{
-			string scriptData = "";
-			
-			foreach (Function item in data.functionsList)
-				scriptData = scriptData + item.Text + "\r\n";
-			return scriptData;
-		}
-
-		/// <summary>
-		/// Collect all changelogentries 
-		/// </summary>
-		/// <returns>Return each as string</returns>
-		string fetchChangelogXML()
-		{
-			return data.getChangelogXML();
-		}
-
-		/// <summary>
-		/// Sets the status label with the newest information 
-		/// </summary>
-		/// <param name="newStatus">Information of that was last performed</param>
-		/// <param name="addition">If the text is to be added to any previous text</param>
-		void statusUpdate(string newStatus, bool addition)
-		{
-			if (addition)
-				lblStatus.Text += newStatus;
-			else
-				lblStatus.Text = newStatus;
-		}
-
-		/// <summary>
-		/// Sets Updated to true and making button for Save to file visible 
-		/// </summary>
-		/// <param name="updated">If data is to be updated</param>
-		void updatedData(bool updated)
-		{
-			data.Updated = updated;
-			btnSaveToFile.Enabled = updated;
-		}
-
-		/// <summary>
-		/// Calls a texteditor to open specified file 
-		/// </summary>
-		/// <param name="fileToOpen">Name of file to be opened</param>
-		void openFile(string fileToOpen)
-		{
-			var startInfo = new ProcessStartInfo();
-
-			startInfo.FileName = File.Exists(@"C:\Program Files\Notepad++\notepad++.exe") ? @"C:\Program Files\Notepad++\notepad++.exe" : @"C:\Windows\notepad.exe";
-			startInfo.Arguments = fileToOpen;
-			Process.Start(startInfo);
-			statusUpdate("File has been opened", false);
-		}
-
-		/// <summary>
-		/// Depending on which textbox is the sender, do the corresponding save 
-		/// </summary>
-		/// <param name="sender">Reference of which textbox the keystroke is made in</param>
-		/// <param name="e">Generic KeyEventArgs</param>
-		void shortcutSave(string sender, KeyEventArgs e)
-		{
-			if (e.Control && e.KeyCode == Keys.S) {
-				switch (sender) {
-					case "hotstring":
-						if (currentHotstring != null)
-							btnUpdateHotstring_Click(null, null);
-						break;
-					case "changelog":
-						btnUpdateChangelog_Click(null, null);
-						break;
-					case "functions":
-						btnUpdateFunction_Click(null, null);
-						break;
-				}
-			} else if (e.Control && e.KeyCode == Keys.A) {
-				switch (sender) {
-					case "hotstring":
-						txtHotstringText.SelectAll();
-						break;
-					case "functions":
-						txtFunctionText.SelectAll();
-						break;
-					case "changelog":
-						txtChangelogText.SelectAll();
-						break;
-				}
-			}
-		}
-
-		/// <summary>
-		/// Determine which textbox the event came from and ask user to save before changing focus
-		/// </summary>
-		/// <param name="sender">Reference of which textbox the event is made in</param>
-		/// <param name="e">Generic Eventargs</param>
-		void textbox_leave(string sender, EventArgs e)
-		{
-			var textType = "";
-			switch (sender) {
-				case "hotstring":
-					textType = "Commandtext";
-					break;
-				case "changelog":
-					textType = "Changelogtext";
-					break;
-				case "functions":
-					textType = "Functionstext";
-					break;
-			}
-
-			var ans = MessageBox.Show(textType + " have changed.\nDo you want to save?", "Text changed", MessageBoxButtons.YesNo);
-			if (ans == DialogResult.Yes)
-				btnUpdateHotstring_Click(null, null);
-			else {
-				btnUpdateHotstring.Enabled = false;
-				hotstringTextChanged = false;
-			}
-		}
-
-		/// <summary>
-		/// Searches treeview for a child node and returns that node
-		/// </summary>
-		/// <param name="name">Name of the to search for</param>
-		/// <param name="system">Name of parentnode to search for</param>
-		/// <returns>TreeNode with the searched name</returns>
-		TreeNode getHotstringNode(string name, string system)
-		{
-			TreeNode sysNode = treeHotstrings.Nodes.Find(system, false)[0];
-			foreach (TreeNode node in sysNode.Nodes) {
-				if (node.Text == name)
-					return node;
-			}
-			return null;
-		}
-
-		/// <summary>
-		/// Function to easily handle turning eventhandlers off
-		/// </summary>
-		void eventsOff()
-		{
-			txtFunctionName.TextChanged -= txtFunctionName_TextChanged;
-			txtFunctionText.TextChanged -= txtFunctions_TextChanged;
-			txtHotstringName.TextChanged -= txtHotstringName_TextChanged;
-			txtHotstringText.TextChanged -= txtHotstringText_TextChanged;
-			txtChangelogText.TextChanged -= txtChangelog_TextChanged;
-		}
-
-		/// <summary>
-		/// Function to easily handle turning eventhandlers on
-		/// </summary>
-		void eventsOn()
-		{
-			txtFunctionName.TextChanged += txtFunctionName_TextChanged;
-			txtFunctionText.TextChanged += txtFunctions_TextChanged;
-			txtHotstringName.TextChanged += txtHotstringName_TextChanged;
-			txtHotstringText.TextChanged += txtHotstringText_TextChanged;
-			txtChangelogText.TextChanged += txtChangelog_TextChanged;
-		}
-
-		/// <summary>
-		/// Called when text for hotstring is edited
-		/// If currentItem is null an item have been removed and textbox is empty
-		/// Otherwise checks against text in currentItem 
-		/// </summary>
-		/// <param name="sender">Generic object</param>
-		/// <param name="e">Generic EventArgs</param>
-		void txtHotstringText_TextChanged(object sender, EventArgs e)
-		{
-			if (currentHotstring != null) {
-				if (txtHotstringText.Text != currentHotstring.Text) {
-					btnUpdateHotstring.Enabled = true;
-					hotstringTextChanged = true;
-				} else {
-					btnUpdateHotstring.Enabled = false;
-					hotstringTextChanged = false;
-				}
-			}
-		}
-
-		/// <summary>
-		/// Called when textbox for funtions is edited
-		/// Checks if data.Funtions is same as textbox
-		/// </summary>
-		/// <param name="sender">Generic object</param>
-		/// <param name="e">Generic EventArgs</param>
-		void txtFunctions_TextChanged(object sender, EventArgs e)
-		{
-			if (currentFunction != null) {
-				if (!currentFunction.Text.Equals(txtFunctionText.Text)) {
-					btnUpdateFunction.Enabled = true;
-					btnUpdateFunction.Visible = true;
-					functionsTextChanged = true;
-				} else {
-					btnUpdateFunction.Enabled = false;
-					btnUpdateFunction.Visible = false;
-					functionsTextChanged = false;
-				}
-			}
-		}
-
-		/// <summary>
-		/// Text in textbox for System have changed, enable button for saving 
-		/// </summary>
-		/// <param name="sender">Generic object</param>
-		/// <param name="e">Generic EventArgs</param>
-		void txtHotstringSystem_TextChanged(object sender, EventArgs e)
-		{
-			if (currentHotstring != null) {
-				if (!currentHotstring.System.Equals(txtHotstringSystem.Text)) {
-					btnUpdateHotstring.Enabled = true;
-					hotstringTextChanged = true;
-				} else {
-					btnUpdateHotstring.Enabled = false;
-					hotstringTextChanged = false;
-				}
-			}
-		}
-
-		/// <summary>
-		/// Function to check if users want to save changes in textbox before changing focus 
-		/// </summary>
-		/// <param name="sender">Generic object</param>
-		/// <param name="e">Generic EventArgs</param>
-		void txtHotstringText_Leave(object sender, EventArgs e)
-		{
-			if (ActiveForm == this) {
-				if (!btnUpdateHotstring.ContainsFocus) {
-					if (hotstringTextChanged)
-						textbox_leave("hotstring", e);
-				}
-			}
-			hotstringTextChanged = false;
-		}
-
-		/// <summary>
-		/// Function to check if users want to save changes in textbox before changing focus 
-		/// </summary>
-		/// <param name="sender">Generic object</param>
-		/// <param name="e">Generic EventArgs</param>
-		void txtFunctionsText_Leave(object sender, EventArgs e)
-		{
-			if (ActiveForm == this) {
-				if (!btnUpdateFunction.ContainsFocus) {
-					if (functionsTextChanged)
-						textbox_leave("functions", e);
-				}
-			}
-		}
-
-		/// <summary>
-		/// Function to check if users want to save changes in textbox before changing focus 
-		/// </summary>
-		/// <param name="sender">Generic object</param>
-		/// <param name="e">Generic EventArgs</param>
-		void txtChangelogText_Leave(object sender, EventArgs e)
-		{
-			if (ActiveForm == this) {
-
-				if (!btnUpdateChangelog.ContainsFocus) {
-					if (changelogTextChanged)
-						textbox_leave("changelog", e);
-				}
-			}
-		}
-
-		/// <summary>
-		/// Text in textbox for HotstringName have changed, enable button for saving 
-		/// </summary>
-		/// <param name="sender">Generic object</param>
-		/// <param name="e">Generic EventArgs</param>
-		void txtHotstringName_TextChanged(object sender, EventArgs e)
-		{
-			if (currentHotstring != null) {
-				ttHotstringExists.Hide(btnUpdateHotstring);
-				if (!currentHotstring.Name.Equals(txtHotstringName.Text)) {
-					if (data.hotstringExists(txtHotstringName.Text)) {
-						ttHotstringExists.Show("Hotstring with this name already exists.\r\nChoose a new name.", txtHotstringName, 0, 18);
-						btnUpdateHotstring.Enabled = false;
-						hotstringTextChanged = false;
-					} else {
-						btnUpdateHotstring.Enabled = true;
-						hotstringTextChanged = true;
-					}
-				} else {
-					btnUpdateHotstring.Enabled = false;
-					hotstringTextChanged = false;
-				}
-			}
-		}
-
-		/// <summary>
-		/// Text in textbox for changelog have changed, enable button for saving 
-		/// </summary>
-		/// <param name="sender">Generic object</param>
-		/// <param name="e">Generic EventArgs</param>
-		void txtChangelog_TextChanged(object sender, EventArgs e)
-		{
-			string en = txtChangelogText.Text.Substring(26);
-			if (!data.currentChangelogEntry.Entry.Equals(en)) {
-				btnUpdateChangelog.Enabled = true;
-				btnUpdateChangelog.Visible = true;
-				changelogTextChanged = true;
-			} else {
-				btnUpdateChangelog.Enabled = false;
-				btnUpdateChangelog.Visible = false;
-				changelogTextChanged = true;
-			}
-		}
-
-		/// <summary>
-		/// Name of the function have changed
-		/// Enable updatebutton
-		/// </summary>
-		/// <param name="sender">Generic object</param>
-		/// <param name="e">Generic EventArgs</param>
-		void txtFunctionName_TextChanged(object sender, EventArgs e)
-		{
-			if (currentFunction != null) {
-				if (!currentFunction.Name.Equals(txtFunctionName.Text)) {
-					if (data.functionExists(txtFunctionName.Text)) {
-						ttHotstringExists.Show("Hotstring with this name already exists.\r\nChoose a new name.", txtFunctionName, 0, 18);
-						btnUpdateFunction.Enabled = false;
-					} else {
-						btnUpdateFunction.Enabled = true;
-					}
-				} else {
-					btnUpdateFunction.Enabled = false;
-				}
-			}
-		}
-
-		/// <summary>
-		/// Function to catch Ctrl+S for saving the text in textboxes
-		/// </summary>
-		/// <param name="sender">Generic object</param>
-		/// <param name="e">Generic KeyEventArgs</param>
-		void txtHotstringText_KeyUp(object sender, KeyEventArgs e)
-		{
-			shortcutSave("hotstring", e);
-		}
-		/// <summary>
-		/// Function to catch Ctrl+S for saving the text in textboxes
-		/// </summary>
-		/// <param name="sender">Generic object</param>
-		/// <param name="e">Generic KeyEventArgs</param>
-		void txtFunctions_KeyUp(object sender, KeyEventArgs e)
-		{
-			shortcutSave("functions", e);
-		}
-
-		/// <summary>
-		/// Function to catch Ctrl+S for saving the text in textboxes
-		/// </summary>
-		/// <param name="sender">Generic object</param>
-		/// <param name="e">Generic KeyEventArgs</param>
-		void txtChangelog_KeyUp(object sender, KeyEventArgs e)
-		{
-			shortcutSave("changelog", e);
-		}
-
-		/// <summary>
-		/// Called when user clicks menuitem to remove command
-		/// Ask user to remove item
-		/// Remove item from tree and commandslist, if there are no other items with same system, remove system from root
-		/// </summary>
-		/// <param name="sender">Generic object</param>
-		/// <param name="e">Generic EventArgs</param>
-		void btnRemoveHotstring_Click(object sender, EventArgs e)
-		{
-			if (currentHotstring != null) {
-				DialogResult answer = MessageBox.Show("Remove command " + currentHotstring.Name + "?", "Remove", MessageBoxButtons.YesNo);
-
-				if (answer == DialogResult.Yes) {
-                    var hotstringSystem = currentHotstring.System;
-					var hotstringName = currentHotstring.Name;
-					treeHotstrings.Nodes[hotstringSystem].Nodes.Remove(treeHotstrings.SelectedNode);
-					data.deleteHotstring(hotstringName);
-					if (treeHotstrings.Nodes[hotstringSystem].Nodes.Count == 0) {
-						treeHotstrings.Nodes.RemoveByKey(hotstringSystem);
-					}
-	
-					statusUpdate("Hotstring " + hotstringName + " have been removed.", false);
-					updatedData(true);
-				}
-			}
-		}
-
-		/// <summary>
-		/// Update current entry of changelog 
-		/// </summary>
-		/// <param name="sender">Generic object</param>
-		/// <param name="e">Generic EventArgs</param>
-		void btnUpdateChangelog_Click(object sender, EventArgs e)
-		{
-			data.updateCurrentChangelogItem(txtChangelogText.Text.Substring(26), true);
-
-			updatedData(true);
-			changelogTextChanged = false;
-			statusUpdate("Changelog have been updated", false);
-			btnUpdateChangelog.Enabled = false;
-			btnUpdateChangelog.Visible = false;
-			ActiveControl = txtChangelogText;
-		}
-
-		/// <summary>
-		/// User wants to update command 
-		/// </summary>
-		/// <param name="sender">Generic object</param>
-		/// <param name="e">Generic EventArgs</param>
-		void btnUpdateHotstring_Click(object sender, EventArgs e)
-		{
-			if (currentHotstring != null) {
-				var answer = new ChangeLogText(txtHotstringName.Text);
-				answer.ShowDialog(this);
-
-				switch (answer.DialogResult) {
-					case DialogResult.OK:
-					case DialogResult.Cancel:
-						if (!currentHotstring.System.Equals(txtHotstringSystem.Text))
-							updateTreeView();
-						if (answer.DialogResult == DialogResult.OK && !answer.getChangeInfo()
-							    .Equals(currentHotstring.Name)) {
-							data.updateCurrentChangelogItem(answer.getChangeInfo(), false);
-							txtChangelogText.TextChanged -= txtChangelog_TextChanged;
-							txtChangelogText.Text = data.currentChangelogEntry.Version + "\r\n----------\r\n" + data.currentChangelogEntry.Entry;
-							txtChangelogText.TextChanged += txtChangelog_TextChanged;
-						}
-						data.updateHotstring(currentHotstring.Name, txtHotstringName.Text, txtHotstringText.Text, txtHotstringSystem.Text);
-						updatedData(true);
-						hotstringTextChanged = false;
-						statusUpdate("Hotstring " + currentHotstring.Name + " have been updated", false);
-						updateTreeView();
-						btnSaveToFile.Enabled = true;
-						break;
-					case DialogResult.Abort:
-						statusUpdate("Hotstring " + currentHotstring.Name + " was not updated", false);
-						txtHotstringText.Text = currentHotstring.Text;
-						txtHotstringSystem.Text = currentHotstring.System;
-						txtHotstringName.Text = currentHotstring.Name;
-						break;
-				}
-				TreeNode currentNode = getHotstringNode(currentHotstring.Name, currentHotstring.System);
-				if (currentNode != null) {
-					treeHotstrings.SelectedNode = currentNode;
-				}
-			}
-			btnUpdateHotstring.Enabled = false;
-		}
-
-		/// <summary>
-		/// Update string for functions 
-		/// </summary>
-		/// <param name="sender">Generic object</param>
-		/// <param name="e">Generic EventArgs</param>
-		void btnUpdateFunction_Click(object sender, EventArgs e)
-		{
-			ChangeLogText newChangelogText = new ChangeLogText(txtFunctionName.Text);
-			newChangelogText.ShowDialog(this);
-
-			switch (newChangelogText.DialogResult) {
-				case DialogResult.OK:
-				case DialogResult.Cancel:
-					if (newChangelogText.DialogResult == DialogResult.OK) {
-						data.updateCurrentChangelogItem(newChangelogText.getChangeInfo(), false);
-						txtChangelogText.TextChanged -= txtChangelog_TextChanged;
-						txtChangelogText.Text = data.currentChangelogEntry.Version + "\r\n----------\r\n" + data.currentChangelogEntry.Entry;
-						txtChangelogText.TextChanged += txtChangelog_TextChanged;
-					}
-					if (!currentFunction.Name.Equals(txtFunctionName.Text))
-						txtFunctionText.Text = txtFunctionText.Text.Replace(currentFunction.Name, txtFunctionName.Text);
-					currentFunction = data.getFunction(txtFunctionName.Text);
-					data.updateFunction(currentFunction.Name, txtFunctionName.Text, txtFunctionText.Text);
-					updateFunctionListBox();
-
-					updatedData(true);
-					functionsTextChanged = false;
-					statusUpdate("Function " + txtFunctionName.Text + "have been updated", false);
-
-					break;
-				case DialogResult.Abort:
-					statusUpdate("Functions was not updated", false);
-					txtFunctionText.Text = currentFunction.Text;
-					break;
-			}
-			ActiveControl = txtFunctionText;
-		}
-
-		/**
-		 * 
-		 * */
-		/// <summary>
-		/// Save the data to the script- and XML-file 
-		/// </summary>
-		/// <param name="sender">Generid sender</param>
-		/// <param name="e">Generic Eventargs</param>
-		void btnSaveToFile_Click(object sender, EventArgs e)
-		{
-			saveToXMLFile();
-			saveToScriptFile();
-			btnSaveToFile.Enabled = false;
-			MessageBox.Show("Scriptfile " + scriptFile + " have been saved.");
-		}
-
-		/// <summary>
-		/// Close form 
-		/// </summary>
-		/// <param name="sender">Generid sender</param>
-		/// <param name="e">Generic Eventargs</param>
-		void menuClose_Click(object sender, EventArgs e)
-		{
-			shutdown();
-		}
-
-		/// <summary>
-		/// Open form for defining name of hotstring
-		/// Change selected tab in tabControl if new function is to be created		
-		/// </summary>
-		/// <param name="sender">Generic object</param>
-		/// <param name="e">Generic EventArgs</param>
-		void menuNewCommand_Click(object sender, EventArgs e)
-		{
-			var newCommand = new NewCommand(ref data);
-			DialogResult newCommandDialog = newCommand.ShowDialog(this);
-
-			eventsOff();
-			if (newCommandDialog == DialogResult.OK) {
-				string commandName = newCommand.getItem(), commandSystem = newCommand.getSystem(), commandText;
-				int commandType = newCommand.getCommandType();
-				TreeNode newNode = null;
-
-				if (commandType == 2) { // New function
-					tabControl.SelectedIndex = 1;
-					txtFunctionText.Focus();
-					txtFunctionText.Text = commandName + "()\r\n{\r\n\r\n}";
-					txtFunctionName.Text = commandName;
-					currentFunction = new Function(commandName, txtFunctionText.Text);
-					data.addFunction(currentFunction.Name, currentFunction.Text);
-					btnUpdateFunction.Enabled = true;
-					txtFunctionText.Select(txtFunctionText.Text.Length - 3, 0);
-					txtFunctionText.ScrollToCaret();
-				} else { // New hotstring/variable
-					currentHotstring = new AHKCommand(commandName, "", commandSystem);
-					if (commandType == 0) {
-						commandText = "SendInput,\r\n(\r\n\r\n)\r\nReturn";
-					} else {
-						commandSystem = "Variables";
-						commandText = commandName + " = ";
-					}
-					data.addHotstring(commandName, commandText, commandSystem);
-
-					if (!treeHotstrings.Nodes.ContainsKey(commandSystem)) {
-						var treeNode = new TreeNode(commandSystem);
-						treeNode.Name = commandSystem;
-						treeHotstrings.Nodes.Add(treeNode);
-					}
-					newNode = new TreeNode(commandName);
-					treeHotstrings.Nodes[commandSystem].Nodes.Add(newNode);
-					ActiveControl = txtHotstringText;
-					treeHotstrings.Sort();
-					tabControl.SelectedIndex = 0;
-					treeHotstrings.SelectedNode = newNode;
-					if (commandType == 0)
-						txtHotstringText.Select(15, 0);
-					else
-						txtHotstringText.Select(commandText.Length, 0);
-				}
-			}
-			eventsOn();
-		}
-
-		/// <summary>
-		/// Called when the user wants to read the scriptfile 
-		/// </summary>
-		/// <param name="sender">Generic object</param>
-		/// <param name="e">Generic EventArgs</param>
-		void menuOpenScript_Click(object sender, EventArgs e)
-		{
-			openFile(scriptFile);
-		}
-
-		/// <summary>
-		/// Called when the user wants to read the XML-file 
-		/// </summary>
-		/// <param name="sender">Generic object</param>
-		/// <param name="e">Generic EventArgs</param>
-		void menuOpenXML_Click(object sender, EventArgs e)
-		{
-			openFile(xmlFile);
-		}
-
-		/// <summary>
-		/// When tab is changed, set focus to the textbox
-		/// Textbox for hotstring excluded
-		/// </summary>
-		/// <param name="sender">Generic object</param>
-		/// <param name="e">Generic EventArgs</param>
-		void tabControl_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			if (tabControl.SelectedIndex == 1)
-				ActiveControl = txtFunctionText;
-			else if (tabControl.SelectedIndex == 2)
-				ActiveControl = txtChangelogText;
-		}
-
-		/// <summary>
-		/// A node in treeHotstrings have been selected
-		/// If a hotstring, load data to textboxes
-		/// </summary>
-		/// <param name="sender">Generic object</param>
-		/// <param name="e">Generic TreeViewEventArgs</param>
-		void treeHotstrings_AfterSelect(object sender, TreeViewEventArgs e)
-		{
-			if (e.Node.Level != 0) {
-				currentHotstring = data.hotstringsList.Find(x => x.Name.Equals(e.Node.Text));
-				txtHotstringText.Text = currentHotstring.Text;
-				txtHotstringSystem.Text = currentHotstring.System;
-				txtHotstringName.Text = currentHotstring.Name;
-				btnRemoveCommand.Enabled = true;
-
-				ActiveControl = txtHotstringText;
-			} else {
-				currentHotstring = null;
-				txtHotstringText.Text = "";
-				txtHotstringSystem.Text = "";
-				txtHotstringName.Text = "";
-				btnUpdateHotstring.Enabled = false;
-                btnRemoveCommand.Enabled = false;
-			}
-		}
-
-		/// <summary>
-        /// Eventhandler for clicks in treeHotstrings
-		/// Rightclick on a node to open contextmenu for extraction of the hotstring 
-		/// </summary>
-		/// <param name="sender">Generic object</param>
-		/// <param name="e">Generic TreeNodeMouseClick</param>
-		void treeHotstrings_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
-		{
-			if (e.Node.Level != 0) {
-				if (e.Button == MouseButtons.Right) {
-					contextMenu.Show(treeHotstrings, e.Location);
-					treeHotstrings.SelectedNode = e.Node;
-				}
-			} else {
-				e.Node.Toggle();
-                btnRemoveCommand.Enabled = false;
-                txtHotstringText.Text = "";
-			}
-		}
-
-		/// <summary>
-		/// Contextmenuitem for listview is clicked, i.e. add hotstring to extractionlist
-		/// </summary>
-		/// <param name="sender">Generic object</param>
-		/// <param name="e">Generic EventArgs</param>
-		void contextItem_Click(object sender, EventArgs e)
-		{
-			lbExtractions.Items.Add(treeHotstrings.SelectedNode.Text);
-			toExtract.Add(new AHKCommand(data.getHotstring(treeHotstrings.SelectedNode.Text)));
-			btnExtractToAHK.Enabled = true;
-			btnExtractToXML.Enabled = true;
-		}
-
-		/// <summary>
-		/// Clear list and listbox of planed extractions 
-		/// </summary>
-		/// <param name="sender">Generic object</param>
-		/// <param name="e">Generic EventArgs</param>
-		void btnCancelExtract_Click(object sender, EventArgs e)
-		{
-			lbExtractions.Items.Clear();
-			toExtract = null;
-			btnExtractToAHK.Enabled = false;
-			btnExtractToXML.Enabled = false;
-		}
-
-		/// <summary>
-		/// Remove selected hotstring from list of extractions 
-		/// </summary>
-		/// <param name="sender">Generic object</param>
-		/// <param name="e">Generic EventArgs</param>
-		void btnRemoveExtract_Click(object sender, EventArgs e)
-		{
-			toExtract.RemoveAll(x => x.Name.Equals(lbExtractions.SelectedItem.ToString()));
-			lbExtractions.Items.Remove(lbExtractions.SelectedItem);
-			if (lbExtractions.Items.Count == 0) {
-				btnExtractToAHK.Enabled = false;
-				btnExtractToXML.Enabled = false;
-			}
-		}
-
-		/// <summary>
-		/// Ask the user what to name the extracted hotstrings and where to put it 
-		/// </summary>
-		/// <param name="sender">Generic object</param>
-		/// <param name="e">Generic EventArgs</param>
-		void btnExtractToAHK_Click(object sender, EventArgs e)
-		{
-			SaveFileDialog dir = new SaveFileDialog();
-			dir.FileName = "Extracted hotstrings.ahk";
-			dir.ShowDialog();
-
-			StreamWriter writer = new StreamWriter(dir.FileName, false, System.Text.Encoding.GetEncoding(1252));
-
-			foreach (AHKCommand item in toExtract) {
-				writer.WriteLine(item.getScriptString());
-			}
-			writer.Flush();
-			writer.Close();
-		}
-
-		/// <summary>
-		/// Ask the user what to name the extracted hotstrings and where to put it 
-		/// </summary>
-		/// <param name="sender">Generic object</param>
-		/// <param name="e">Generic EventArgs</param>
-		void btnExtractToXML_Click(object sender, EventArgs e)
-		{
-			SaveFileDialog dir = new SaveFileDialog();
-			dir.FileName = "Extracted hotstrings.xml";
-			dir.ShowDialog();
-
-			StreamWriter writer = new StreamWriter(dir.FileName, false, System.Text.Encoding.GetEncoding(1252));
-
-			try {
-				writer.WriteLine("<?xml version=\"1.0\"?>\r\n<ahk>");
-				foreach (AHKCommand item in toExtract) {
-					writer.WriteLine(item.getXmlString());
-					writer.Flush();
-				}
-				writer.WriteLine("</ahk>");
-
-				writer.Flush();
-				writer.Close();
-			} catch (Exception exc) {
-				MessageBox.Show("Something went wrong when writing XML-file.\nError:\n" + exc.Message.ToString(), "Write error", MessageBoxButtons.OK);
-			}
-		}
-
-		/// <summary>
-		/// User switches item in listbox
-		/// Search for corresponding changelogentry and display in txtChangelogText
-		/// </summary>
-		/// <param name="sender">Generic object</param>
-		/// <param name="e">Generic EventArgs</param>
-		void lbChangelogItems_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			var item = data.getChangelogEntry(lbChangelogItems.SelectedItem.ToString());
-			txtChangelogText.TextChanged -= txtChangelog_TextChanged;
-			txtChangelogText.Text = item.Version + "\r\n----------\r\n" + item.Entry;
-			txtChangelogText.TextChanged += txtChangelog_TextChanged;
-		}
-
-		/// <summary>
-		/// User switches item in listbox
-		/// Search for corresponding function and display in txtFunctionText
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		void lbFunctions_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			var item = data.getFunction(lbFunctions.SelectedItem.ToString());
-			currentFunction = item;
-			txtFunctionText.TextChanged -= txtFunctions_TextChanged;
-			txtFunctionText.Text = item.Text;
-			txtFunctionName.Text = item.Name;
-			txtFunctionText.TextChanged += txtFunctions_TextChanged;
+			PopulateTreeView("");
+			tabControl.SelectedIndex = 0;
+			lbChanges.SelectedIndex = -1;
+			lbFunctions.SelectedIndex = -1;
+			lbVariables.SelectedIndex = -1;
+			// TODO : Fill txthotstrings autocomplete-list
+			txtHotstringText.AutoCompleteFunctionsList = functionData.GetAutoCompletionNames().ToStringCollection();
+			txtHotstringText.AutoCompleteVariablesList = variableData.GetAutoCompletionNames().ToStringCollection();
+			EventsOn();
 		}
 
 		/// <summary>
@@ -1086,57 +68,1347 @@ namespace AHK_updater
 		/// <param name="e">Generic FormClosingEventArgs</param>
 		void MainForm_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			if (data.Updated) {
-				DialogResult answer = MessageBox.Show("Unsaved changes have been made.\r\nDo you want to save?", "", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
+			if (functionData.DataUpdated || hotstringData.DataUpdated || variableData.DataUpdated || changeData.DataUpdated || settingsData.DataUpdated)
+			{
+				DialogResult answer = MessageBox.Show("There are unsaved changes.\r\nDo you want to save?", "", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
 
-				switch (answer) {
+				switch (answer)
+				{
 					case DialogResult.Yes:
-						saveToScriptFile();
-						saveToXMLFile();
-						shutdown();
+						CreateWriteData();
+						ClearUpdated();
+						Shutdown();
 						break;
 					case DialogResult.No:
-						shutdown();
+						Shutdown();
 						break;
 					default:
 						e.Cancel = true;
 						break;
 				}
-			} else {
-				shutdown();
+			}
+			else
+			{
+				Shutdown();
+			}
+		}
+
+		//////////////////////////////////////////////
+		#region OperationalMethods
+		//////////////////////////////////////////////
+
+		/// <summary>
+		/// Add a hotstring to extractionlist
+		/// </summary>
+		/// <param name="hotstring">Hotstring to extract</param>
+		void AddHotstringForExtraction(Hotstring hotstring)
+		{
+			if (extractionData == null)
+			{
+				extractionData = new WriteData();
+			}
+
+			if (extractionData.AddItem(hotstring))
+			{
+				foreach (Variable var in extractionData.GetVariables())
+				{
+					if (hotstring.Text.Contains("%" + var.Name + "%"))
+					{
+						extractionData.AddItem(var);
+					}
+				}
+				foreach (Function func in extractionData.GetFunctions())
+				{
+					if (hotstring.Text.Contains(func.Name + "("))
+					{
+						extractionData.AddItem(func);
+					}
+				}
+			}
+			if (lbHotstringExtractions.DataSource == null)
+			{
+				InitializeExtractionDataSources();
+			}
+			RefreshExtractionLists();
+		}
+
+		/// <summary>
+		/// Set all DataUpdated values to false
+		/// </summary>
+		void ClearUpdated()
+		{
+			changeData.DataUpdated = false;
+			functionData.DataUpdated = false;
+			hotstringData.DataUpdated = false;
+			variableData.DataUpdated = false;
+		}
+
+		/// <summary>
+		/// Create an object holding data to be written to file
+		/// </summary>
+		/// <returns>Data to be written to file</returns>
+		WriteData CreateWriteData()
+		{
+			return new WriteData(changeData.GetList(),
+								functionData.GetList(),
+								hotstringData.GetList(),
+								variableData.GetList(),
+								settingsData.GetList());
+		}
+
+		/// <summary>
+		/// Turning eventhandlers off
+		/// </summary>
+		void EventsOff()
+		{
+			txtChangeText.IgnoreChange = true;
+			lbChanges.SelectedValueChanged -= LbChangelogItems_SelectedValueChanged;
+			lbFunctions.SelectedValueChanged -= LbFunctions_SelectedValueChanged;
+			lbVariables.SelectedValueChanged -= LbVariables_SelectedValueChanged;
+			treeHotstrings.AfterSelect -= TreeHotstrings_AfterSelect;
+			txtChangeText.TextChanged -= TxtChangeText_TextChanged;
+			txtFunctionName.TextChanged -= TxtFunctionName_TextChanged;
+			txtFunctionText.TextChanged -= TxtFunctionText_TextChanged;
+			txtHotstringMenuTitle.TextChanged -= TxtHotstringMenuTitle_TextChanged;
+			txtHotstringName.TextChanged -= TxtHotstringName_TextChanged;
+			txtHotstringSystem.TextChanged -= TxtHotstringSystem_TextChanged;
+			txtHotstringText.TextChanged -= TxtHotstringText_TextChanged;
+			txtScriptOperationsMenuTrigger.TextChanged -= TxtScriptOperationsMenuTrigger_TextChanged;
+			txtVariableName.TextChanged -= TxtVariableName_TextChanged;
+			txtVariableValue.TextChanged -= TxtVariableValue_TextChanged;
+		}
+
+		/// <summary>
+		/// Turning eventhandlers on
+		/// </summary>
+		void EventsOn()
+		{
+			changeData.UpdatedChange += new ChangeData.UpdatedEventHandler(UpdatedData);
+			lbChanges.SelectedValueChanged += LbChangelogItems_SelectedValueChanged;
+			txtChangeText.IgnoreChange = false;
+			txtChangeText.TextChanged += TxtChangeText_TextChanged;
+
+			lbFunctions.SelectedValueChanged += LbFunctions_SelectedValueChanged;
+			lbVariables.SelectedValueChanged += LbVariables_SelectedValueChanged;
+			treeHotstrings.AfterSelect += TreeHotstrings_AfterSelect;
+			txtFunctionName.TextChanged += TxtFunctionName_TextChanged;
+			txtFunctionText.TextChanged += TxtFunctionText_TextChanged;
+			txtHotstringMenuTitle.TextChanged += TxtHotstringMenuTitle_TextChanged;
+			txtHotstringName.TextChanged += TxtHotstringName_TextChanged;
+			txtHotstringSystem.TextChanged += TxtHotstringSystem_TextChanged;
+			txtHotstringText.TextChanged += TxtHotstringText_TextChanged;
+			txtScriptOperationsMenuTrigger.TextChanged += TxtScriptOperationsMenuTrigger_TextChanged;
+			txtVariableName.TextChanged += TxtVariableName_TextChanged;
+			txtVariableValue.TextChanged += TxtVariableValue_TextChanged;
+
+			functionData.UpdatedChange += new FunctionData.UpdatedEventHandler(UpdatedData);
+			hotstringData.UpdatedChange += new HotstringData.UpdatedEventHandler(UpdatedData);
+			variableData.UpdatedChange += new VariableData.UpdatedEventHandler(UpdatedData);
+		}
+
+		/// <summary>
+		/// Create databindings for extractionlists
+		/// </summary>
+		void InitializeExtractionDataSources()
+		{
+			extractionData.GetHotstrings().CollectionChanged += ExtractedHotstring_CollectionUpdated;
+			lbHotstringExtractions.DataSource = extractionData.GetHotstrings();
+			lbHotstringExtractions.DisplayMember = "Name";
+
+			extractionData.GetFunctions().CollectionChanged += ExtractedFunction_CollectionUpdated;
+			lbFunctionExtractions.DataSource = extractionData.GetFunctions();
+			lbFunctionExtractions.DisplayMember = "Name";
+
+			extractionData.GetVariables().CollectionChanged += ExtractedVariable_CollectionUpdated;
+			lbVariableExtractions.DataSource = extractionData.GetVariables();
+			lbVariableExtractions.DisplayMember = "Name";
+		}
+
+		/// <summary>
+		/// Set databindings for controls
+		/// </summary>
+		void InitializeBindings()
+		{
+			lbChanges.DataSource = changeData.GetList();
+			lbChanges.DisplayMember = "Name";
+
+			lbFunctions.DataSource = functionData.GetList();
+			lbFunctions.DisplayMember = "Name";
+
+			lbVariables.DataSource = variableData.GetList();
+			lbVariables.DisplayMember = "Name";
+
+			txtScriptOperationsMenuTrigger.DataBindings.Add("Text", settingsData.Get("MenuTrigger"), "Text");
+			txtSectionTextTitleMenuSection.DataBindings.Add("Text", settingsData.Get("TitleMenuSection"), "Text");
+			txtSectionTextTitleMenuTriggersSection.DataBindings.Add("Text", settingsData.Get("TitleMenuTriggersSection"), "Text");
+			txtSectionTextTitleVariablesSection.DataBindings.Add("Text", settingsData.Get("TitleVariablesSection"), "Text");
+			txtSectionTextTitleFunctionsSection.DataBindings.Add("Text", settingsData.Get("TitleFunctionsSection"), "Text");
+			txtSectionTextTitleHotstringsSection.DataBindings.Add("Text", settingsData.Get("TitleHotstringsSection"), "Text");
+			txtSectionTextTitleDivider.DataBindings.Add("Text", settingsData.Get("TitleDivider"), "Text");
+		}
+
+		/// <summary>
+		/// Get data from file and populate Data-objects
+		/// </summary>
+		void InitializeData()
+		{
+			fileHandler.Read();
+			changeData = fileHandler.GetChangeData();
+			functionData = fileHandler.GetFunctionData();
+			hotstringData = fileHandler.GetHotstringData();
+			settingsData = fileHandler.GetSettingsData();
+			variableData = fileHandler.GetVariableData();
+		}
+
+		/// <summary>
+		/// Set events
+		/// </summary>
+		void InitializeEvents()
+		{
+			functionData.UpdatedChange += FunctionData_UpdatedChange;
+			settingsData.UpdatedChange += SettingsData_UpdatedChange;
+			variableData.UpdatedChange += VariableData_UpdatedChange;
+			markedItem.DifferentChange += MarkedItem_DifferentChange;
+		}
+
+		/// <summary>
+		/// Sets all commands in data.commandslist and inserts in treeview
+		/// If a system is not present, create a node under root
+		/// </summary>
+		void PopulateTreeView(string mark)
+		{
+			treeHotstrings.Nodes.Clear();
+			foreach (Hotstring item in hotstringData.GetList())
+			{
+				if (!item.System.Equals(""))
+				{
+					if (!treeHotstrings.Nodes.ContainsKey(item.System))
+					{
+						var treeNode = new TreeNode(item.System) { Name = item.System };
+						treeHotstrings.Nodes.Add(treeNode);
+					}
+					var newNode = new TreeNode(item.Name) { Name = item.Name };
+					treeHotstrings.Nodes[item.System].Nodes.Add(newNode);
+				}
+			}
+			txtHotstringSystem.AutoCompleteCustomSource = null;
+			txtHotstringSystem.AutoCompleteCustomSource = hotstringData.GetAutoCompletionSystems();
+			treeHotstrings.Sort();
+			treeHotstrings.SelectedNode = null;
+			if (!mark.Equals(""))
+			{
+				TreeNode[] t = treeHotstrings.Nodes.Find(mark, true);
+				treeHotstrings.SelectedNode = t[0];
 			}
 		}
 
 		/// <summary>
-		/// If user have pressed Escape-key, reset system of hotstring
+		/// Extractionlists have updated, refresh lists
 		/// </summary>
-		/// <param name="sender">Generic object</param>
-		/// <param name="e">Generic KeyEventArgs</param>
-		void txtHotstringSystem_KeyUp(object sender, KeyEventArgs e)
+		void RefreshExtractionLists()
 		{
-			if (e.KeyCode == Keys.Escape) {
-				txtHotstringSystem.Text = currentHotstring.System;
-				if (!hotstringTextChanged) {
-					btnUpdateHotstring.Enabled = false;
-					hotstringTextChanged = false;
+			((CurrencyManager)lbHotstringExtractions.BindingContext[extractionData.GetHotstrings()]).Refresh();
+			((CurrencyManager)lbFunctionExtractions.BindingContext[extractionData.GetFunctions()]).Refresh();
+			((CurrencyManager)lbVariableExtractions.BindingContext[extractionData.GetVariables()]).Refresh();
+		}
+
+		/// <summary>
+		/// Remove the specified item from data
+		/// </summary>
+		void RemoveItem()
+		{
+			DialogResult answer = MessageBox.Show($"Remove { markedItem.DataType } { markedItem.Name } ?", $"Remove { markedItem.DataType }", MessageBoxButtons.YesNo);
+
+			if (answer == DialogResult.Yes)
+			{
+				switch (markedItem.DataType)
+				{
+					case "function":
+						functionData.Delete(markedItem.Name);
+						break;
+					case "hotstring":
+						hotstringData.Delete(markedItem.Name);
+						PopulateTreeView("");
+						break;
+					case "variable":
+						variableData.Delete(markedItem.Name);
+						break;
+				}
+				StatusUpdate($"{ markedItem.DataType.First().ToString().ToUpper() + markedItem.DataType.Substring(1) } { markedItem.Name } have been removed", false);
+				markedItem.Clear();
+			}
+		}
+
+		/// <summary>
+		/// Set the markedItem to contain the information of which item in treeview or listbox that is selected
+		/// </summary>
+		/// <param name="item">Object representing the selected item</param>
+		void SetMarkedItem(object item)
+		{
+			if (item == null)
+			{
+				switch (tabControl.SelectedIndex)
+				{
+					case 0:
+						gbHotstring.Enabled = false;
+						break;
+					case 1:
+						gbVariable.Enabled = false;
+						break;
+					case 2:
+						gbFunction.Enabled = false;
+						break;
+					case 3:
+						gbChange.Enabled = false;
+						break;
+				}
+				markedItem.Clear();
+			}
+			else
+			{
+				switch (item.GetType().Name)
+				{
+					case "Change":
+						markedItem.Set((item as Change).Name, (item as Change).Text, "change");
+						gbChange.Enabled = true;
+						break;
+					case "Function":
+						markedItem.Set((item as Function).Name, (item as Function).Text, "function");
+						gbFunction.Enabled = true;
+						break;
+					case "Hotstring":
+						markedItem.Set((item as Hotstring).Name, (item as Hotstring).Text, (item as Hotstring).System, "hotstring", (item as Hotstring).MenuTitle);
+						gbHotstring.Enabled = true;
+						break;
+					case "Variable":
+						markedItem.Set((item as Variable).Name, (item as Variable).Text, "variable");
+						gbVariable.Enabled = true;
+						break;
 				}
 			}
 		}
 
 		/// <summary>
-		/// If user have pressed Escape-key, reset name of hotstring
+		/// Closes the application 
 		/// </summary>
-		/// <param name="sender">Generic object</param>
-		/// <param name="e">Generic KeyEventArgs</param>
-		void txtHotstringName_KeyUp(object sender, KeyEventArgs e)
+		void Shutdown()
 		{
-			if (e.KeyCode == Keys.Escape) {
-				txtHotstringSystem.Text = currentHotstring.Name;
-				if (!hotstringTextChanged) {
-					btnUpdateHotstring.Enabled = false;
-					hotstringTextChanged = false;
+			Application.Exit();
+		}
+
+		/// <summary>
+		/// Sets the status label with the newest information 
+		/// </summary>
+		/// <param name="newStatus">Information of what was done/updated</param>
+		/// <param name="addition">If the text is to be added to any previous text</param>
+		void StatusUpdate(string newStatus, bool addition)
+		{
+			if (addition)
+				lblStatus.Text += newStatus;
+			else
+				lblStatus.Text = newStatus;
+		}
+
+		/// <summary>
+		/// Sets Updated to true/false and making button for Save to file enabled/disabled
+		/// </summary>
+		/// <param name="updated">If data is to be updated</param>
+		void UpdatedData()
+		{
+			if (changeData.DataUpdated || functionData.DataUpdated || hotstringData.DataUpdated || variableData.DataUpdated)
+				btnSaveToFile.Enabled = true;
+			else
+				btnSaveToFile.Enabled = false;
+		}
+
+		/// <summary>
+		/// Updates markeditem and inserts changetext.
+		/// </summary>
+		void UpdateItemInData()
+		{
+			if (markedItem.System.Equals("change"))
+			{
+				changeData.Update(markedItem.Name, new Change(txtChangeVersion.Text, txtChangeText.Text));
+			}
+			else
+			{
+				NewChange newCommand = new NewChange(markedItem.Name);
+				newCommand.ShowDialog(this);
+
+				DialogResult ans = newCommand.DialogResult;
+				if (ans == DialogResult.OK || ans == DialogResult.Cancel)
+				{
+					object temp = "";
+					if (!newCommand.GetChangeInfoText().Equals(""))
+					{
+						changeData.UpdateLatest(newCommand.GetChangeInfoText());
+						EventsOff();
+						txtChangeText.Text += "\r\n" + newCommand.GetChangeInfoText();
+						EventsOn();
+					}
+
+					switch (markedItem.DataType)
+					{
+						case "function":
+							temp = new Function(txtFunctionName.Text, txtFunctionText.Text);
+							functionData.Update(markedItem.Name, temp);
+							SetMarkedItem(temp);
+							ActiveControl = txtFunctionText;
+							break;
+						case "hotstring":
+							temp = new Hotstring(txtHotstringName.Text, txtHotstringText.Text, txtHotstringSystem.Text, txtHotstringMenuTitle.Text);
+							hotstringData.Update(markedItem.Name, temp);
+							SetMarkedItem(temp);
+							PopulateTreeView(txtHotstringName.Text);
+							ActiveControl = txtHotstringText;
+							break;
+						case "variable":
+							temp = new Variable(txtVariableName.Text, txtVariableValue.Text);
+							variableData.Update(markedItem.Name, temp);
+							SetMarkedItem(temp);
+							ActiveControl = txtVariableValue;
+							break;
+					}
+					StatusUpdate(markedItem.Name + " have been updated.", false);
+				}
+				else
+				{
+					StatusUpdate("Update of " + markedItem.Name + " was cancelled.", false);
 				}
 			}
 		}
+
+		/// <summary>
+		/// Validate the changed text in a settings textbox
+		/// </summary>
+		/// <param name="settingTextbox">Textbox for the setting</param>
+		/// <param name="settingName">Name of setting</param>
+		void ValidateSettingText(TextBox settingTextbox, string settingName)
+		{
+			if (!settingTextbox.Text.Equals(settingsData.Get(settingName).Text))
+			{
+				if (settingTextbox.Text.Equals(""))
+				{
+					settingTextbox.Text = settingsData.Get(settingName).Text;
+					errorTracker.SetError(settingTextbox, $"{settingName} can not be empty");
+				}
+				else
+				{
+					settingsData.Update(settingName, settingTextbox.Text);
+				}
+			}
+		}
+
+		#endregion
+
+		//////////////////////////////////////////////
+		#region EventMethods
+		//////////////////////////////////////////////
+
+		/// <summary>
+		/// Clear list and listbox of planed extractions 
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void BtnCancelExtract_Click(object sender, EventArgs e)
+		{
+			extractionData.Clear();
+			btnExtractToAHK.Enabled = false;
+			btnExtractToXML.Enabled = false;
+			btnRemoveExtract.Enabled = false;
+			btnCancelExtract.Enabled = false;
+			RefreshExtractionLists();
+			StatusUpdate("All commands have been remove from extraction", false);
+		}
+
+		/// <summary>
+		/// Ask the user what to name the scriptfile for extracted hotstrings and where to put it 
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void BtnExtractToScript_Click(object sender, EventArgs e)
+		{
+			string file = new FileHandler(test).WriteToFiles(extractionData, 1, chbSaveWithMenu.Checked);
+			StatusUpdate("Commands have been extracted to " + file, false);
+		}
+
+		/// <summary>
+		/// Ask the user what to name the XML-file for extracted hotstrings and where to put it 
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void BtnExtractToXML_Click(object sender, EventArgs e)
+		{
+			string file = new FileHandler(test).WriteToFiles(extractionData, 2, chbSaveWithMenu.Checked);
+			StatusUpdate("Command have been extracted to " + file, false);
+		}
+
+		/// <summary>
+		/// Remove selected hotstring from list of extractions 
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void BtnRemoveExtractedHotstring_Click(object sender, EventArgs e)
+		{
+			Hotstring extractedHotstringToRemove = lbHotstringExtractions.SelectedItem as Hotstring;
+			string statusupdate = extractedHotstringToRemove.Name;
+
+			extractionData.RemoveItem(extractedHotstringToRemove);
+			ObservableCollection<Variable> listV = extractionData.GetVariables();
+			for (int i = 0; i < listV.Count; i++)
+			{
+				Variable v = listV[i];
+				var searchVariable = extractionData.GetHotstrings().Where(x => x.Text.Contains("%" + v.Name + "%"));
+				if (searchVariable.Count() > 0)
+				{
+					continue;
+				}
+				else
+				{
+					extractionData.RemoveItem(v);
+				}
+			}
+			ObservableCollection<Function> listF = extractionData.GetFunctions();
+			for (int i = 0; i < listF.Count; i++)
+			{
+				Function f = listF[i];
+				var searchFunction = extractionData.GetHotstrings().Where(x => x.Text.Contains(f.Name));
+				if (searchFunction.Count() > 0)
+				{
+					continue;
+				}
+				else
+				{
+					extractionData.RemoveItem(f);
+				}
+			}
+			if (lbHotstringExtractions.Items.Count == 0)
+			{
+				btnExtractToAHK.Enabled = false;
+				btnExtractToXML.Enabled = false;
+				statusupdate = "All commands";
+			}
+
+			RefreshExtractionLists();
+			StatusUpdate(statusupdate + " have been removed from extraction", false);
+		}
+
+		/// <summary>
+		/// Remove a saved function
+		/// Then populate controls from data
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void BtnRemoveFunction_Click(object sender, EventArgs e)
+		{
+			if (!markedItem.IsEmpty)
+			{
+				RemoveItem();
+			}
+		}
+
+		/// <summary>
+		/// Called when user clicks menuitem to remove command
+		/// Ask user to remove item
+		/// Remove item from tree and commandslist, if there are no other items with same system, remove system from root
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void BtnRemoveHotstring_Click(object sender, EventArgs e)
+		{
+			if (!markedItem.IsEmpty)
+			{
+				RemoveItem();
+			}
+		}
+
+		/// <summary>
+		/// Remove saved variable
+		/// Then populate controls from data
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void BtnRemoveVariable_Click(object sender, EventArgs e)
+		{
+			if (!markedItem.IsEmpty)
+			{
+				RemoveItem();
+			}
+		}
+
+		/// <summary>
+		/// Save the data to the script- and XML-file 
+		/// </summary>
+		/// <param name="sender">Generid sender</param>
+		/// <param name="e">Generic Eventargs</param>
+		void BtnSaveToFile_Click(object sender, EventArgs e)
+		{
+			new FileHandler(test).WriteToFiles(CreateWriteData(), 0, chbSaveWithMenu.Checked);
+			ClearUpdated();
+			MessageBox.Show("Files have been saved.");
+		}
+
+		/// <summary>
+		/// Update current change
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void BtnUpdateChange_Click(object sender, EventArgs e)
+		{
+			UpdateItemInData();
+		}
+
+		/// <summary>
+		/// Update function
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void BtnUpdateFunction_Click(object sender, EventArgs e)
+		{
+			UpdateItemInData();
+		}
+
+		/// <summary>
+		/// User wants to update hotstring 
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void BtnUpdateHotstring_Click(object sender, EventArgs e)
+		{
+			UpdateItemInData();
+		}
+
+		/// <summary>
+		/// A changed variable is to be saved
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void BtnUpdateVariable_Click(object sender, EventArgs e)
+		{
+			UpdateItemInData();
+		}
+
+		/// <summary>
+		/// Contextmenuitem for treeview is clicked, add hotstring/-s to extractionlist.
+		/// If the treenode has level 0 (zero), add all hotstrings with that system.
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void ContextItem_Click(object sender, EventArgs e)
+		{
+			TreeNode node = treeHotstrings.SelectedNode;
+			if (node.Level == 0)
+			{
+				foreach (Hotstring h in hotstringData.GetList().Where(x => x.System.Equals(node.Text)))
+				{
+					AddHotstringForExtraction(h);
+				}
+			}
+			else
+			{
+				AddHotstringForExtraction(hotstringData.Get(node.Text));
+			}
+			btnExtractToAHK.Enabled = true;
+			btnExtractToXML.Enabled = true;
+		}
+
+		/// <summary>
+		/// List of functions to extract have been modified
+		/// Show/hide groupbox
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void ExtractedFunction_CollectionUpdated(object sender, EventArgs e)
+		{
+			gbExtractFunctions.Visible = !extractionData.FunctionsToWriteIsEmpty;
+		}
+
+		/// <summary>
+		/// List of hotstrings to extract have been modified
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void ExtractedHotstring_CollectionUpdated(object sender, NotifyCollectionChangedEventArgs e)
+		{
+			if (extractionData.GetHotstrings().Count > 0)
+			{
+				tabExtraction.Text = $"To extract ({extractionData.GetHotstrings().Count})";
+			}
+			else
+			{
+				tabExtraction.Text = "To extract";
+			}
+		}
+
+		/// <summary>
+		/// List of variables to extract have been modified
+		/// Show/hide controls and update list
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void ExtractedVariable_CollectionUpdated(object sender, EventArgs e)
+		{
+			gbExtractVariables.Visible = !extractionData.VariablesToWriteIsEmpty;
+		}
+
+		/// <summary>
+		/// Functiondata is updated, refresh listbox
+		/// </summary>
+		void FunctionData_UpdatedChange()
+		{
+			((CurrencyManager)lbFunctions.BindingContext[functionData.GetList()]).Refresh();
+			txtHotstringText.AutoCompleteFunctionsList = functionData.GetAutoCompletionNames().ToStringCollection();
+		}
+
+		/// <summary>
+		/// When groupbox for hotstring is enabled/disabled, set same value for its buttons
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void GbHotstring_EnabledChanged(object sender, EventArgs e)
+		{
+			txtHotstringText.ResetListBox();
+		}
+
+		/// <summary>
+		/// Click occured in listbox
+		/// Get corresponding changelogitem and display in txtChangelogText
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		void LbChangelogItems_MouseClick(object sender, MouseEventArgs e)
+		{
+			int index = lbChanges.IndexFromPoint(e.Location);
+			if (index == -1)
+			{
+				lbChanges.ClearSelected();
+			}
+		}
+
+		/// <summary>
+		/// Item in listbox have changed
+		/// Search for corresponding changelogentry and populate textboxes
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void LbChangelogItems_SelectedValueChanged(object sender, EventArgs e)
+		{
+			EventsOff();
+			if (lbChanges.SelectedItem != null)
+			{
+				SetMarkedItem(changeData.Get((lbChanges.SelectedItem as Change).Name));
+				gbChange.Enabled = true;
+				txtChangeVersion.Text = markedItem.Name;
+				txtChangeText.Text = markedItem.Text;
+			}
+			else
+			{
+				SetMarkedItem(null);
+				txtChangeVersion.Text = "";
+				txtChangeVersion.ReadOnly = true;
+				txtChangeText.Text = "";
+				txtChangeText.ReadOnly = true;
+			}
+			txtChangeText.ClearHistory();
+			EventsOn();
+		}
+
+		/// <summary>
+		/// List for functions have changed
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void LbFunctions_DataSourceChanged(object sender, EventArgs e)
+		{
+			((CurrencyManager)lbFunctions.BindingContext[functionData.GetList()]).Refresh();
+		}
+
+		/// <summary>
+		/// Listbox have been clicked, get item at point of click.
+		/// If no item at point, disable groupbox, clear selection and textboxes
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic MouseEventArgs</param>
+		void LbFunctions_MouseClick(object sender, MouseEventArgs e)
+		{
+			int index = lbFunctions.IndexFromPoint(e.Location);
+			if (index == -1)
+			{
+				lbFunctions.ClearSelected();
+			}
+		}
+
+		/// <summary>
+		/// Item in listbox have changed
+		/// Get the function and enter information in textboxes
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void LbFunctions_SelectedValueChanged(object sender, EventArgs e)
+		{
+			EventsOff();
+			if (lbFunctions.SelectedItem != null)
+			{
+				SetMarkedItem(functionData.Get((lbFunctions.SelectedItem as Function).Name));
+				gbFunction.Enabled = true;
+				txtFunctionName.Text = markedItem.Name;
+				txtFunctionText.Text = markedItem.Text;
+			}
+			else
+			{
+				SetMarkedItem(null);
+				gbFunction.Enabled = false;
+				txtFunctionName.Text = "";
+				txtFunctionText.Text = "";
+			}
+			txtFunctionText.ClearHistory();
+			EventsOn();
+		}
+
+		/// <summary>
+		/// DataSource for functionextractions have changed
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void LbFunctionExtractions_DataSourceChanged(object sender, EventArgs e)
+		{
+			gbExtractFunctions.Visible = !extractionData.FunctionsToWriteIsEmpty;
+		}
+
+		/// <summary>
+		/// Mouseclick in LbHotstringExtractions was made
+		/// Disable buttons for remove and cancel
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic MouseEventArgs</param>
+		void LbHotstringExtractions_MouseClick(object sender, MouseEventArgs e)
+		{
+			int index = lbFunctions.IndexFromPoint(e.Location);
+			if (index == -1)
+			{
+				btnCancelExtract.Enabled = false;
+				btnRemoveExtract.Enabled = false;
+			}
+		}
+
+		/// <summary>
+		/// Item selected in LbHotstringExtractions have changed
+		/// Enable the buttons for remove and cancel
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void LbHotstringExtractions_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (lbHotstringExtractions.SelectedItem != null)
+			{
+				btnRemoveExtract.Enabled = true;
+				btnCancelExtract.Enabled = true;
+			}
+		}
+
+		/// <summary>
+		/// The text in the label have changed
+		/// Start countdown for clearing the text
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void LblStatus_TextChanged(object sender, EventArgs e)
+		{
+			updateTimer = new Timer { Interval = 3000 };
+			updateTimer.Tick += UpdateTimer_Tick;
+			updateTimer.Start();
+		}
+
+		/// <summary>
+		/// DataSource for variableextractions have changed
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void LbVariableExtractions_DataSourceChanged(object sender, EventArgs e)
+		{
+			gbExtractVariables.Visible = !extractionData.VariablesToWriteIsEmpty;
+		}
+
+		/// <summary>
+		/// Listbox have been clicked, get item at point of click.
+		/// If no item at point, clear selection
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic MouseEventArgs</param>
+		void LbVariables_MouseClick(object sender, MouseEventArgs e)
+		{
+			int index = lbVariables.IndexFromPoint(e.Location);
+			if (index == -1)
+			{
+				lbVariables.ClearSelected();
+			}
+		}
+
+		/// <summary>
+		/// Selected item have changed.
+		/// Get the variable and populate textboxes, or clear if no item was selected.
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void LbVariables_SelectedValueChanged(object sender, EventArgs e)
+		{
+			EventsOff();
+			if (lbVariables.SelectedItem != null)
+			{
+				SetMarkedItem(variableData.Get((lbVariables.SelectedItem as Variable).Name));
+				gbVariable.Enabled = true;
+				txtVariableName.Text = markedItem.Name;
+				txtVariableValue.Text = markedItem.Text;
+			}
+			else
+			{
+				SetMarkedItem(null);
+				gbVariable.Enabled = false;
+				txtVariableName.Text = "";
+				txtVariableValue.Text = "";
+			}
+			EventsOn();
+		}
+
+		/// <summary>
+		/// Data have changed, set enable updatebutton according to difference to markeditem
+		/// </summary>
+		void MarkedItem_DifferentChange()
+		{
+			switch (tabControl.SelectedIndex)
+			{
+				case 0:
+					btnUpdateHotstring.Enabled = markedItem.DifferentFromOriginal;
+					break;
+				case 1:
+					btnUpdateVariable.Enabled = markedItem.DifferentFromOriginal;
+					break;
+				case 2:
+					btnUpdateFunction.Enabled = markedItem.DifferentFromOriginal;
+					break;
+			}
+		}
+
+		/// <summary>
+		/// Close form
+		/// </summary>
+		/// <param name="sender">Generid sender</param>
+		/// <param name="e">Generic Eventargs</param>
+		void MenuClose_Click(object sender, EventArgs e)
+		{
+			Shutdown();
+		}
+
+		/// <summary>
+		/// Called when the user wants to read the scriptfile in external editor
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void MenuOpenScript_Click(object sender, EventArgs e)
+		{
+			string filename = fileHandler.OpenFileInExternalEditor("script");
+		}
+
+		/// <summary>
+		/// Called when the user wants to read the XML-file 
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void MenuOpenXML_Click(object sender, EventArgs e)
+		{
+			string filename = fileHandler.OpenFileInExternalEditor("xml");
+		}
+
+		/// <summary>
+		/// Settings have been updated. Enable button to save to file.
+		/// </summary>
+		void SettingsData_UpdatedChange()
+		{
+			btnSaveToFile.Enabled = settingsData.DataUpdated;
+		}
+
+		/// <summary>
+		/// A node in treeHotstrings have been clicked.
+		/// If a hotstring, load data to textboxes.
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic TreeViewEventArgs</param>
+		void TreeHotstrings_AfterSelect(object sender, TreeViewEventArgs e)
+		{
+			EventsOff();
+			if (e.Node.Level != 0)
+			{ // Hotstring have been selected
+				SetMarkedItem(hotstringData.Get(e.Node.Text));
+				gbHotstring.Enabled = true;
+				txtHotstringName.Text = markedItem.Name;
+				txtHotstringText.Text = markedItem.Text;
+				txtHotstringSystem.Text = markedItem.System;
+				txtHotstringMenuTitle.Text = markedItem.MenuTitle;
+				ActiveControl = txtHotstringText;
+			}
+			else
+			{ // No item selected, clear controls
+				SetMarkedItem(null);
+				gbHotstring.Enabled = false;
+				txtHotstringText.Text = txtHotstringSystem.Text = txtHotstringName.Text = txtHotstringMenuTitle.Text = "";
+			}
+			txtHotstringText.ClearHistory();
+			EventsOn();
+		}
+
+		void TreeHotstrings_BeforeSelect(object sender, TreeViewCancelEventArgs e)
+		{
+			if (markedItem.DifferentFromOriginal)
+			{
+				DialogResult answer = MessageBox.Show($"Changes have been made to '{markedItem.Name}', but not saved.\rDo you want to save before changing hotstring?\r(Cancel to return to editing)", "Unsaved changes", MessageBoxButtons.YesNoCancel);
+				switch (answer)
+				{
+					case DialogResult.Yes:
+						UpdateItemInData();
+						break;
+					case DialogResult.No:
+						break;
+					case DialogResult.Cancel:
+						e.Cancel = true;
+						ActiveControl = txtHotstringText;
+						break;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Eventhandler for clicks in treeHotstrings.
+		/// Rightclick on a node to open contextmenu for extraction of the hotstring.
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic TreeNodeMouseClick</param>
+		void TreeHotstrings_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+		{
+
+			if (e.Button == MouseButtons.Right)
+			{
+				contextMenu.Show(treeHotstrings, e.Location);
+				treeHotstrings.SelectedNode = e.Node;
+			}
+			if (e.Node.Level == 0)
+			{
+				if (!e.Node.IsExpanded)
+				{
+					treeHotstrings.CollapseAll();
+					e.Node.Expand();
+					treeHotstrings.SelectedNode = e.Node;
+				}
+				gbHotstring.Enabled = false;
+			}
+		}
+
+		/// <summary>
+		/// Menuitem for new function is clicked
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void TsmiNewFunction_Click(object sender, EventArgs e)
+		{
+			NewCommand newCommand = new NewCommand("fuction",
+													functionData.GetAutoCompletionNames());
+			DialogResult dialog = newCommand.ShowDialog(this);
+			if (dialog == DialogResult.OK)
+			{
+				Function newFunc = new Function(newCommand.GetName(),
+												$"{ newCommand.GetName() }()\r\n{{\r\n \r\n}}");
+				functionData.Add(newFunc);
+				SetMarkedItem(newFunc);
+				tabControl.SelectedIndex = 2;
+				lbFunctions.SetSelected(lbFunctions.FindString(newFunc.Name), true);
+				ActiveControl = txtFunctionText;
+				txtFunctionText.Select(newCommand.GetName().Length + 7, 1);
+			}
+		}
+
+		/// <summary>
+		/// Menuitem for new hotstring is clicked
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void TsmiNewHotstring_Click(object sender, EventArgs e)
+		{
+			NewCommand newCommand = new NewCommand(hotstringData.GetAutoCompletionNames(),
+													hotstringData.GetAutoCompletionSystems());
+			DialogResult dialog = newCommand.ShowDialog(this);
+			if (dialog == DialogResult.OK)
+			{
+				hotstringData.Add(new Hotstring(newCommand.GetName(),
+									"text=\r\n(\r\n \r\n)\r\nPrintText(text)\r\nReturn",
+									newCommand.GetSystem(),
+									$"Menuitem for {newCommand.GetName()}"));
+				tabControl.SelectedIndex = 0;
+				PopulateTreeView(newCommand.GetName());
+				ActiveControl = txtHotstringText;
+				txtHotstringText.Select(11, 1);
+			}
+		}
+
+		/// <summary>
+		/// Menuitem for new variable is clicked
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void TsmiNewVariable_Click(object sender, EventArgs e)
+		{
+			NewCommand newCommand = new NewCommand("variable", variableData.GetAutoCompletionNames());
+			DialogResult dialog = newCommand.ShowDialog(this);
+			if (dialog == DialogResult.OK)
+			{
+				Variable newVar = new Variable(newCommand.GetName(), "");
+				variableData.Add(newVar);
+				SetMarkedItem(newVar);
+				tabControl.SelectedIndex = 1;
+				lbVariables.SetSelected(lbVariables.FindString(newVar.Name), true);
+				ActiveControl = txtVariableValue;
+			}
+		}
+
+		/// <summary>
+		/// Text in textbox for changelog have changed, enable button for saving 
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void TxtChangeText_TextChanged(object sender, EventArgs e)
+		{
+			if (!txtChangeText.Text.Equals(markedItem.Text))
+			{
+				markedItem.DifferentFromOriginal = true;
+			}
+		}
+
+		/// <summary>
+		/// Name of the function have changed
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void TxtFunctionName_TextChanged(object sender, EventArgs e)
+		{
+			if (txtFunctionName.Text.Length < 3)
+			{
+				errorTracker.SetError(txtFunctionName, "Name of function must be longer than 3 characters.");
+				btnUpdateFunction.Enabled = false;
+			}
+			else if (!txtFunctionName.Text.Equals(markedItem.Name))
+			{
+				errorTracker.SetError(txtFunctionName, "");
+				markedItem.DifferentFromOriginal = true;
+			}
+		}
+
+		/// <summary>
+		/// Text for functions have changed
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void TxtFunctionText_TextChanged(object sender, EventArgs e)
+		{
+			if (!txtFunctionText.Text.Equals(markedItem.Text))
+			{
+				markedItem.DifferentFromOriginal = true;
+			}
+		}
+
+		/// <summary>
+		/// Text in textbox for HotstringName have changed, enable button for saving 
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void TxtHotstringName_TextChanged(object sender, EventArgs e)
+		{
+			if (txtHotstringName.Text.Length < 3)
+			{
+				errorTracker.SetError(txtHotstringName, "Name of hotstring must be longer than 3 characters.");
+				btnUpdateHotstring.Enabled = false;
+			}
+			else if (!txtHotstringName.Text.Equals(markedItem.Name))
+			{
+				errorTracker.SetError(txtHotstringName, "");
+				markedItem.DifferentFromOriginal = true;
+			}
+		}
+
+		/// <summary>
+		/// Text in textbox for hotstringsystem have changed, enable button for saving 
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void TxtHotstringSystem_TextChanged(object sender, EventArgs e)
+		{
+			if (string.IsNullOrWhiteSpace(txtHotstringSystem.Text))
+			{
+				errorTracker.SetError(txtHotstringSystem, "System must be specified");
+				btnUpdateHotstring.Enabled = false;
+			}
+			else if (!txtHotstringSystem.Text.Equals(markedItem.System))
+			{
+				errorTracker.SetError(txtHotstringSystem, "");
+				markedItem.DifferentFromOriginal = true;
+			}
+		}
+
+		/// <summary>
+		/// Text for hotstring is edited
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void TxtHotstringText_TextChanged(object sender, EventArgs e)
+		{
+			if (!txtHotstringText.Text.Equals(markedItem.Text))
+			{
+				markedItem.DifferentFromOriginal = true;
+			}
+		}
+
+		/// <summary>
+		/// Text for menutitle have changed
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void TxtHotstringMenuTitle_TextChanged(object sender, EventArgs e)
+		{
+			if (string.IsNullOrWhiteSpace(txtHotstringMenuTitle.Text))
+			{
+				btnUpdateHotstring.Enabled = false;
+				errorTracker.SetError(txtHotstringMenuTitle, "Menutitle can not be empty.");
+			}
+			else if (txtHotstringMenuTitle.Text.Contains(","))
+			{
+				btnUpdateHotstring.Enabled = false;
+				errorTracker.SetError(txtHotstringMenuTitle, "Menutitle can not contain comma (',')");
+			}
+			else if (!txtHotstringMenuTitle.Text.Equals(markedItem.MenuTitle))
+			{
+				errorTracker.SetError(txtHotstringMenuTitle, "");
+				markedItem.DifferentFromOriginal = true;
+			}
+		}
+
+		/// <summary>
+		/// Text for MenuTrigger have changed
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void TxtScriptOperationsMenuTrigger_TextChanged(object sender, EventArgs e)
+		{
+			ValidateSettingText(txtScriptOperationsMenuTrigger, "MenuTrigger");
+		}
+
+		/// <summary>
+		/// Text for TitleDivider have changed
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void TxtSectionTextTitleDivider_TextChanged(object sender, EventArgs e)
+		{
+			ValidateSettingText(txtSectionTextTitleDivider, "TitleDivider");
+		}
+
+		/// <summary>
+		/// Text for TitleFunctionsSection have changed
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void TxtSectionTextTitleFunctionsSection_TextChanged(object sender, EventArgs e)
+		{
+			ValidateSettingText(txtSectionTextTitleFunctionsSection, "TitleFunctionsSection");
+		}
+
+		/// <summary>
+		/// Text for TitleHotstringsSection have changed
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void TxtSectionTextTitleHotstringsSection_TextChanged(object sender, EventArgs e)
+		{
+			ValidateSettingText(txtSectionTextTitleHotstringsSection, "TitleHotstringsSection");
+		}
+
+		/// <summary>
+		/// Text for TitleMenuSection have changed
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void TxtSectionTextTitleMenuSection_TextChanged(object sender, EventArgs e)
+		{
+			ValidateSettingText(txtSectionTextTitleMenuSection, "TitleMenuSection");
+		}
+
+		/// <summary>
+		/// Text for TitleMenuTriggersSection have changed
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void TxtSectionTextTitleMenuTriggersSection_TextChanged(object sender, EventArgs e)
+		{
+			ValidateSettingText(txtSectionTextTitleMenuTriggersSection, "TitleMenuTriggersSection");
+		}
+
+		/// <summary>
+		/// Text for TitleVariablesSection have changed
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void TxtSectionTextTitleVariablesSection_TextChanged(object sender, EventArgs e)
+		{
+			ValidateSettingText(txtSectionTextTitleVariablesSection, "TitleVariablesSection");
+		}
+
+		/// <summary>
+		/// Text for the variable name have changed
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void TxtVariableName_TextChanged(object sender, EventArgs e)
+		{
+			if (!txtVariableName.Text.Equals(markedItem.Name))
+			{
+				errorTracker.SetError(txtVariableName, "");
+				markedItem.DifferentFromOriginal = true;
+			}
+			else if (string.IsNullOrWhiteSpace(txtVariableName.Text))
+			{
+				btnUpdateVariable.Enabled = false;
+				errorTracker.SetError(txtVariableName, "Name of variable can't be empty.");
+			}
+		}
+
+		/// <summary>
+		/// Text for the variable value have changed
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void TxtVariableValue_TextChanged(object sender, EventArgs e)
+		{
+			if (!txtVariableValue.Text.Equals(markedItem.Text))
+			{
+				markedItem.DifferentFromOriginal = true;
+			}
+		}
+
+		/// <summary>
+		/// Timer for updateinfo have elapsed. Clear statuslabel
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic ElapsedEventArgs</param>
+		void UpdateTimer_Tick(object sender, EventArgs e)
+		{
+			lblStatus.Text = "";
+			updateTimer.Stop();
+		}
+
+		/// <summary>
+		/// Variabledata is updated, refresh listbox
+		/// </summary>
+		void VariableData_UpdatedChange()
+		{
+			((CurrencyManager)lbVariables.BindingContext[variableData.GetList()]).Refresh();
+			txtHotstringText.AutoCompleteVariablesList = variableData.GetAutoCompletionNames().ToStringCollection();
+		}
+		#endregion EventMethods
 	}
 }
