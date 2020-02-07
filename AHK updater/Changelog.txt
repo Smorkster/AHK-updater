@@ -1,4 +1,9 @@
-﻿Version 4.0
+﻿Version 20200207
+**************
+New version naming.
+Moved functionality of opening file in external editor, to settingstab. Now lists available texteditors in a combobox.
+
+Version 4.0
 ***********
 Big overhaul with streamlining operations and moved filehandling to separate class
 New datatype Variable

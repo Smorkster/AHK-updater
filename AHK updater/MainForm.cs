@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Drawing;
@@ -53,9 +54,10 @@ namespace AHK_updater
 			lbChanges.SelectedIndex = -1;
 			lbFunctions.SelectedIndex = -1;
 			lbVariables.SelectedIndex = -1;
-			// TODO : Fill txthotstrings autocomplete-list
+
 			txtHotstringText.AutoCompleteFunctionsList = functionData.GetAutoCompletionNames().ToStringCollection();
 			txtHotstringText.AutoCompleteVariablesList = variableData.GetAutoCompletionNames().ToStringCollection();
+
 			EventsOn();
 		}
 
@@ -258,6 +260,10 @@ namespace AHK_updater
 			hotstringData = fileHandler.GetHotstringData();
 			settingsData = fileHandler.GetSettingsData();
 			variableData = fileHandler.GetVariableData();
+
+			cbEditorToOpenFileWith.DataSource = new Editors().GetEditors();
+			cbEditorToOpenFileWith.DisplayMember = "Name";
+			cbEditorToOpenFileWith.SelectedIndex = -1;
 		}
 
 		/// <summary>
@@ -544,6 +550,26 @@ namespace AHK_updater
 		}
 
 		/// <summary>
+		/// Open the script-file in an external texteditor
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void BtnOpenScript_Click(object sender, EventArgs e)
+		{
+			string filename = fileHandler.OpenFileInExternalEditor("script", cbEditorToOpenFileWith.SelectedItem.ToString());
+		}
+
+		/// <summary>
+		/// Open the XML-file in an external texteditor
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void BtnOpenXML_Click(object sender, EventArgs e)
+		{
+			string filename = fileHandler.OpenFileInExternalEditor("xml", cbEditorToOpenFileWith.SelectedItem.ToString());
+		}
+
+		/// <summary>
 		/// Remove selected hotstring from list of extractions 
 		/// </summary>
 		/// <param name="sender">Generic object</param>
@@ -686,6 +712,27 @@ namespace AHK_updater
 		void BtnUpdateVariable_Click(object sender, EventArgs e)
 		{
 			UpdateItemInData();
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="sender">Generic object</param>
+		/// <param name="e">Generic EventArgs</param>
+		void CbEditorToOpenFileWith_TextChanged(object sender, EventArgs e)
+		{
+			if (cbEditorToOpenFileWith.Text == "")
+			{
+				btnOpenScript.Enabled = btnOpenXML.Enabled = false;
+			}
+			else if (!new Editors().Contains(cbEditorToOpenFileWith.Text))
+			{
+				btnOpenScript.Enabled = btnOpenXML.Enabled = false;
+			}
+			else
+			{
+				btnOpenScript.Enabled = btnOpenXML.Enabled = true;
+			}
 		}
 
 		/// <summary>
@@ -997,26 +1044,6 @@ namespace AHK_updater
 		void MenuClose_Click(object sender, EventArgs e)
 		{
 			Shutdown();
-		}
-
-		/// <summary>
-		/// Called when the user wants to read the scriptfile in external editor
-		/// </summary>
-		/// <param name="sender">Generic object</param>
-		/// <param name="e">Generic EventArgs</param>
-		void MenuOpenScript_Click(object sender, EventArgs e)
-		{
-			string filename = fileHandler.OpenFileInExternalEditor("script");
-		}
-
-		/// <summary>
-		/// Called when the user wants to read the XML-file 
-		/// </summary>
-		/// <param name="sender">Generic object</param>
-		/// <param name="e">Generic EventArgs</param>
-		void MenuOpenXML_Click(object sender, EventArgs e)
-		{
-			string filename = fileHandler.OpenFileInExternalEditor("xml");
 		}
 
 		/// <summary>

@@ -39,10 +39,7 @@
 			this.tsmiNewFunction = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsmiNewHotstring = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsmiNewVariable = new System.Windows.Forms.ToolStripMenuItem();
-			this.menuOpenScript = new System.Windows.Forms.ToolStripMenuItem();
-			this.menuOpenXML = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip = new System.Windows.Forms.MenuStrip();
-			this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.tabControl = new System.Windows.Forms.TabControl();
 			this.tabHotstrings = new System.Windows.Forms.TabPage();
 			this.gbHotstring = new System.Windows.Forms.GroupBox();
@@ -78,6 +75,11 @@
 			this.lbVariableExtractions = new System.Windows.Forms.ListBox();
 			this.btnExtractToXML = new System.Windows.Forms.Button();
 			this.tabSettings = new System.Windows.Forms.TabPage();
+			this.gbApplicationSettings = new System.Windows.Forms.GroupBox();
+			this.btnOpenXML = new System.Windows.Forms.Button();
+			this.btnOpenScript = new System.Windows.Forms.Button();
+			this.label13 = new System.Windows.Forms.Label();
+			this.cbEditorToOpenFileWith = new System.Windows.Forms.ComboBox();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.btnResetMenuTrigger = new System.Windows.Forms.Button();
@@ -121,6 +123,7 @@
 			this.gbExtractFunctions.SuspendLayout();
 			this.gbExtractVariables.SuspendLayout();
 			this.tabSettings.SuspendLayout();
+			this.gbApplicationSettings.SuspendLayout();
 			this.groupBox4.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -346,40 +349,16 @@
 			this.tsmiNewVariable.Text = "Variable";
 			this.tsmiNewVariable.Click += new System.EventHandler(this.TsmiNewVariable_Click);
 			// 
-			// menuOpenScript
-			// 
-			this.menuOpenScript.Name = "menuOpenScript";
-			this.menuOpenScript.Size = new System.Drawing.Size(120, 22);
-			this.menuOpenScript.Text = "Scriptfile";
-			this.menuOpenScript.Click += new System.EventHandler(this.MenuOpenScript_Click);
-			// 
-			// menuOpenXML
-			// 
-			this.menuOpenXML.Name = "menuOpenXML";
-			this.menuOpenXML.Size = new System.Drawing.Size(120, 22);
-			this.menuOpenXML.Text = "XMLfile";
-			this.menuOpenXML.Click += new System.EventHandler(this.MenuOpenXML_Click);
-			// 
 			// menuStrip
 			// 
 			this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuNewCommand,
-            this.openToolStripMenuItem,
             this.menuClose});
 			this.menuStrip.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip.Name = "menuStrip";
 			this.menuStrip.Size = new System.Drawing.Size(888, 24);
 			this.menuStrip.TabIndex = 4;
 			this.menuStrip.Text = "menuStrip1";
-			// 
-			// openToolStripMenuItem
-			// 
-			this.openToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.menuOpenScript,
-            this.menuOpenXML});
-			this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-			this.openToolStripMenuItem.Size = new System.Drawing.Size(57, 20);
-			this.openToolStripMenuItem.Text = "Open...";
 			// 
 			// tabControl
 			// 
@@ -783,6 +762,7 @@
 			// 
 			// tabSettings
 			// 
+			this.tabSettings.Controls.Add(this.gbApplicationSettings);
 			this.tabSettings.Controls.Add(this.groupBox4);
 			this.tabSettings.Controls.Add(this.groupBox3);
 			this.tabSettings.Location = new System.Drawing.Point(4, 22);
@@ -791,6 +771,60 @@
 			this.tabSettings.TabIndex = 5;
 			this.tabSettings.Text = "Settings";
 			this.tabSettings.UseVisualStyleBackColor = true;
+			// 
+			// gbApplicationSettings
+			// 
+			this.gbApplicationSettings.Controls.Add(this.btnOpenXML);
+			this.gbApplicationSettings.Controls.Add(this.btnOpenScript);
+			this.gbApplicationSettings.Controls.Add(this.label13);
+			this.gbApplicationSettings.Controls.Add(this.cbEditorToOpenFileWith);
+			this.gbApplicationSettings.Location = new System.Drawing.Point(9, 319);
+			this.gbApplicationSettings.Name = "gbApplicationSettings";
+			this.gbApplicationSettings.Size = new System.Drawing.Size(488, 100);
+			this.gbApplicationSettings.TabIndex = 6;
+			this.gbApplicationSettings.TabStop = false;
+			this.gbApplicationSettings.Text = "Application settings";
+			// 
+			// btnOpenXML
+			// 
+			this.btnOpenXML.Enabled = false;
+			this.btnOpenXML.Location = new System.Drawing.Point(431, 17);
+			this.btnOpenXML.Name = "btnOpenXML";
+			this.btnOpenXML.Size = new System.Drawing.Size(45, 23);
+			this.btnOpenXML.TabIndex = 3;
+			this.btnOpenXML.Text = "XML";
+			this.btnOpenXML.UseVisualStyleBackColor = true;
+			this.btnOpenXML.Click += new System.EventHandler(this.BtnOpenXML_Click);
+			// 
+			// btnOpenScript
+			// 
+			this.btnOpenScript.Enabled = false;
+			this.btnOpenScript.Location = new System.Drawing.Point(381, 17);
+			this.btnOpenScript.Name = "btnOpenScript";
+			this.btnOpenScript.Size = new System.Drawing.Size(45, 23);
+			this.btnOpenScript.TabIndex = 2;
+			this.btnOpenScript.Text = "Script";
+			this.btnOpenScript.UseVisualStyleBackColor = true;
+			this.btnOpenScript.Click += new System.EventHandler(this.BtnOpenScript_Click);
+			// 
+			// label13
+			// 
+			this.label13.AutoSize = true;
+			this.label13.Location = new System.Drawing.Point(13, 22);
+			this.label13.Name = "label13";
+			this.label13.Size = new System.Drawing.Size(111, 13);
+			this.label13.TabIndex = 1;
+			this.label13.Text = "Editor to open file with";
+			// 
+			// cbEditorToOpenFileWith
+			// 
+			this.cbEditorToOpenFileWith.FormattingEnabled = true;
+			this.cbEditorToOpenFileWith.Location = new System.Drawing.Point(187, 19);
+			this.cbEditorToOpenFileWith.Name = "cbEditorToOpenFileWith";
+			this.cbEditorToOpenFileWith.Size = new System.Drawing.Size(170, 21);
+			this.cbEditorToOpenFileWith.Sorted = true;
+			this.cbEditorToOpenFileWith.TabIndex = 0;
+			this.cbEditorToOpenFileWith.TextChanged += new System.EventHandler(this.CbEditorToOpenFileWith_TextChanged);
 			// 
 			// groupBox4
 			// 
@@ -816,7 +850,7 @@
 			// 
 			// btnResetMenuTrigger
 			// 
-			this.btnResetMenuTrigger.Location = new System.Drawing.Point(357, 19);
+			this.btnResetMenuTrigger.Location = new System.Drawing.Point(375, 19);
 			this.btnResetMenuTrigger.Name = "btnResetMenuTrigger";
 			this.btnResetMenuTrigger.Size = new System.Drawing.Size(95, 23);
 			this.btnResetMenuTrigger.TabIndex = 1;
@@ -898,7 +932,7 @@
 			// 
 			// btnResetTitleDivider
 			// 
-			this.btnResetTitleDivider.Location = new System.Drawing.Point(357, 162);
+			this.btnResetTitleDivider.Location = new System.Drawing.Point(375, 162);
 			this.btnResetTitleDivider.Name = "btnResetTitleDivider";
 			this.btnResetTitleDivider.Size = new System.Drawing.Size(95, 23);
 			this.btnResetTitleDivider.TabIndex = 19;
@@ -916,7 +950,7 @@
 			// 
 			// btnResetTitleMenuSection
 			// 
-			this.btnResetTitleMenuSection.Location = new System.Drawing.Point(357, 17);
+			this.btnResetTitleMenuSection.Location = new System.Drawing.Point(375, 17);
 			this.btnResetTitleMenuSection.Name = "btnResetTitleMenuSection";
 			this.btnResetTitleMenuSection.Size = new System.Drawing.Size(95, 23);
 			this.btnResetTitleMenuSection.TabIndex = 4;
@@ -952,7 +986,7 @@
 			// 
 			// btnResetTitleMenuTriggersSection
 			// 
-			this.btnResetTitleMenuTriggersSection.Location = new System.Drawing.Point(357, 46);
+			this.btnResetTitleMenuTriggersSection.Location = new System.Drawing.Point(375, 46);
 			this.btnResetTitleMenuTriggersSection.Name = "btnResetTitleMenuTriggersSection";
 			this.btnResetTitleMenuTriggersSection.Size = new System.Drawing.Size(95, 23);
 			this.btnResetTitleMenuTriggersSection.TabIndex = 7;
@@ -961,7 +995,7 @@
 			// 
 			// btnResetTitleHotstringsSection
 			// 
-			this.btnResetTitleHotstringsSection.Location = new System.Drawing.Point(357, 133);
+			this.btnResetTitleHotstringsSection.Location = new System.Drawing.Point(375, 133);
 			this.btnResetTitleHotstringsSection.Name = "btnResetTitleHotstringsSection";
 			this.btnResetTitleHotstringsSection.Size = new System.Drawing.Size(95, 23);
 			this.btnResetTitleHotstringsSection.TabIndex = 16;
@@ -1006,7 +1040,7 @@
 			// 
 			// btnResetTitleVariablesSection
 			// 
-			this.btnResetTitleVariablesSection.Location = new System.Drawing.Point(357, 75);
+			this.btnResetTitleVariablesSection.Location = new System.Drawing.Point(375, 75);
 			this.btnResetTitleVariablesSection.Name = "btnResetTitleVariablesSection";
 			this.btnResetTitleVariablesSection.Size = new System.Drawing.Size(95, 23);
 			this.btnResetTitleVariablesSection.TabIndex = 10;
@@ -1015,7 +1049,7 @@
 			// 
 			// btnResetTitleFunctionsSection
 			// 
-			this.btnResetTitleFunctionsSection.Location = new System.Drawing.Point(357, 104);
+			this.btnResetTitleFunctionsSection.Location = new System.Drawing.Point(375, 104);
 			this.btnResetTitleFunctionsSection.Name = "btnResetTitleFunctionsSection";
 			this.btnResetTitleFunctionsSection.Size = new System.Drawing.Size(95, 23);
 			this.btnResetTitleFunctionsSection.TabIndex = 13;
@@ -1099,6 +1133,8 @@
 			this.gbExtractFunctions.ResumeLayout(false);
 			this.gbExtractVariables.ResumeLayout(false);
 			this.tabSettings.ResumeLayout(false);
+			this.gbApplicationSettings.ResumeLayout(false);
+			this.gbApplicationSettings.PerformLayout();
 			this.groupBox4.ResumeLayout(false);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
@@ -1146,9 +1182,6 @@
         private System.Windows.Forms.ToolStripMenuItem contextItem;
         private System.Windows.Forms.ToolStripMenuItem menuClose;
         private System.Windows.Forms.ToolStripMenuItem menuNewCommand;
-        private System.Windows.Forms.ToolStripMenuItem menuOpenScript;
-        private System.Windows.Forms.ToolStripMenuItem menuOpenXML;
-        private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
         private System.Windows.Forms.ToolTip ttGeneralTooltip;
         private System.Windows.Forms.TreeView treeHotstrings;
 		private System.Windows.Forms.Button btnExtractToXML;
@@ -1205,5 +1238,10 @@
 		private System.Windows.Forms.GroupBox groupBox4;
 		private System.Windows.Forms.GroupBox groupBox3;
 		private System.Windows.Forms.ErrorProvider errorProvider;
+		private System.Windows.Forms.GroupBox gbApplicationSettings;
+		private System.Windows.Forms.Label label13;
+		private System.Windows.Forms.ComboBox cbEditorToOpenFileWith;
+		private System.Windows.Forms.Button btnOpenXML;
+		private System.Windows.Forms.Button btnOpenScript;
 	}
 }

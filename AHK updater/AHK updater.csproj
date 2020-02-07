@@ -86,6 +86,7 @@
     <Compile Include="Library\Extensions.cs" />
     <Compile Include="Models\ChangeData.cs" />
     <Compile Include="ErrorTracker.cs" />
+    <Compile Include="Models\Editors.cs" />
     <Compile Include="Models\FunctionData.cs" />
     <Compile Include="Models\IData.cs" />
     <Compile Include="Models\IType.cs" />

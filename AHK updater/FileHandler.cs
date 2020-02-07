@@ -20,19 +20,6 @@ namespace AHK_updater
 		XmlData xmlData;
 		readonly bool test;
 		/// <summary>
-		/// Name and address of the AHK-scriptfile
-		/// </summary>
-		//string scriptfilename = "";
-		/// <summary>
-		/// Name and address of the XML-file
-		/// </summary>
-		//string xmlfilename = "";
-		/// <summary>
-		/// Name and address of a central XML-file
-		/// Used so different users can create their own hotstrings
-		/// </summary>
-		//string changelogfilename = "";
-		/// <summary>
 		/// File for writing changelog
 		/// </summary>
 		FileInfo changelogFile;
@@ -93,11 +80,11 @@ namespace AHK_updater
 		/// Calls a texteditor to open specified file 
 		/// </summary>
 		/// <param name="fileType">Name of file to be opened</param>
-		public string OpenFileInExternalEditor(string fileType)
+		public string OpenFileInExternalEditor(string fileType, string application)
 		{
 			ProcessStartInfo startInfo = new ProcessStartInfo
 			{
-				FileName = File.Exists(@"C:\Program Files\Notepad++\notepad++.exe") ? @"C:\Program Files\Notepad++\notepad++.exe" : @"C:\Windows\notepad.exe"
+				FileName = application
 			};
 			if (fileType.Equals("script"))
 				startInfo.Arguments = scriptFile.FullName;

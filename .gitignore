@@ -6,6 +6,7 @@
 *.user
 *.userosscache
 *.sln.docstates
+storage.ide
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -24,6 +25,7 @@ bld/
 
 # Visual Studio cache/options directory
 .vs/
+vs/
 # Uncomment if you have tasks that create the project's static files in wwwroot
 #wwwroot/
 
