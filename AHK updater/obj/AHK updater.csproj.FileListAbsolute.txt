@@ -1,9 +1,0 @@
-H:\AHK updater\AHK updater\obj\Debug\ResolveAssemblyReference.cache
-H:\AHK updater\AHK updater\obj\Debug\AHK_updater.ChangeLogText.resources
-H:\AHK updater\AHK updater\obj\Debug\AHK_updater.MainForm.resources
-H:\AHK updater\AHK updater\obj\Debug\AHK_updater.NewCommand.resources
-H:\AHK updater\AHK updater\obj\Debug\AHK_updater.NewName.resources
-H:\AHK updater\AHK updater\obj\Debug\AHK updater.csproj.GenerateResource.Cache
-H:\AHK updater\AHK updater\obj\Debug\AHK_updater.MainForm.sv-SE.resources
-H:\AHK updater\AHK updater\obj\Debug\AHK updater.exe
-H:\AHK updater\AHK updater\obj\Debug\AHK updater.pdb
