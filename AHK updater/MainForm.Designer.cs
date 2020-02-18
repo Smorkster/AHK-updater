@@ -43,7 +43,6 @@
 			this.tabControl = new System.Windows.Forms.TabControl();
 			this.tabHotstrings = new System.Windows.Forms.TabPage();
 			this.gbHotstring = new System.Windows.Forms.GroupBox();
-			this.txtHotstringText = new AHK_updater.MyTextBox();
 			this.label6 = new System.Windows.Forms.Label();
 			this.txtHotstringName = new System.Windows.Forms.TextBox();
 			this.txtHotstringSystem = new System.Windows.Forms.TextBox();
@@ -60,13 +59,11 @@
 			this.lbVariables = new System.Windows.Forms.ListBox();
 			this.tabFunctions = new System.Windows.Forms.TabPage();
 			this.gbFunction = new System.Windows.Forms.GroupBox();
-			this.txtFunctionText = new AHK_updater.MyTextBox();
 			this.btnRemoveFunction = new System.Windows.Forms.Button();
 			this.txtFunctionName = new System.Windows.Forms.TextBox();
 			this.tabChangelog = new System.Windows.Forms.TabPage();
 			this.gbChange = new System.Windows.Forms.GroupBox();
 			this.label5 = new System.Windows.Forms.Label();
-			this.txtChangeText = new AHK_updater.MyTextBox();
 			this.txtChangeVersion = new System.Windows.Forms.TextBox();
 			this.tabExtraction = new System.Windows.Forms.TabPage();
 			this.gbExtractFunctions = new System.Windows.Forms.GroupBox();
@@ -108,6 +105,9 @@
 			this.ttGeneralTooltip = new System.Windows.Forms.ToolTip(this.components);
 			this.chbSaveWithMenu = new System.Windows.Forms.CheckBox();
 			this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
+			this.txtHotstringText = new AHK_updater.MyTextBox();
+			this.txtFunctionText = new AHK_updater.MyTextBox();
+			this.txtChangeText = new AHK_updater.MyTextBox();
 			this.contextMenu.SuspendLayout();
 			this.menuStrip.SuspendLayout();
 			this.tabControl.SuspendLayout();
@@ -408,24 +408,6 @@
 			this.gbHotstring.TabStop = false;
 			this.gbHotstring.EnabledChanged += new System.EventHandler(this.GbHotstring_EnabledChanged);
 			// 
-			// txtHotstringText
-			// 
-			this.txtHotstringText.AcceptsTab = true;
-			this.txtHotstringText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.txtHotstringText.AutoCompleteFunctionsList = null;
-			this.txtHotstringText.AutoCompleteVariablesList = null;
-			this.txtHotstringText.Font = new System.Drawing.Font("Lucida Console", 8.25F);
-			this.txtHotstringText.IgnoreChange = false;
-			this.txtHotstringText.Location = new System.Drawing.Point(6, 100);
-			this.txtHotstringText.Multiline = true;
-			this.txtHotstringText.Name = "txtHotstringText";
-			this.txtHotstringText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.txtHotstringText.Size = new System.Drawing.Size(561, 419);
-			this.txtHotstringText.TabIndex = 0;
-			this.txtHotstringText.TabStop = false;
-			// 
 			// label6
 			// 
 			this.label6.Anchor = System.Windows.Forms.AnchorStyles.None;
@@ -593,24 +575,6 @@
 			this.gbFunction.TabIndex = 13;
 			this.gbFunction.TabStop = false;
 			// 
-			// txtFunctionText
-			// 
-			this.txtFunctionText.AcceptsTab = true;
-			this.txtFunctionText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.txtFunctionText.AutoCompleteFunctionsList = null;
-			this.txtFunctionText.AutoCompleteVariablesList = null;
-			this.txtFunctionText.Font = new System.Drawing.Font("Lucida Console", 8.25F);
-			this.txtFunctionText.IgnoreChange = false;
-			this.txtFunctionText.Location = new System.Drawing.Point(6, 45);
-			this.txtFunctionText.Multiline = true;
-			this.txtFunctionText.Name = "txtFunctionText";
-			this.txtFunctionText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.txtFunctionText.Size = new System.Drawing.Size(653, 470);
-			this.txtFunctionText.TabIndex = 0;
-			this.txtFunctionText.TabStop = false;
-			// 
 			// btnRemoveFunction
 			// 
 			this.btnRemoveFunction.Location = new System.Drawing.Point(558, 19);
@@ -661,20 +625,6 @@
 			this.label5.Size = new System.Drawing.Size(68, 13);
 			this.label5.TabIndex = 6;
 			this.label5.Text = "Versionname";
-			// 
-			// txtChangeText
-			// 
-			this.txtChangeText.AcceptsTab = true;
-			this.txtChangeText.AutoCompleteFunctionsList = null;
-			this.txtChangeText.AutoCompleteVariablesList = null;
-			this.txtChangeText.Font = new System.Drawing.Font("Lucida Console", 8.25F);
-			this.txtChangeText.IgnoreChange = false;
-			this.txtChangeText.Location = new System.Drawing.Point(6, 39);
-			this.txtChangeText.Multiline = true;
-			this.txtChangeText.Name = "txtChangeText";
-			this.txtChangeText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.txtChangeText.Size = new System.Drawing.Size(653, 479);
-			this.txtChangeText.TabIndex = 0;
 			// 
 			// txtChangeVersion
 			// 
@@ -1091,6 +1041,56 @@
 			// errorProvider
 			// 
 			this.errorProvider.ContainerControl = this;
+			// 
+			// txtHotstringText
+			// 
+			this.txtHotstringText.AcceptsTab = true;
+			this.txtHotstringText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.txtHotstringText.AutoCompleteFunctionsList = null;
+			this.txtHotstringText.AutoCompleteVariablesList = null;
+			this.txtHotstringText.Font = new System.Drawing.Font("Lucida Console", 8.25F);
+			this.txtHotstringText.IgnoreChange = false;
+			this.txtHotstringText.Location = new System.Drawing.Point(6, 100);
+			this.txtHotstringText.Multiline = true;
+			this.txtHotstringText.Name = "txtHotstringText";
+			this.txtHotstringText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+			this.txtHotstringText.Size = new System.Drawing.Size(561, 419);
+			this.txtHotstringText.TabIndex = 0;
+			this.txtHotstringText.TabStop = false;
+			// 
+			// txtFunctionText
+			// 
+			this.txtFunctionText.AcceptsTab = true;
+			this.txtFunctionText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.txtFunctionText.AutoCompleteFunctionsList = null;
+			this.txtFunctionText.AutoCompleteVariablesList = null;
+			this.txtFunctionText.Font = new System.Drawing.Font("Lucida Console", 8.25F);
+			this.txtFunctionText.IgnoreChange = false;
+			this.txtFunctionText.Location = new System.Drawing.Point(6, 45);
+			this.txtFunctionText.Multiline = true;
+			this.txtFunctionText.Name = "txtFunctionText";
+			this.txtFunctionText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+			this.txtFunctionText.Size = new System.Drawing.Size(653, 470);
+			this.txtFunctionText.TabIndex = 0;
+			this.txtFunctionText.TabStop = false;
+			// 
+			// txtChangeText
+			// 
+			this.txtChangeText.AcceptsTab = true;
+			this.txtChangeText.AutoCompleteFunctionsList = null;
+			this.txtChangeText.AutoCompleteVariablesList = null;
+			this.txtChangeText.Font = new System.Drawing.Font("Lucida Console", 8.25F);
+			this.txtChangeText.IgnoreChange = false;
+			this.txtChangeText.Location = new System.Drawing.Point(6, 39);
+			this.txtChangeText.Multiline = true;
+			this.txtChangeText.Name = "txtChangeText";
+			this.txtChangeText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+			this.txtChangeText.Size = new System.Drawing.Size(653, 479);
+			this.txtChangeText.TabIndex = 0;
 			// 
 			// MainForm
 			// 

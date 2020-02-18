@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Drawing;
@@ -43,7 +42,6 @@ namespace AHK_updater
 		/// <param name="e">Generic EventArgs</param>
 		void MainForm_Load(object sender, EventArgs e)
 		{
-			Text = "AHK Updater " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
 			if (test)
 			{
 				menuStrip.BackColor = Color.Red;

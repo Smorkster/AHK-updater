@@ -1,4 +1,10 @@
-﻿Version 20200207
+﻿Version 20200218
+****************
+Fixed output of titles in scriptfiles.
+Moved the autoreload of scriptfile to top of file.
+Removed versionnumber from MainForm Text.
+
+Version 20200207
 **************
 New version naming.
 Moved functionality of opening file in external editor, to settingstab. Now lists available texteditors in a combobox.

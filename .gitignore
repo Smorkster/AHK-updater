@@ -21,8 +21,6 @@ x86/
 bld/
 [Bb]in/
 [Oo]bj/
-AHK updater/obj
-AHK updater/bin
 [Ll]og/
 
 # Visual Studio cache/options directory

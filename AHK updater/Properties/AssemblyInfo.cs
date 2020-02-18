@@ -11,5 +11,3 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright 2014")]
 
 [assembly: ComVisible(false)]
-
-[assembly: AssemblyVersion("4.1")]

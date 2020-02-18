@@ -217,7 +217,9 @@ namespace AHK_updater
 
 			try
 			{
-				writer.WriteLine($"; Created at {DateTime.UtcNow.ToShortDateString()}\r\n; {writeData.GetSettings().First(x => x.Name.Equals("TitleDivider"))}\r\n");
+				writer.WriteLine($"; Created at {DateTime.UtcNow.ToShortDateString()}\r\n; {writeData.GetSettings().First(x => x.Name.Equals("TitleDivider")).Text}\r\n");
+				writer.WriteLine("SetTimer,UPDATEDSCRIPT,1000");
+				writer.WriteLine("UPDATEDSCRIPT:\r\nFileGetAttrib,attribs,%A_ScriptFullPath%\r\nIfInString,attribs,A\r\n{\r\nFileSetAttrib,-A,%A_ScriptFullPath%\r\nSplashTextOn,,,Updated script,\r\nSleep,500\r\nReload\r\n}\r\nReturn\r\n\r\n");
 
 				if (includeMenu)
 				{
@@ -226,12 +228,6 @@ namespace AHK_updater
 
 					writer.WriteLine(CreateTitle("TitleMenuTriggersSection"));
 					writer.WriteLine(CreateAHKMenuTriggers());
-				}
-				else
-				{
-					writer.WriteLine("SetTimer,UPDATEDSCRIPT,1000");
-					writer.WriteLine("UPDATEDSCRIPT:\r\nFileGetAttrib,attribs,%A_ScriptFullPath%\r\nIfInString,attribs,A\r\n{\r\nFileSetAttrib,-A,%A_ScriptFullPath%\r\nSplashTextOn,,,Updated script,\r\nSleep,500\r\nReload\r\n}\r\nReturn\r\n\r\n");
-
 				}
 
 				var listV = writeData.GetVariables().ToList();
@@ -258,12 +254,6 @@ namespace AHK_updater
 					listH = null;
 				}
 
-				if (includeMenu)
-				{
-					writer.WriteLine("SetTimer,UPDATEDSCRIPT,1000");
-					writer.WriteLine("UPDATEDSCRIPT:\r\nFileGetAttrib,attribs,%A_ScriptFullPath%\r\nIfInString,attribs,A\r\n{\r\nFileSetAttrib,-A,%A_ScriptFullPath%\r\nSplashTextOn,,,Updated script,\r\nSleep,500\r\nReload\r\n}\r\nReturn\r\n\r\n");
-				}
-
 				writer.WriteLine("ExitApp");
 
 				writer.Close();
@@ -278,7 +268,7 @@ namespace AHK_updater
 		{
 			string title = "";
 
-			title = $"; {writeData.GetSettings().First(x => x.Name.Equals("TitleDivider"))}\r\n{writeData.GetSettings().First(x => x.Name.Equals(section)).Text}\r\n{writeData.GetSettings().First(x => x.Name.Equals("TitleDivider"))}\r\n";
+			title = $"; {writeData.GetSettings().First(x => x.Name.Equals("TitleDivider")).Text}\r\n; {writeData.GetSettings().First(x => x.Name.Equals(section)).Text}\r\n; {writeData.GetSettings().First(x => x.Name.Equals("TitleDivider")).Text}\r\n";
 
 			return title;
 		}

@@ -111,6 +111,15 @@ namespace AHK_updater.Models
 		}
 
 		/// <summary>
+		/// Collect the names of all functions
+		/// </summary>
+		/// <returns>String-array of all functionnames</returns>
+		public string[] GetNames()
+		{
+			return functionsList.Select(x => x.Name).ToArray();
+		}
+
+		/// <summary>
 		/// Update an existing hotstring 
 		/// </summary>
 		/// <param name="old">Name of hotstring to be updated</param>
