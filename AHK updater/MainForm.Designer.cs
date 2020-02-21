@@ -105,7 +105,7 @@
 			this.ttGeneralTooltip = new System.Windows.Forms.ToolTip(this.components);
 			this.chbSaveWithMenu = new System.Windows.Forms.CheckBox();
 			this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
-			this.txtHotstringText = new AHK_updater.MyTextBox();
+			this.txtHotstringText = new AHK_updater.Library.MyScintilla();
 			this.txtFunctionText = new AHK_updater.MyTextBox();
 			this.txtChangeText = new AHK_updater.MyTextBox();
 			this.contextMenu.SuspendLayout();
@@ -391,9 +391,9 @@
 			// 
 			// gbHotstring
 			// 
+			this.gbHotstring.Controls.Add(this.txtHotstringText);
 			this.gbHotstring.Controls.Add(this.lblname);
 			this.gbHotstring.Controls.Add(this.btnUpdateHotstring);
-			this.gbHotstring.Controls.Add(this.txtHotstringText);
 			this.gbHotstring.Controls.Add(this.label6);
 			this.gbHotstring.Controls.Add(this.txtHotstringName);
 			this.gbHotstring.Controls.Add(this.txtHotstringSystem);
@@ -1042,23 +1042,16 @@
 			// 
 			this.errorProvider.ContainerControl = this;
 			// 
-			// txtHotstringText
+			// txtHotstringTextSci
 			// 
-			this.txtHotstringText.AcceptsTab = true;
-			this.txtHotstringText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
 			this.txtHotstringText.AutoCompleteFunctionsList = null;
 			this.txtHotstringText.AutoCompleteVariablesList = null;
-			this.txtHotstringText.Font = new System.Drawing.Font("Lucida Console", 8.25F);
-			this.txtHotstringText.IgnoreChange = false;
-			this.txtHotstringText.Location = new System.Drawing.Point(6, 100);
-			this.txtHotstringText.Multiline = true;
-			this.txtHotstringText.Name = "txtHotstringText";
-			this.txtHotstringText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.txtHotstringText.Size = new System.Drawing.Size(561, 419);
-			this.txtHotstringText.TabIndex = 0;
-			this.txtHotstringText.TabStop = false;
+			this.txtHotstringText.Lexer = ScintillaNET.Lexer.Cpp;
+			this.txtHotstringText.Location = new System.Drawing.Point(9, 100);
+			this.txtHotstringText.Name = "txtHotstringTextSci";
+			this.txtHotstringText.Size = new System.Drawing.Size(558, 419);
+			this.txtHotstringText.TabIndex = 11;
+			this.txtHotstringText.WrapMode = ScintillaNET.WrapMode.Whitespace;
 			// 
 			// txtFunctionText
 			// 
@@ -1066,8 +1059,6 @@
 			this.txtFunctionText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.txtFunctionText.AutoCompleteFunctionsList = null;
-			this.txtFunctionText.AutoCompleteVariablesList = null;
 			this.txtFunctionText.Font = new System.Drawing.Font("Lucida Console", 8.25F);
 			this.txtFunctionText.IgnoreChange = false;
 			this.txtFunctionText.Location = new System.Drawing.Point(6, 45);
@@ -1081,8 +1072,6 @@
 			// txtChangeText
 			// 
 			this.txtChangeText.AcceptsTab = true;
-			this.txtChangeText.AutoCompleteFunctionsList = null;
-			this.txtChangeText.AutoCompleteVariablesList = null;
 			this.txtChangeText.Font = new System.Drawing.Font("Lucida Console", 8.25F);
 			this.txtChangeText.IgnoreChange = false;
 			this.txtChangeText.Location = new System.Drawing.Point(6, 39);
@@ -1178,7 +1167,6 @@
         private AHK_updater.MyTextBox txtFunctionText;
         private System.Windows.Forms.TextBox txtHotstringName;
         private System.Windows.Forms.TextBox txtHotstringSystem;
-        private AHK_updater.MyTextBox txtHotstringText;
         private System.Windows.Forms.ToolStripMenuItem contextItem;
         private System.Windows.Forms.ToolStripMenuItem menuClose;
         private System.Windows.Forms.ToolStripMenuItem menuNewCommand;
@@ -1243,5 +1231,6 @@
 		private System.Windows.Forms.ComboBox cbEditorToOpenFileWith;
 		private System.Windows.Forms.Button btnOpenXML;
 		private System.Windows.Forms.Button btnOpenScript;
+		private Library.MyScintilla txtHotstringText;
 	}
 }

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows.Forms;
 using AHK_updater.Library;
 using AHK_updater.Models;
+using ScintillaNET;
 
 namespace AHK_updater
 {
@@ -33,6 +34,7 @@ namespace AHK_updater
 			InitializeData();
 			InitializeBindings();
 			InitializeEvents();
+			SetUpTxtHotstringText();
 		}
 
 		/// <summary>
@@ -196,6 +198,7 @@ namespace AHK_updater
 			txtHotstringMenuTitle.TextChanged += TxtHotstringMenuTitle_TextChanged;
 			txtHotstringName.TextChanged += TxtHotstringName_TextChanged;
 			txtHotstringSystem.TextChanged += TxtHotstringSystem_TextChanged;
+			txtHotstringText.TextChanged += TxtHotstringText_TextChanged;
 			txtHotstringText.TextChanged += TxtHotstringText_TextChanged;
 			txtScriptOperationsMenuTrigger.TextChanged += TxtScriptOperationsMenuTrigger_TextChanged;
 			txtVariableName.TextChanged += TxtVariableName_TextChanged;
@@ -390,6 +393,23 @@ namespace AHK_updater
 						break;
 				}
 			}
+		}
+
+		/// <summary>
+		/// Set necessary styling and keywords for lexer
+		/// </summary>
+		void SetUpTxtHotstringText()
+		{
+			txtHotstringText.StyleResetDefault();
+			txtHotstringText.StyleResetDefault();
+			txtHotstringText.Styles[Style.Default].Font = "Consolas";
+			txtHotstringText.Styles[Style.Default].Size = 10;
+			txtHotstringText.StyleClearAll();
+			txtHotstringText.Styles[Style.Cpp.Word].Bold = true;
+			txtHotstringText.Styles[Style.Cpp.Word2].Italic = true;
+			txtHotstringText.Styles[Style.Cpp.Word2].ForeColor = Color.Blue;
+			txtHotstringText.SetKeywords(0, functionData.GetNamesString());
+			txtHotstringText.SetKeywords(1, variableData.GetNamesString());
 		}
 
 		/// <summary>
@@ -803,6 +823,7 @@ namespace AHK_updater
 		{
 			((CurrencyManager)lbFunctions.BindingContext[functionData.GetList()]).Refresh();
 			txtHotstringText.AutoCompleteFunctionsList = functionData.GetAutoCompletionNames().ToStringCollection();
+			txtHotstringText.SetKeywords(0, functionData.GetNamesString());
 		}
 
 		/// <summary>
@@ -1077,7 +1098,6 @@ namespace AHK_updater
 				gbHotstring.Enabled = false;
 				txtHotstringText.Text = txtHotstringSystem.Text = txtHotstringName.Text = txtHotstringMenuTitle.Text = "";
 			}
-			txtHotstringText.ClearHistory();
 			EventsOn();
 		}
 
@@ -1169,7 +1189,7 @@ namespace AHK_updater
 				tabControl.SelectedIndex = 0;
 				PopulateTreeView(newCommand.GetName());
 				ActiveControl = txtHotstringText;
-				txtHotstringText.Select(11, 1);
+				txtHotstringText.SelectionStart = 11;
 			}
 		}
 
@@ -1433,6 +1453,7 @@ namespace AHK_updater
 		{
 			((CurrencyManager)lbVariables.BindingContext[variableData.GetList()]).Refresh();
 			txtHotstringText.AutoCompleteVariablesList = variableData.GetAutoCompletionNames().ToStringCollection();
+			txtHotstringText.SetKeywords(1, variableData.GetNamesString());
 		}
 		#endregion EventMethods
 	}

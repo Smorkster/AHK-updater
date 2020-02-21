@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -99,6 +100,20 @@ namespace AHK_updater.Models
 		public ObservableCollection<Variable> GetList()
 		{
 			return variablesList;
+		}
+
+		/// <summary>
+		/// Get all variables names as a string
+		/// </summary>
+		/// <returns>String with the names of all variables</returns>
+		internal string GetNamesString()
+		{
+			string s = "";
+			foreach (Variable v in variablesList)
+			{
+				s = s + " " + v.Name;
+			}
+			return s.Trim();
 		}
 
 		/// <summary>

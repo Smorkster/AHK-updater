@@ -66,6 +66,9 @@
   <ItemGroup>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="ScintillaNET, Version=3.6.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\jacobslusser.ScintillaNET.3.6.3\lib\net40\ScintillaNET.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -84,6 +87,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Library\Extensions.cs" />
+    <Compile Include="Library\MyScintilla.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Models\ChangeData.cs" />
     <Compile Include="ErrorTracker.cs" />
     <Compile Include="Models\Editors.cs" />
@@ -154,6 +160,7 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="Changelog.txt" />
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

@@ -114,9 +114,13 @@ namespace AHK_updater.Models
 		/// Collect the names of all functions
 		/// </summary>
 		/// <returns>String-array of all functionnames</returns>
-		public string[] GetNames()
+		public string GetNamesString()
 		{
-			return functionsList.Select(x => x.Name).ToArray();
+			string s = "";
+			foreach (Function f in functionsList)
+				s = s + " " + f.Name;
+
+			return s.Trim();
 		}
 
 		/// <summary>
