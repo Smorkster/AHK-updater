@@ -1073,6 +1073,49 @@ namespace AHK_updater
 			btnSaveToFile.Enabled = settingsData.DataUpdated;
 		}
 
+		void TabControl_Selecting(object sender, TabControlCancelEventArgs e)
+		{
+			if (markedItem.DifferentFromOriginal)
+			{
+				DialogResult ans = MessageBox.Show($"Data for {markedItem.Name} have changed, do you want to save?", "Unsaved changes", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+				switch (ans)
+				{
+					case DialogResult.Yes:
+						UpdateItemInData();
+						break;
+					case DialogResult.No:
+						break;
+					case DialogResult.Cancel:
+						e.Cancel = true;
+						break;
+				}
+			}
+		}
+
+		void TabFunctions_Enter(object sender, EventArgs e)
+		{
+			if (gbFunction.Enabled)
+			{
+				SetMarkedItem(functionData.Get((lbFunctions.SelectedItem as Function).Name));
+			}
+		}
+
+		void TabHotstrings_Enter(object sender, EventArgs e)
+		{
+			if (gbHotstring.Enabled)
+			{
+				SetMarkedItem(hotstringData.Get(treeHotstrings.SelectedNode.Text));
+			}
+		}
+
+		void TabVariables_Enter(object sender, EventArgs e)
+		{
+			if (gbVariable.Enabled)
+			{
+				SetMarkedItem(variableData.Get((lbVariables.SelectedItem as Variable).Name));
+			}
+		}
+
 		/// <summary>
 		/// A node in treeHotstrings have been clicked.
 		/// If a hotstring, load data to textboxes.
