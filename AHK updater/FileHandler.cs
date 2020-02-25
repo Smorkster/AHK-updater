@@ -219,7 +219,7 @@ namespace AHK_updater
 			{
 				writer.WriteLine($"; Created at {DateTime.UtcNow.ToShortDateString()}\r\n; {writeData.GetSettings().First(x => x.Name.Equals("TitleDivider")).Text}\r\n");
 				writer.WriteLine("SetTimer,UPDATEDSCRIPT,1000");
-				writer.WriteLine("UPDATEDSCRIPT:\r\nFileGetAttrib,attribs,%A_ScriptFullPath%\r\nIfInString,attribs,A\r\n{\r\nFileSetAttrib,-A,%A_ScriptFullPath%\r\nSplashTextOn,,,Updated script,\r\nSleep,500\r\nReload\r\n}\r\nReturn\r\n\r\n");
+				writer.WriteLine("UPDATEDSCRIPT:\r\nFileGetAttrib,attribs,%A_ScriptFullPath%\r\nIfInString,attribs,A\r\n{\r\nFileSetAttrib,-A,%A_ScriptFullPath%\r\nSplashTextOn,,,Updated script,\r\nSleep,500\r\nReload\r\n}\r\n\r\n");
 
 				if (includeMenu)
 				{
